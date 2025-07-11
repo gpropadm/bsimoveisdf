@@ -1,103 +1,248 @@
-import Image from "next/image";
+import Link from 'next/link'
+import Image from 'next/image'
+import { Metadata } from 'next'
+import prisma from '@/lib/prisma'
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'ImobiNext - Imóveis para Venda e Aluguel',
+  description: 'Encontre casas, apartamentos e coberturas para venda e aluguel. A melhor seleção de imóveis em São Paulo, Rio de Janeiro e todo o Brasil.',
+  openGraph: {
+    title: 'ImobiNext - Imóveis para Venda e Aluguel',
+    description: 'Encontre casas, apartamentos e coberturas para venda e aluguel.',
+    url: '/',
+    siteName: 'ImobiNext',
+    type: 'website',
+  },
+}
+
+export default async function Home() {
+  const properties = await prisma.property.findMany({
+    take: 6,
+    orderBy: { createdAt: 'desc' }
+  })
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-white">
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <Link href="/" className="text-2xl font-bold text-blue-600">
+              ImobiNext
+            </Link>
+            <nav className="flex space-x-6">
+              <Link href="/" className="text-blue-600 font-medium">Home</Link>
+              <Link href="/imoveis" className="text-gray-600 hover:text-blue-600">Imóveis</Link>
+              <Link href="/venda" className="text-gray-600 hover:text-blue-600">Venda</Link>
+              <Link href="/aluguel" className="text-gray-600 hover:text-blue-600">Aluguel</Link>
+              <Link href="/sobre" className="text-gray-600 hover:text-blue-600">Sobre</Link>
+              <Link href="/contato" className="text-gray-600 hover:text-blue-600">Contato</Link>
+            </nav>
+          </div>
         </div>
+      </header>
+
+      <main>
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&h=1080&fit=crop&q=80"
+              alt="Casa moderna - ImobiNext"
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black bg-opacity-60 z-10"></div>
+
+          {/* Content */}
+          <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Encontre o imóvel dos seus sonhos
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
+              Mais de 1000 imóveis para venda e aluguel nos melhores bairros
+            </p>
+
+            {/* Search Bar */}
+            <div className="bg-white rounded-lg p-6 max-w-4xl mx-auto shadow-2xl">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <select className="w-full p-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Comprar</option>
+                    <option value="venda">Comprar</option>
+                    <option value="aluguel">Alugar</option>
+                  </select>
+                </div>
+                <div>
+                  <select className="w-full p-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Tipo de Imóvel</option>
+                    <option value="apartamento">Apartamento</option>
+                    <option value="casa">Casa</option>
+                    <option value="cobertura">Cobertura</option>
+                    <option value="terreno">Terreno</option>
+                  </select>
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Cidade ou Bairro"
+                    className="w-full p-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <button className="w-full bg-blue-600 text-white p-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    Encontrar Imóvel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Link href="/venda" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Ver Imóveis à Venda
+              </Link>
+              <Link href="/aluguel" className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                Ver Imóveis para Aluguel
+              </Link>
+            </div>
+          </div>
+
+          {/* Scroll Down Indicator */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 13l3 3 7-7"/>
+              <path d="M12 17V3"/>
+            </svg>
+          </div>
+        </section>
+
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Imóveis em Destaque</h2>
+              <p className="text-gray-600">Selecionamos os melhores imóveis para você</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties.map((property) => (
+                <Link key={property.id} href={`/imovel/${property.slug}`} className="group">
+                  <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                    <div className="h-48 bg-gray-200 flex items-center justify-center relative">
+                      <span className="text-gray-500">Foto do imóvel</span>
+                      <div className="absolute top-3 right-3 bg-blue-600 text-white px-2 py-1 rounded text-sm font-medium capitalize">
+                        {property.type}
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {property.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3">
+                        {property.address}, {property.city} - {property.state}
+                      </p>
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-2xl font-bold text-blue-600">
+                          R$ {property.price.toLocaleString('pt-BR')}
+                        </span>
+                      </div>
+                      <div className="flex gap-4 text-sm text-gray-500">
+                        {property.bedrooms && <span>🛏️ {property.bedrooms} quartos</span>}
+                        {property.bathrooms && <span>🚿 {property.bathrooms} banheiros</span>}
+                        {property.area && <span>📐 {property.area}m²</span>}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="text-center mt-12">
+              <Link href="/imoveis" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                Ver Todos os Imóveis
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🏠</span>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Mais de 1000 Imóveis</h3>
+                <p className="text-gray-600">Grande variedade de casas, apartamentos e coberturas</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">📍</span>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Melhores Localizações</h3>
+                <p className="text-gray-600">Imóveis nos bairros mais valorizados das principais cidades</p>
+              </div>
+              <div className="text-center">
+                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🤝</span>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Atendimento Especializado</h3>
+                <p className="text-gray-600">Equipe de corretores especializados para te ajudar</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-xl font-bold text-blue-400 mb-4">ImobiNext</h3>
+              <p className="text-gray-400 mb-4">Sua imobiliária de confiança há mais de 10 anos no mercado.</p>
+              <div className="flex space-x-4">
+                <span className="text-2xl">📘</span>
+                <span className="text-2xl">📸</span>
+                <span className="text-2xl">🐦</span>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Imóveis</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/venda" className="hover:text-white">Venda</Link></li>
+                <li><Link href="/aluguel" className="hover:text-white">Aluguel</Link></li>
+                <li><Link href="/lancamentos" className="hover:text-white">Lançamentos</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Contato</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>📞 (11) 9999-9999</li>
+                <li>📧 contato@imobinext.com</li>
+                <li>📍 Rua dos Imóveis, 123</li>
+                <li>São Paulo, SP</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Horário</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Segunda a Sexta: 8h às 18h</li>
+                <li>Sábado: 8h às 12h</li>
+                <li>Domingo: Fechado</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 ImobiNext. Todos os direitos reservados.</p>
+          </div>
+        </div>
       </footer>
     </div>
-  );
+  )
 }
