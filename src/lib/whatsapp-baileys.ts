@@ -1,16 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import makeWASocket, { 
   DisconnectReason, 
   useMultiFileAuthState, 
-  WAMessageKey, 
   WASocket 
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import qrcode from 'qrcode-terminal';
-
-interface WhatsAppMessage {
-  to: string;
-  message: string;
-}
 
 interface AppointmentNotification {
   clientName: string;

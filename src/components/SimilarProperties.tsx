@@ -167,19 +167,19 @@ export default function SimilarProperties({
                     <div className="flex gap-2 text-xs text-gray-500">
                       {property.bedrooms && (
                         <span className="flex items-center gap-1">
-                          <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-3 h-3" />
+                          <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-3 h-3" width={12} height={12} />
                           {property.bedrooms}
                         </span>
                       )}
                       {property.bathrooms && (
                         <span className="flex items-center gap-1">
-                          <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-3 h-3" />
+                          <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-3 h-3" width={12} height={12} />
                           {property.bathrooms}
                         </span>
                       )}
                       {property.area && (
                         <span className="flex items-center gap-1">
-                          <img src="/icons/icons8-measure-32.png" alt="Área" className="w-3 h-3" />
+                          <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-3 h-3" width={12} height={12} />
                           {property.area}m²
                         </span>
                       )}

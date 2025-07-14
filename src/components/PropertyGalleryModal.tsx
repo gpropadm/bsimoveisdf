@@ -154,10 +154,13 @@ ${formData.message}
 
         {/* Main Image */}
         <div className="relative w-full h-full max-w-4xl max-h-[80vh] flex items-center justify-center">
-          <img
+          <Image
             src={photos[currentPhoto]}
             alt={`${propertyTitle} - Foto ${currentPhoto + 1}`}
             className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg"
+            width={800}
+            height={600}
+            unoptimized
           />
         </div>
 

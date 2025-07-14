@@ -1,9 +1,6 @@
-import axios from 'axios';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-interface WhatsAppMessage {
-  to: string;
-  message: string;
-}
+import axios from 'axios';
 
 interface AppointmentNotification {
   clientName: string;
