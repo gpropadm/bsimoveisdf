@@ -2,6 +2,17 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+}
+
 async function main() {
   const properties = [
     {
@@ -15,6 +26,7 @@ async function main() {
       state: 'RJ',
       bedrooms: 3,
       bathrooms: 2,
+      parking: 2,
       area: 120,
       featured: true,
     },
@@ -29,6 +41,7 @@ async function main() {
       state: 'SP',
       bedrooms: 4,
       bathrooms: 3,
+      parking: 4,
       area: 300,
       featured: true,
     },
@@ -43,6 +56,7 @@ async function main() {
       state: 'SP',
       bedrooms: 3,
       bathrooms: 3,
+      parking: 2,
       area: 180,
       featured: true,
     },
@@ -57,6 +71,7 @@ async function main() {
       state: 'SP',
       bedrooms: 2,
       bathrooms: 1,
+      parking: 0,
       area: 100,
       featured: false,
     },
@@ -71,6 +86,7 @@ async function main() {
       state: 'RJ',
       bedrooms: 2,
       bathrooms: 2,
+      parking: 1,
       area: 85,
       featured: false,
     },
@@ -85,6 +101,7 @@ async function main() {
       state: 'SP',
       bedrooms: 3,
       bathrooms: 2,
+      parking: 2,
       area: 200,
       featured: false,
     },
@@ -92,7 +109,10 @@ async function main() {
 
   for (const property of properties) {
     await prisma.property.create({
-      data: property,
+      data: {
+        ...property,
+        slug: generateSlug(property.title),
+      },
     })
   }
 

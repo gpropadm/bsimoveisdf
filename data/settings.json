@@ -1,0 +1,18 @@
+{
+  "site": {
+    "siteName": "ImobiNext",
+    "siteDescription": "Encontre o imóvel dos seus sonhos",
+    "contactEmail": "fa@faimoveis.com",
+    "contactPhone": "(61) 99999-9999",
+    "contactWhatsapp": "5561999999999",
+    "address": "Rua das Flores, 123",
+    "city": "Taguatina",
+    "state": "DF",
+    "socialFacebook": "",
+    "socialInstagram": "",
+    "socialYoutube": "",
+    "featuredLimit": 6,
+    "enableRegistrations": true,
+    "enableComments": false
+  }
+}

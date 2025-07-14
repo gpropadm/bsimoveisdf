@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
@@ -20,18 +20,96 @@ export async function GET(request: NextRequest) {
       select: {
         id: true,
         title: true,
+        slug: true,
+        address: true,
         city: true,
         state: true,
         price: true,
         type: true,
+        category: true,
+        bedrooms: true,
+        bathrooms: true,
+        area: true,
         featured: true,
+        images: true,
         createdAt: true,
       }
     })
 
-    return NextResponse.json(properties)
+    return NextResponse.json({ properties })
   } catch (error) {
     console.error('Error fetching properties:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const {
+      title,
+      description,
+      price,
+      type,
+      category,
+      address,
+      city,
+      state,
+      bedrooms,
+      bathrooms,
+      parking,
+      area,
+      featured,
+      images
+    } = body
+
+    // Criar slug a partir do título
+    const slug = title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+      .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
+      .replace(/\s+/g, '-') // Substitui espaços por hífens
+      .replace(/-+/g, '-') // Remove hífens duplos
+      .trim()
+
+    // Verificar se o slug já existe e adicionar número se necessário
+    let finalSlug = slug
+    let counter = 1
+    while (await prisma.property.findUnique({ where: { slug: finalSlug } })) {
+      finalSlug = `${slug}-${counter}`
+      counter++
+    }
+
+    const property = await prisma.property.create({
+      data: {
+        title,
+        slug: finalSlug,
+        description: description || null,
+        price,
+        type,
+        category,
+        address,
+        city,
+        state,
+        bedrooms: bedrooms || null,
+        bathrooms: bathrooms || null,
+        parking: parking || null,
+        area: area || null,
+        featured: featured || false,
+        images: images || null,
+      }
+    })
+
+    return NextResponse.json(property, { status: 201 })
+  } catch (error) {
+    console.error('Error creating property:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
       },
     ],
+    // Allow local images from uploads folder
+    unoptimized: false,
   },
 };
 

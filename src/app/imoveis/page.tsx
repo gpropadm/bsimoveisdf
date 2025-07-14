@@ -13,33 +13,33 @@ interface SearchParams {
   city?: string
 }
 
-export default async function Properties({ searchParams }: { searchParams: SearchParams }) {
-  const { type, category, city } = searchParams
+export default async function Properties({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const { type, category, city } = await searchParams
 
   const properties = await prisma.property.findMany({
     where: {
       ...(type && { type }),
       ...(category && { category }),
-      ...(city && { city: { contains: city, mode: 'insensitive' } }),
+      ...(city && { city: { contains: city } }),
     },
     orderBy: { createdAt: 'desc' }
   })
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
+            <Link href="/" className="text-2xl font-bold text-black font-display">
               ImobiNext
             </Link>
             <nav className="flex space-x-6">
-              <Link href="/" className="text-gray-600 hover:text-blue-600">Home</Link>
-              <Link href="/imoveis" className="text-blue-600 font-medium">Imóveis</Link>
-              <Link href="/venda" className="text-gray-600 hover:text-blue-600">Venda</Link>
-              <Link href="/aluguel" className="text-gray-600 hover:text-blue-600">Aluguel</Link>
-              <Link href="/sobre" className="text-gray-600 hover:text-blue-600">Sobre</Link>
-              <Link href="/contato" className="text-gray-600 hover:text-blue-600">Contato</Link>
+              <Link href="/" className="text-gray-800 hover:text-black">Home</Link>
+              <Link href="/imoveis" className="text-black font-medium">Imóveis</Link>
+              <Link href="/venda" className="text-gray-800 hover:text-black">Venda</Link>
+              <Link href="/aluguel" className="text-gray-800 hover:text-black">Aluguel</Link>
+              <Link href="/sobre" className="text-gray-800 hover:text-black">Sobre</Link>
+              <Link href="/contato" className="text-gray-800 hover:text-black">Contato</Link>
             </nav>
           </div>
         </div>
@@ -98,7 +98,7 @@ export default async function Properties({ searchParams }: { searchParams: Searc
               <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-md transition-shadow">
                 <div className="h-48 bg-gray-200 flex items-center justify-center relative">
                   <span className="text-gray-500">Foto do imóvel</span>
-                  <div className="absolute top-3 right-3 bg-blue-600 text-white px-2 py-1 rounded text-sm font-medium capitalize">
+                  <div className={`absolute top-3 right-3 text-white px-2 py-1 rounded text-sm font-medium capitalize ${property.type === 'venda' ? 'bg-teal-500' : 'bg-orange-500'}`}>
                     {property.type}
                   </div>
                   {property.featured && (
@@ -115,17 +115,46 @@ export default async function Properties({ searchParams }: { searchParams: Searc
                     {property.address}, {property.city} - {property.state}
                   </p>
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className={`text-2xl font-bold ${property.type === 'venda' ? 'text-teal-500' : 'text-orange-500'}`}>
                       R$ {property.price.toLocaleString('pt-BR')}
                     </span>
                     <span className="text-sm text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded">
                       {property.category}
                     </span>
                   </div>
+                  <div className="flex justify-between items-center mb-3">
+                    <Link 
+                      href={`/imovel2/${property.slug}`}
+                      className="text-xs text-teal-600 hover:text-teal-800 font-medium bg-teal-50 hover:bg-teal-100 px-2 py-1 rounded transition-colors"
+                    >
+                      📸 Galeria Avançada
+                    </Link>
+                  </div>
                   <div className="flex gap-4 text-sm text-gray-500">
-                    {property.bedrooms && <span>🛏️ {property.bedrooms} quartos</span>}
-                    {property.bathrooms && <span>🚿 {property.bathrooms} banheiros</span>}
-                    {property.area && <span>📐 {property.area}m²</span>}
+                    {property.bedrooms && (
+                      <span className="flex items-center gap-1">
+                        <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4" />
+                        {property.bedrooms} quartos
+                      </span>
+                    )}
+                    {property.bathrooms && (
+                      <span className="flex items-center gap-1">
+                        <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4" />
+                        {property.bathrooms} banheiros
+                      </span>
+                    )}
+                    {property.parking && (
+                      <span className="flex items-center gap-1">
+                        <img src="/icons/icons8-hennessey-venom-30.png" alt="Vagas" className="w-4 h-4" />
+                        {property.parking} vagas
+                      </span>
+                    )}
+                    {property.area && (
+                      <span className="flex items-center gap-1">
+                        <img src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" />
+                        {property.area}m²
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

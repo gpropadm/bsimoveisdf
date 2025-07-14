@@ -29,7 +29,7 @@ export default function AdminLogin() {
       } else {
         router.push('/admin')
       }
-    } catch (error) {
+    } catch {
       setError('Erro ao fazer login. Tente novamente.')
     } finally {
       setLoading(false)

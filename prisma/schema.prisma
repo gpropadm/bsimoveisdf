@@ -73,17 +73,103 @@ model Property {
   description String?
   price       Float
   type        String   // "venda" or "aluguel"
+  status      String   @default("disponivel") // "disponivel", "vendido", "alugado"
   category    String   // "casa", "apartamento", "cobertura", etc.
   address     String
   city        String
   state       String
   bedrooms    Int?
   bathrooms   Int?
+  parking     Int?     // vagas de garagem
   area        Float?
   images      String?  // JSON string of image URLs
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  leads Lead[]
+  appointments Appointment[]
+
   @@map("properties")
+}
+
+model Lead {
+  id           String   @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  message      String?
+  propertyId   String?  // referência opcional ao imóvel
+  propertyTitle String? // título do imóvel para histórico
+  propertyPrice Float?  // preço do imóvel para histórico
+  propertyType String?  // tipo do imóvel (venda/aluguel)
+  source       String   @default("site") // "site", "whatsapp", "telefone", etc.
+  status       String   @default("novo") // "novo", "contatado", "interessado", "convertido", "perdido"
+  notes        String?  // observações do corretor
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  appointments Appointment[]
+
+  @@map("leads")
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  propertyId  String
+  leadId      String?  // Conecta com o sistema de leads existente
+  
+  // Participantes
+  clientName    String
+  clientEmail   String
+  clientPhone   String
+  realtorId     String?  // Futuro: sistema de corretores
+  
+  // Agendamento
+  scheduledDate DateTime
+  duration      Int      @default(60) // minutos
+  status        String   @default("agendado") // "agendado", "confirmado", "cancelado", "concluído"
+  
+  // Notificações
+  clientNotified    Boolean @default(false)
+  realtorNotified   Boolean @default(false)
+  ownerNotified     Boolean @default(false)
+  
+  // Feedback pós-visita
+  clientFeedback    String?
+  interestLevel     Int?     // 1-5
+  
+  // Localização para confirmação
+  checkInTime       DateTime?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  lead     Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@map("appointments")
+}
+
+model Settings {
+  id                   String  @id @default(cuid())
+  siteName             String  @default("ImobiNext")
+  siteDescription      String  @default("Encontre o imóvel dos seus sonhos")
+  contactEmail         String  @default("contato@imobinext.com")
+  contactPhone         String  @default("(48) 99864-5864")
+  contactWhatsapp      String  @default("5548998645864")
+  address              String  @default("Rua das Flores, 123")
+  city                 String  @default("Florianópolis")
+  state                String  @default("SC")
+  socialFacebook       String  @default("https://facebook.com")
+  socialInstagram      String  @default("https://instagram.com")
+  socialLinkedin       String  @default("https://linkedin.com")
+  featuredLimit        Int     @default(6)
+  enableRegistrations  Boolean @default(true)
+  enableComments       Boolean @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("settings")
 }
