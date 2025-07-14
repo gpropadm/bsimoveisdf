@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Configurar DATABASE_URL padrão se não estiver definida
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = "file:./dev.db";
+}
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
