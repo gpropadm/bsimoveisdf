@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
         };
       }).filter(slot => slot.status === 'disponível'); // Só retornar disponíveis
 
-    } catch (error) {
+    } catch {
       console.log('Erro ao verificar banco de dados, usando horários padrão');
     }
 
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       const googleSlots = await googleSheetsService.getAvailableSlots(date);
       // Se Google Sheets funcionar, usar os dados dele
       availableSlots = googleSlots;
-    } catch (error) {
+    } catch {
       console.log('Google Sheets não configurado');
     }
     

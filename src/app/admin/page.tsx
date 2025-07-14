@@ -39,5 +39,6 @@ export default function AdminDashboard() {
 
   if (!session) return null
 
-  return <AdminDashboardContent session={session as Parameters<typeof AdminDashboardContent>[0]['session']} />
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <AdminDashboardContent session={session as any} />
 }

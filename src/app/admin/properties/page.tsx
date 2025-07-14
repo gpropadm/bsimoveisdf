@@ -5,6 +5,22 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
+interface Property {
+  id: string
+  title: string
+  address: string
+  city?: string
+  state?: string
+  price: number
+  type: string
+  category?: string
+  bedrooms?: number
+  bathrooms?: number
+  area?: number
+  description?: string
+  status: string
+}
+
 export default function AdminProperties() {
   const { data: session, status } = useSession()
   const router = useRouter()

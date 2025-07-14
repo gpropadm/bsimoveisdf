@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Calendar, Clock, User, Phone, Mail, X, MapPin } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Calendar, Clock, User, X, MapPin } from 'lucide-react';
 
 interface Property {
   id: string;
@@ -65,9 +65,9 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
     if (selectedDate) {
       fetchAvailableTimes();
     }
-  }, [selectedDate]);
+  }, [selectedDate, fetchAvailableTimes]);
 
-  const fetchAvailableTimes = async () => {
+  const fetchAvailableTimes = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch('/api/appointments/check-availability', {
@@ -85,7 +85,7 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
         
         if (data.availableSlots && data.availableSlots.length > 0) {
           // Converter slots da API para formato do componente
-          const formattedTimes = data.availableSlots.map((slot: any) => ({
+          const formattedTimes = data.availableSlots.map((slot: { hora: string; status: string }) => ({
             time: slot.hora,
             displayTime: slot.hora,
             available: slot.status === 'disponível'
@@ -107,7 +107,7 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   const getDefaultTimeSlots = (): AvailableTime[] => {
     const times = [
@@ -174,7 +174,7 @@ Entraremos em contato para confirmar!`);
         if (result.alternatives && result.alternatives.length > 0) {
           const alternativesText = result.alternatives
             .slice(0, 3)
-            .map((alt: any, index: number) => `${index + 1}. ${alt.hora} - ${alt.corretor}`)
+            .map((alt: { hora: string; corretor: string }, index: number) => `${index + 1}. ${alt.hora} - ${alt.corretor}`)
             .join('\n');
           
           alert(`${result.message}

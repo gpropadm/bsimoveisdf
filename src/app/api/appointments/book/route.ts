@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         clientPhone,
         propertyTitle
       );
-    } catch (error) {
+    } catch {
       console.log('Google Sheets não configurado, usando modo offline');
       // Simular agendamento bem-sucedido
       bookingResult = {
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       let alternativeSlots;
       try {
         alternativeSlots = await googleSheetsService.getAvailableSlots(date);
-      } catch (error) {
+      } catch {
         // Fallback para horários padrão
         alternativeSlots = [
           { data: date, hora: '09:00', corretor: 'João Silva', status: 'disponível' },
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
           time,
           alternativeSlots
         );
-      } catch (error) {
+      } catch {
         console.log('WhatsApp não configurado');
       }
 
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
         clientNotified = await whatsappService.notifyClientAppointmentConfirmed(notification);
         corretorNotified = await whatsappService.notifyCorretorNewAppointment(notification);
       }
-    } catch (error) {
+    } catch {
       console.log('WhatsApp não configurado, agendamento salvo sem notificações');
     }
 
