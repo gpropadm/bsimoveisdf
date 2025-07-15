@@ -7,7 +7,8 @@ export async function GET() {
       nextauth_secret: process.env.NEXTAUTH_SECRET ? 'SET' : 'NOT_SET',
       database_url: process.env.DATABASE_URL ? 'SET' : 'NOT_SET',
       database_provider: process.env.DATABASE_URL?.startsWith('postgresql') ? 'postgresql' : 'other',
-      database_url_preview: process.env.DATABASE_URL?.substring(0, 30) + '...',
+      database_url_preview: process.env.DATABASE_URL?.substring(0, 50) + '...',
+      database_url_full_length: process.env.DATABASE_URL?.length,
       node_env: process.env.NODE_ENV,
       site_url: process.env.SITE_URL || 'NOT_SET',
       site_name: process.env.SITE_NAME || 'NOT_SET'

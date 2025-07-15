@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 
- // Configurar DATABASE_URL a partir de DATABASE_URL_POSTGRES
-  if (!process.env.DATABASE_URL && process.env.DATABASE_URL_POSTGRES) {
+ // Configurar DATABASE_URL a partir de DATABASE_URL_CUSTOM ou DATABASE_URL_POSTGRES
+  if (!process.env.DATABASE_URL && process.env.DATABASE_URL_CUSTOM) {
+    process.env.DATABASE_URL = process.env.DATABASE_URL_CUSTOM;
+  } else if (!process.env.DATABASE_URL && process.env.DATABASE_URL_POSTGRES) {
     process.env.DATABASE_URL = process.env.DATABASE_URL_POSTGRES;
   }
 
