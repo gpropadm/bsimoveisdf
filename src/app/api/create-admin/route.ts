@@ -1,9 +1,27 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 export async function GET() {
+  let prisma: PrismaClient | null = null
+  
   try {
+    // Criar nova instância do Prisma com URL corrigida
+    let dbUrl = process.env.DATABASE_URL_CUSTOM || process.env.DATABASE_URL || ''
+    
+    // Corrigir formato se necessário
+    if (dbUrl.startsWith('postgres://')) {
+      dbUrl = dbUrl.replace('postgres://', 'postgresql://')
+    }
+    
+    prisma = new PrismaClient({
+      datasources: {
+        db: { url: dbUrl }
+      }
+    })
+    
+    await prisma.$connect()
+    
     // Verificar se já existe
     const existingUser = await prisma.user.findUnique({
       where: { email: 'admin@imobinext.com' }
@@ -73,7 +91,12 @@ export async function GET() {
     console.error('Erro ao criar admin:', error)
     return NextResponse.json({ 
       success: false, 
-      error: String(error) 
+      error: String(error),
+      dbUrl: process.env.DATABASE_URL?.substring(0, 50) + '...'
     }, { status: 500 })
+  } finally {
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   }
 }
