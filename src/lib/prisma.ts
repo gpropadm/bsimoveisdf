@@ -1,10 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 
- // Configurar DATABASE_URL a partir de DATABASE_URL_CUSTOM ou DATABASE_URL_POSTGRES
-  if (!process.env.DATABASE_URL && process.env.DATABASE_URL_CUSTOM) {
+ // Configurar DATABASE_URL e corrigir formato postgres:// para postgresql://
+  if (process.env.DATABASE_URL_CUSTOM) {
     process.env.DATABASE_URL = process.env.DATABASE_URL_CUSTOM;
-  } else if (!process.env.DATABASE_URL && process.env.DATABASE_URL_POSTGRES) {
+  } else if (process.env.DATABASE_URL_POSTGRES) {
     process.env.DATABASE_URL = process.env.DATABASE_URL_POSTGRES;
+  }
+  
+  // Corrigir formato postgres:// para postgresql:// se necessário
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres://')) {
+    process.env.DATABASE_URL = process.env.DATABASE_URL.replace('postgres://', 'postgresql://');
   }
 
 declare global {
