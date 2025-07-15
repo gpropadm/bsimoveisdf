@@ -1,10 +1,19 @@
 import Link from 'next/link'
 import prisma from '@/lib/prisma'
 
+// Força a página a ser dinâmica
+export const dynamic = 'force-dynamic'
+
 export default async function Properties() {
-  const properties = await prisma.property.findMany({
-    orderBy: { createdAt: 'desc' }
-  })
+  let properties: any[] = []
+  
+  try {
+    properties = await prisma.property.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar propriedades:', error)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

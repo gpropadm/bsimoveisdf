@@ -1,23 +1,10 @@
 import { MetadataRoute } from 'next'
-import prisma from '@/lib/prisma'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://imobinext.com.br'
+  const baseUrl = 'https://faimoveis-site.vercel.app'
   
-  const properties = await prisma.property.findMany({
-    select: {
-      slug: true,
-      updatedAt: true,
-    },
-  })
-
-  const propertyUrls = properties.map((property) => ({
-    url: `${baseUrl}/imovel/${property.slug}`,
-    lastModified: property.updatedAt,
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }))
-
+  // Sitemap estático para evitar problemas de build
+  // TODO: Implementar geração dinâmica após resolver problemas de conexão
   return [
     {
       url: baseUrl,
@@ -44,17 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/sobre`,
+      url: `${baseUrl}/admin/login`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.5,
+      priority: 0.3,
     },
-    {
-      url: `${baseUrl}/contato`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    ...propertyUrls,
   ]
 }
