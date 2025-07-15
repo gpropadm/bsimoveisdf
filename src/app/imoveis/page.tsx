@@ -13,17 +13,26 @@ interface SearchParams {
   city?: string
 }
 
+// Força a página a ser dinâmica
+export const dynamic = 'force-dynamic'
+
 export default async function Properties({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const { type, category, city } = await searchParams
 
-  const properties = await prisma.property.findMany({
-    where: {
-      ...(type && { type }),
-      ...(category && { category }),
-      ...(city && { city: { contains: city } }),
-    },
-    orderBy: { createdAt: 'desc' }
-  })
+  let properties: any[] = []
+  
+  try {
+    properties = await prisma.property.findMany({
+      where: {
+        ...(type && { type }),
+        ...(category && { category }),
+        ...(city && { city: { contains: city } }),
+      },
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar propriedades:', error)
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -121,14 +130,6 @@ export default async function Properties({ searchParams }: { searchParams: Promi
                     <span className="text-sm text-gray-500 capitalize bg-gray-100 px-2 py-1 rounded">
                       {property.category}
                     </span>
-                  </div>
-                  <div className="flex justify-between items-center mb-3">
-                    <Link 
-                      href={`/imovel2/${property.slug}`}
-                      className="text-xs text-teal-600 hover:text-teal-800 font-medium bg-teal-50 hover:bg-teal-100 px-2 py-1 rounded transition-colors"
-                    >
-                      📸 Galeria Avançada
-                    </Link>
                   </div>
                   <div className="flex gap-4 text-sm text-gray-500">
                     {property.bedrooms && (

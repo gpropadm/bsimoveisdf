@@ -7,11 +7,20 @@ export const metadata: Metadata = {
   description: 'Encontre casas, apartamentos e coberturas para alugar. Imóveis para locação nos melhores bairros de São Paulo, Rio de Janeiro e todo o Brasil.',
 }
 
+// Força a página a ser dinâmica
+export const dynamic = 'force-dynamic'
+
 export default async function Aluguel() {
-  const properties = await prisma.property.findMany({
-    where: { type: 'aluguel' },
-    orderBy: { createdAt: 'desc' }
-  })
+  let properties: any[] = []
+  
+  try {
+    properties = await prisma.property.findMany({
+      where: { type: 'aluguel' },
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar propriedades de aluguel:', error)
+  }
 
   return (
     <div className="min-h-screen bg-white">

@@ -7,11 +7,20 @@ export const metadata: Metadata = {
   description: 'Encontre casas, apartamentos e coberturas para comprar. Imóveis para venda nos melhores bairros de São Paulo, Rio de Janeiro e todo o Brasil.',
 }
 
+// Força a página a ser dinâmica
+export const dynamic = 'force-dynamic'
+
 export default async function Venda() {
-  const properties = await prisma.property.findMany({
-    where: { type: 'venda' },
-    orderBy: { createdAt: 'desc' }
-  })
+  let properties: any[] = []
+  
+  try {
+    properties = await prisma.property.findMany({
+      where: { type: 'venda' },
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar propriedades de venda:', error)
+  }
 
   return (
     <div className="min-h-screen bg-white">
