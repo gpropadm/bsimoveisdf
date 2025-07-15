@@ -2,7 +2,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Metadata } from 'next'
 import prisma from '@/lib/prisma'
-import { getSettings } from '@/lib/settings'
 import FavoriteButton from '@/components/FavoriteButton'
 
 export const metadata: Metadata = {
@@ -17,13 +16,35 @@ export const metadata: Metadata = {
   },
 }
 
+// Força a página a ser dinâmica
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
-  const settings = await getSettings()
-  const properties = await prisma.property.findMany({
-    where: { featured: true },
-    take: settings.featuredLimit,
-    orderBy: { createdAt: 'desc' }
-  })
+  // Settings padrão para evitar conexão com banco durante build
+  const settings = {
+    siteName: 'Faimoveis',
+    contactPhone: '(48) 99864-5864',
+    contactEmail: 'contato@faimoveis.com.br',
+    contactWhatsapp: '5548998645864',
+    city: 'Florianópolis',
+    state: 'SC',
+    socialFacebook: 'https://facebook.com',
+    socialInstagram: 'https://instagram.com',
+    socialLinkedin: 'https://linkedin.com',
+    featuredLimit: 6
+  }
+
+  let properties: any[] = []
+  
+  try {
+    properties = await prisma.property.findMany({
+      where: { featured: true },
+      take: settings.featuredLimit,
+      orderBy: { createdAt: 'desc' }
+    })
+  } catch (error) {
+    console.error('Erro ao buscar propriedades em destaque:', error)
+  }
 
 
   return (
