@@ -1,10 +1,28 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
-import prisma from './prisma'
+
+// Criar instância do Prisma específica para NextAuth
+const createPrismaClient = () => {
+  let dbUrl = process.env.DATABASE_URL_CUSTOM || process.env.DATABASE_URL || ''
+  
+  // Corrigir formato se necessário
+  if (dbUrl.startsWith('postgres://')) {
+    dbUrl = dbUrl.replace('postgres://', 'postgresql://')
+  }
+  
+  return new PrismaClient({
+    datasources: {
+      db: { url: dbUrl }
+    }
+  })
+}
+
+const authPrisma = createPrismaClient()
 
 export const authOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(authPrisma),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -18,25 +36,30 @@ export const authOptions = {
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        })
+        try {
+          const user = await authPrisma.user.findUnique({
+            where: { email: credentials.email }
+          })
 
-        if (!user || !user.password) {
+          if (!user || !user.password) {
+            return null
+          }
+
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
+          if (!isPasswordValid) {
+            return null
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        } catch (error) {
+          console.error('Auth error:', error)
           return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
-        if (!isPasswordValid) {
-          return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
         }
       }
     })
