@@ -23,21 +23,23 @@ export async function GET() {
         
         return NextResponse.json({ 
           success: true, 
-          message: 'Usuário admin existe - senha atualizada',
+          message: 'Usuário admin existe - senha atualizada com sucesso!',
           credentials: {
             email: 'admin@imobinext.com',
             password: 'admin123'
-          }
+          },
+          action: 'PASSWORD_UPDATED'
         })
       }
       
       return NextResponse.json({ 
         success: true, 
-        message: 'Usuário admin já existe e está funcionando',
+        message: 'Usuário admin já existe e a senha está correta',
         credentials: {
           email: 'admin@imobinext.com',
           password: 'admin123'
-        }
+        },
+        action: 'ALREADY_EXISTS'
       })
     }
 
