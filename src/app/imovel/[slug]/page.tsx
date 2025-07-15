@@ -11,15 +11,16 @@ interface PropertyDetailProps {
   params: Promise<{ slug: string }>
 }
 
-export async function generateStaticParams() {
-  const properties = await prisma.property.findMany({
-    select: { slug: true }
-  })
+// Removido generateStaticParams para tornar a página dinâmica
+// export async function generateStaticParams() {
+//   const properties = await prisma.property.findMany({
+//     select: { slug: true }
+//   })
 
-  return properties.map((property) => ({
-    slug: property.slug,
-  }))
-}
+//   return properties.map((property) => ({
+//     slug: property.slug,
+//   }))
+// }
 
 export async function generateMetadata({ params }: PropertyDetailProps): Promise<Metadata> {
   const { slug } = await params
