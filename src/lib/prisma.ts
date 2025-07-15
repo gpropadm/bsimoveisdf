@@ -11,6 +11,11 @@ import { PrismaClient } from '@prisma/client'
   if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres://')) {
     process.env.DATABASE_URL = process.env.DATABASE_URL.replace('postgres://', 'postgresql://');
   }
+  
+  // Log para debug (apenas em desenvolvimento)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('DATABASE_URL configurada:', process.env.DATABASE_URL?.substring(0, 50) + '...');
+  }
 
 declare global {
   var prisma: PrismaClient | undefined
