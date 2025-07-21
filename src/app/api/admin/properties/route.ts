@@ -29,7 +29,9 @@ export async function GET(request: NextRequest) {
         category: true,
         bedrooms: true,
         bathrooms: true,
+        parking: true,
         area: true,
+        video: true,
         featured: true,
         images: true,
         createdAt: true,
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
       bathrooms,
       parking,
       area,
+      video,
       featured,
       images
     } = body
@@ -102,6 +105,7 @@ export async function POST(request: NextRequest) {
         bathrooms: bathrooms || null,
         parking: parking || null,
         area: area || null,
+        video: video || null,
         featured: featured || false,
         images: images || null,
       }

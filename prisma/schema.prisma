@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider = "sqlite"
+    url      = "file:./dev.db"
   }
 
 model Account {
@@ -83,6 +83,7 @@ model Property {
   parking     Int?     // vagas de garagem
   area        Float?
   images      String?  // JSON string of image URLs
+  video       String?  // URL do vídeo (YouTube, Vimeo, etc.)
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -150,6 +151,106 @@ model Appointment {
   lead     Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
 
   @@map("appointments")
+}
+
+model PropertySubmission {
+  id            String   @id @default(cuid())
+  
+  // Informações do proprietário
+  ownerName     String
+  ownerEmail    String
+  ownerPhone    String
+  
+  // Informações do imóvel
+  title         String
+  description   String?
+  propertyType  String   // "casa", "apartamento", "cobertura", etc.
+  saleType      String   // "venda", "aluguel"
+  price         Float?
+  address       String
+  city          String
+  state         String
+  neighborhood  String?
+  bedrooms      Int?
+  bathrooms     Int?
+  parking       Int?
+  area          Float?
+  
+  // Status da submissão
+  status        String   @default("pendente") // "pendente", "em_analise", "aprovado", "rejeitado", "publicado"
+  adminNotes    String?  // Observações do admin
+  
+  // Preferências
+  hasPhotos     Boolean  @default(false)
+  acceptsVisits Boolean  @default(true)
+  urgency       String   @default("normal") // "normal", "alta", "baixa"
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("property_submissions")
+}
+
+model PropertyRequest {
+  id              String   @id @default(cuid())
+  
+  // Informações do solicitante
+  clientName      String
+  clientEmail     String
+  clientPhone     String
+  
+  // Preferências do imóvel
+  propertyType    String?  // "casa", "apartamento", "cobertura", etc.
+  saleType        String   // "venda", "aluguel"
+  priceMin        Float?
+  priceMax        Float?
+  city            String
+  neighborhood    String?
+  bedrooms        Int?
+  bathrooms       Int?
+  parking         Int?
+  areaMin         Float?
+  areaMax         Float?
+  
+  // Detalhes da solicitação
+  description     String?  // Descrição detalhada do que procura
+  timeline        String?  // "urgente", "1_mes", "3_meses", "6_meses", "sem_pressa"
+  budget          String?  // "a_vista", "financiado", "fgts"
+  
+  // Status da solicitação
+  status          String   @default("ativo") // "ativo", "atendido", "cancelado", "pausado"
+  adminNotes      String?  // Observações do admin
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("property_requests")
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  
+  // Informações do contato
+  name        String
+  email       String
+  phone       String?
+  subject     String
+  message     String
+  
+  // Contexto
+  source      String   @default("site") // "site", "whatsapp", "telefone"
+  referrer    String?  // URL de onde veio
+  
+  // Status
+  status      String   @default("novo") // "novo", "lido", "respondido", "resolvido"
+  adminNotes  String?  // Observações do admin
+  respondedAt DateTime?
+  respondedBy String?  // ID do admin que respondeu
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("contact_messages")
 }
 
 model Settings {

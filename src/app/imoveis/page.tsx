@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Metadata } from 'next'
 import prisma from '@/lib/prisma'
+import FavoriteButton from '@/components/FavoriteButton'
 
 export const metadata: Metadata = {
   title: 'Imóveis para Venda e Aluguel - ImobiNext',
@@ -47,6 +48,12 @@ export default async function Properties({ searchParams }: { searchParams: Promi
               <Link href="/imoveis" className="text-black font-medium">Imóveis</Link>
               <Link href="/venda" className="text-gray-800 hover:text-black">Venda</Link>
               <Link href="/aluguel" className="text-gray-800 hover:text-black">Aluguel</Link>
+              <Link href="/favoritos" className="text-gray-800 hover:text-black flex items-center gap-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                Favoritos
+              </Link>
               <Link href="/sobre" className="text-gray-800 hover:text-black">Sobre</Link>
               <Link href="/contato" className="text-gray-800 hover:text-black">Contato</Link>
             </nav>
@@ -117,9 +124,16 @@ export default async function Properties({ searchParams }: { searchParams: Promi
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                    {property.title}
-                  </h3>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex-1 mr-2">
+                      {property.title}
+                    </h3>
+                    <FavoriteButton 
+                      propertyId={property.id}
+                      size="small"
+                      variant="card"
+                    />
+                  </div>
                   <p className="text-gray-600 text-sm mb-3">
                     {property.address}, {property.city} - {property.state}
                   </p>

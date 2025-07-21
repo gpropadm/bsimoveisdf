@@ -16,7 +16,7 @@ async function createAdmin() {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash('admin123', 10)
+    const hashedPassword = await bcrypt.hash('ULTRAPHINK', 10)
 
     // Create admin user
     const admin = await prisma.user.create({
@@ -30,7 +30,7 @@ async function createAdmin() {
 
     console.log('✅ Admin criado com sucesso!')
     console.log('📧 Email: admin@imobinext.com')
-    console.log('🔑 Senha: admin123')
+    console.log('🔑 Senha: ULTRAPHINK')
     console.log('🆔 ID:', admin.id)
 
   } catch (error) {

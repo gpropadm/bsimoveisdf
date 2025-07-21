@@ -5,31 +5,25 @@ const prisma = new PrismaClient()
 
 async function resetAdminPassword() {
   try {
-    // Check if admin exists
-    const existingAdmin = await prisma.user.findUnique({
-      where: { email: 'admin@imobinext.com' }
-    })
-
-    if (!existingAdmin) {
-      console.log('❌ Admin não encontrado!')
-      console.log('🔧 Execute: node scripts/create-admin.js para criar um novo admin')
-      return
-    }
+    // Delete all existing users
+    await prisma.user.deleteMany({})
+    console.log('🗑️ Todos os usuários removidos')
 
     // Hash new password
-    const hashedPassword = await bcrypt.hash('admin123', 10)
+    const hashedPassword = await bcrypt.hash('123', 10)
 
-    // Update admin password
-    await prisma.user.update({
-      where: { email: 'admin@imobinext.com' },
+    // Create new admin
+    await prisma.user.create({
       data: {
-        password: hashedPassword
+        email: 'fa@gmail.com',
+        password: hashedPassword,
+        name: 'Admin'
       }
     })
 
-    console.log('✅ Senha do admin resetada com sucesso!')
-    console.log('📧 Email: admin@imobinext.com')
-    console.log('🔑 Nova senha: admin123')
+    console.log('✅ Novo admin criado com sucesso!')
+    console.log('📧 Email: fa@gmail.com')
+    console.log('🔑 Senha: 123')
     console.log('🔓 Agora você pode fazer login novamente')
 
   } catch (error) {

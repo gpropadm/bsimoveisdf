@@ -19,7 +19,9 @@ interface Property {
   category: string
   bedrooms: number
   bathrooms: number
+  parking: number
   area: number
+  video: string
   featured: boolean
   images: string[]
 }
@@ -51,7 +53,9 @@ export default function EditProperty() {
     category: '',
     bedrooms: '',
     bathrooms: '',
+    parking: '',
     area: '',
+    video: '',
     featured: false
   })
 
@@ -88,7 +92,9 @@ export default function EditProperty() {
         category: data.category,
         bedrooms: data.bedrooms.toString(),
         bathrooms: data.bathrooms.toString(),
+        parking: data.parking.toString(),
         area: data.area.toString(),
+        video: data.video || '',
         featured: data.featured
       })
     } catch (error) {
@@ -114,7 +120,9 @@ export default function EditProperty() {
           price: parseFloat(formData.price),
           bedrooms: parseInt(formData.bedrooms),
           bathrooms: parseInt(formData.bathrooms),
+          parking: parseInt(formData.parking),
           area: parseFloat(formData.area),
+          video: formData.video || null,
           images: JSON.stringify(images)
         })
       })
@@ -130,6 +138,23 @@ export default function EditProperty() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const extractYouTubeId = (url: string): string => {
+    if (!url) return ''
+    
+    // Regex para extrair ID do YouTube de várias formas de URL
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+      /youtube\.com\/watch\?.*v=([^&\n?#]+)/
+    ]
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match) return match[1]
+    }
+    
+    return url // Retorna a URL original se não for YouTube
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -554,7 +579,7 @@ export default function EditProperty() {
               </div>
               
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Quartos *
@@ -578,6 +603,21 @@ export default function EditProperty() {
                       type="number"
                       name="bathrooms"
                       value={formData.bathrooms}
+                      onChange={handleChange}
+                      required
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Vagas de Garagem *
+                    </label>
+                    <input
+                      type="number"
+                      name="parking"
+                      value={formData.parking}
                       onChange={handleChange}
                       required
                       min="0"
@@ -731,6 +771,72 @@ export default function EditProperty() {
                     </p>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Vídeo */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Vídeo do Imóvel</h3>
+                <p className="text-sm text-gray-600 mt-1">Adicione um vídeo do YouTube para mostrar o imóvel</p>
+              </div>
+              
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      URL do Vídeo (YouTube)
+                    </label>
+                    <input
+                      type="url"
+                      name="video"
+                      value={formData.video}
+                      onChange={handleChange}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Cole o link do YouTube do vídeo do imóvel. Exemplo: https://www.youtube.com/watch?v=abc123
+                    </p>
+                  </div>
+                  
+                  {/* Preview do vídeo */}
+                  {formData.video && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Prévia do Vídeo
+                      </label>
+                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                        {(() => {
+                          const videoId = extractYouTubeId(formData.video)
+                          if (videoId && videoId !== formData.video) {
+                            return (
+                              <iframe
+                                src={`https://www.youtube.com/embed/${videoId}`}
+                                className="w-full h-full border-0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                title="Vídeo do Imóvel"
+                              />
+                            )
+                          } else {
+                            return (
+                              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                <div className="text-center">
+                                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-2">
+                                    <polygon points="23 7 16 12 23 17 23 7"/>
+                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                  </svg>
+                                  <p className="text-sm">URL inválida ou não é do YouTube</p>
+                                </div>
+                              </div>
+                            )
+                          }
+                        })()}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -15,8 +15,9 @@ export async function GET(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    const { id } = await params
     const property = await prisma.property.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!property) {
@@ -55,7 +56,9 @@ export async function PUT(
       category,
       bedrooms,
       bathrooms,
+      parking,
       area,
+      video,
       featured,
       images
     } = body
@@ -103,13 +106,14 @@ export async function PUT(
         address,
         city,
         state,
-        zipcode,
         price,
         type,
         category,
         bedrooms,
         bathrooms,
+        parking,
         area,
+        video,
         featured,
         images,
         slug

@@ -75,10 +75,10 @@ export default function PropertyGallery({
             <button
               key={index}
               onClick={() => setCurrentPhoto(index)}
-              className={`relative h-16 rounded-sm overflow-hidden border-2 transition-all ${
+              className={`relative h-16 rounded-sm overflow-hidden transition-all ${
                 currentPhoto === index 
-                  ? 'border-blue-500 scale-105' 
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'ring-2 ring-black ring-opacity-70 scale-105' 
+                  : 'opacity-70 hover:opacity-100'
               }`}
             >
               <Image
@@ -92,12 +92,6 @@ export default function PropertyGallery({
           ))}
         </div>
 
-        {/* Labels das fotos */}
-        {images.length > 0 && (
-          <div className="text-center text-sm text-gray-600">
-            Foto {currentPhoto + 1} de {photos.length}
-          </div>
-        )}
       </div>
 
       {/* Modal Gallery */}

@@ -13,7 +13,7 @@ export interface SiteSettings {
   state: string
   socialFacebook: string
   socialInstagram: string
-  socialLinkedin: string
+  socialLinkedin?: string
   featuredLimit: number
   enableRegistrations: boolean
   enableComments: boolean
@@ -21,11 +21,12 @@ export interface SiteSettings {
 
 export async function getSettings(): Promise<SiteSettings> {
   try {
-    // Buscar as configurações do banco de dados
+    // Buscar SOMENTE do banco de dados
     let settings = await prisma.settings.findFirst()
     
-    // Se não existir nenhuma configuração, criar uma com os valores padrão
+    // Se não existir configuração, criar uma nova com valores padrão
     if (!settings) {
+      console.log('Criando configuração inicial no banco de dados')
       settings = await prisma.settings.create({
         data: {
           siteName: 'ImobiNext',
@@ -46,6 +47,11 @@ export async function getSettings(): Promise<SiteSettings> {
       })
     }
 
+    console.log('✅ Configurações carregadas do banco:', { 
+      featuredLimit: settings.featuredLimit,
+      id: settings.id 
+    })
+    
     return {
       siteName: settings.siteName,
       siteDescription: settings.siteDescription,
@@ -63,8 +69,10 @@ export async function getSettings(): Promise<SiteSettings> {
       enableComments: settings.enableComments
     }
   } catch (error) {
-    console.error('Erro ao carregar configurações:', error)
-    // Retornar configurações padrão em caso de erro
+    console.error('❌ Erro ao carregar configurações do banco:', error)
+    
+    // Configurações padrão como último recurso
+    console.log('Usando configurações padrão de fallback')
     return {
       siteName: 'ImobiNext',
       siteDescription: 'Encontre o imóvel dos seus sonhos',

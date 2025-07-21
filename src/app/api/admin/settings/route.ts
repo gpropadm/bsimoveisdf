@@ -13,7 +13,9 @@ export async function GET() {
     }
 
     // Buscar configurações do banco de dados
-    let settings = await prisma.settings.findFirst()
+    let settings = await prisma.settings.findFirst({
+      orderBy: { createdAt: 'asc' }
+    })
     
     // Se não existir, criar com valores padrão
     if (!settings) {
@@ -58,7 +60,9 @@ export async function POST(request: NextRequest) {
 
     if (type === 'site') {
       // Buscar configuração existente ou criar nova
-      let currentSettings = await prisma.settings.findFirst()
+      let currentSettings = await prisma.settings.findFirst({
+        orderBy: { createdAt: 'asc' }
+      })
       
       if (currentSettings) {
         // Atualizar configuração existente

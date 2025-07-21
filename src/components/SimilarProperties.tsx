@@ -25,13 +25,19 @@ interface SimilarPropertiesProps {
   city: string
   price: number
   type: string
+  showAsSlider?: boolean
+  limit?: number
+  showTitle?: boolean
 }
 
 export default function SimilarProperties({ 
   currentPropertyId, 
   city, 
   price, 
-  type 
+  type,
+  showAsSlider = false,
+  limit = 4,
+  showTitle = false
 }: SimilarPropertiesProps) {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
@@ -49,7 +55,11 @@ export default function SimilarProperties({
         
         if (response.ok) {
           const data = await response.json()
-          setProperties(data.slice(0, 4)) // Máximo 4 sugestões
+          setProperties(data.slice(0, limit))
+        } else {
+          console.error('Erro na API similar properties:', response.status, response.statusText)
+          const errorText = await response.text()
+          console.error('Resposta da API:', errorText)
         }
       } catch (error) {
         console.error('Erro ao buscar imóveis similares:', error)
@@ -62,6 +72,8 @@ export default function SimilarProperties({
   }, [currentPropertyId, city, price, type])
 
   if (loading) {
+    if (showAsSlider) return null // No loading for slider mode
+    
     return (
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,6 +97,209 @@ export default function SimilarProperties({
 
   if (properties.length === 0) {
     return null // Não mostrar nada quando não houver imóveis similares
+  }
+
+  if (showAsSlider) {
+    if (showTitle) {
+      return (
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Você poderá gostar</h2>
+              <p className="text-gray-600">Outros imóveis em {city}</p>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+                {properties.map((property) => {
+                  let imageUrl = null
+                  let hasImages = false
+                  
+                  try {
+                    if (property.images && typeof property.images === 'string') {
+                      const parsedImages = JSON.parse(property.images)
+                      if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+                        imageUrl = parsedImages[0]
+                        hasImages = true
+                      }
+                    }
+                  } catch (error) {
+                    console.error('Error parsing images for property:', property.title, error)
+                  }
+
+                  return (
+                    <Link key={property.id} href={`/imovel/${property.slug}`} className="group">
+                      <div className="w-80 bg-white rounded-xl overflow-hidden hover:shadow-md transition-shadow flex-shrink-0">
+                        <div className="h-48 bg-gray-200 relative overflow-hidden">
+                          {hasImages && imageUrl ? (
+                            <Image
+                              src={imageUrl}
+                              alt={property.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="h-full flex items-center justify-center">
+                              <span className="text-gray-500 text-sm">Foto do imóvel</span>
+                            </div>
+                          )}
+                          
+                          {/* Badge do tipo */}
+                          <div className={`absolute top-3 right-3 text-white px-3 py-1 rounded-full text-sm font-medium capitalize ${property.type === 'venda' ? 'bg-teal-500' : 'bg-orange-500'}`}>
+                            {property.type}
+                          </div>
+                        </div>
+                        
+                        <div className="p-6">
+                          <div className="flex items-start justify-between mb-3">
+                            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex-1 mr-2 line-clamp-2">
+                              {property.title}
+                            </h3>
+                            <FavoriteButton 
+                              propertyId={property.id}
+                              propertyTitle={property.title}
+                              size="small"
+                              variant="card"
+                            />
+                          </div>
+                          
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-1">
+                            {property.address}, {property.city}
+                          </p>
+                          
+                          <div className="mb-4">
+                            <span className={`text-2xl font-bold ${property.type === 'venda' ? 'text-teal-500' : 'text-orange-500'}`}>
+                              R$ {property.price.toLocaleString('pt-BR')}
+                            </span>
+                          </div>
+                          
+                          <div className="flex gap-3 text-sm text-gray-500">
+                            {property.bedrooms && (
+                              <span className="flex items-center gap-1">
+                                <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4" width={16} height={16} />
+                                {property.bedrooms}
+                              </span>
+                            )}
+                            {property.bathrooms && (
+                              <span className="flex items-center gap-1">
+                                <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4" width={16} height={16} />
+                                {property.bathrooms}
+                              </span>
+                            )}
+                            {property.area && (
+                              <span className="flex items-center gap-1">
+                                <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
+                                {property.area}m²
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    return (
+      <div className="overflow-x-auto">
+        <div className="flex gap-6 pb-4" style={{ width: 'max-content' }}>
+          {properties.map((property) => {
+            let imageUrl = null
+            let hasImages = false
+            
+            try {
+              if (property.images && typeof property.images === 'string') {
+                const parsedImages = JSON.parse(property.images)
+                if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+                  imageUrl = parsedImages[0]
+                  hasImages = true
+                }
+              }
+            } catch (error) {
+              console.error('Error parsing images for property:', property.title, error)
+            }
+
+            return (
+              <Link key={property.id} href={`/imovel/${property.slug}`} className="group">
+                <div className="w-80 bg-white rounded-xl overflow-hidden hover:shadow-md transition-shadow flex-shrink-0">
+                  <div className="h-48 bg-gray-200 relative overflow-hidden">
+                    {hasImages && imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={property.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <span className="text-gray-500 text-sm">Foto do imóvel</span>
+                      </div>
+                    )}
+                    
+                    {/* Badge do tipo */}
+                    <div className={`absolute top-3 right-3 text-white px-3 py-1 rounded-full text-sm font-medium capitalize ${property.type === 'venda' ? 'bg-teal-500' : 'bg-orange-500'}`}>
+                      {property.type}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex-1 mr-2 line-clamp-2">
+                        {property.title}
+                      </h3>
+                      <FavoriteButton 
+                        propertyId={property.id}
+                        propertyTitle={property.title}
+                        size="small"
+                        variant="card"
+                      />
+                    </div>
+                    
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-1">
+                      {property.address}, {property.city}
+                    </p>
+                    
+                    <div className="mb-4">
+                      <span className={`text-2xl font-bold ${property.type === 'venda' ? 'text-teal-500' : 'text-orange-500'}`}>
+                        R$ {property.price.toLocaleString('pt-BR')}
+                      </span>
+                    </div>
+                    
+                    <div className="flex gap-3 text-sm text-gray-500">
+                      {property.bedrooms && (
+                        <span className="flex items-center gap-1">
+                          <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4" width={16} height={16} />
+                          {property.bedrooms}
+                        </span>
+                      )}
+                      {property.bathrooms && (
+                        <span className="flex items-center gap-1">
+                          <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4" width={16} height={16} />
+                          {property.bathrooms}
+                        </span>
+                      )}
+                      {property.area && (
+                        <span className="flex items-center gap-1">
+                          <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
+                          {property.area}m²
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+    )
   }
 
   return (

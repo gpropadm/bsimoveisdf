@@ -70,7 +70,26 @@ prisma/
 
 ### 🔑 Credenciais Admin
 
-Para criar um admin, execute:
+**Credenciais atuais:**
+- Email: admin@imobinext.com
+- Senha: ULTRAPHINK
+
+**Para alterar credenciais:**
+```bash
+# Alterar senha
+node scripts/update-admin.js --password MinhaNovaSenh@123
+
+# Alterar email e senha
+node scripts/update-admin.js --email admin@faimoveis.com.br --password MinhaNovaSenh@123
+
+# Alterar nome do admin
+node scripts/update-admin.js --name "João Silva" --password MinhaNovaSenh@123
+
+# Ver todas as opções
+node scripts/update-admin.js --help
+```
+
+**Para criar um admin (primeira vez):**
 ```bash
 node scripts/create-admin.js
 ```

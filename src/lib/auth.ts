@@ -1,28 +1,8 @@
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
-// Criar instância do Prisma específica para NextAuth
-const createPrismaClient = () => {
-  let dbUrl = process.env.DATABASE_URL_CUSTOM || process.env.DATABASE_URL || ''
-  
-  // Corrigir formato se necessário
-  if (dbUrl.startsWith('postgres://')) {
-    dbUrl = dbUrl.replace('postgres://', 'postgresql://')
-  }
-  
-  return new PrismaClient({
-    datasources: {
-      db: { url: dbUrl }
-    }
-  })
-}
-
-const authPrisma = createPrismaClient()
-
 export const authOptions = {
-  adapter: PrismaAdapter(authPrisma),
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -37,9 +17,16 @@ export const authOptions = {
         }
 
         try {
-          const user = await authPrisma.user.findUnique({
+          // Criar nova instância do Prisma para cada login
+          const prisma = new PrismaClient()
+          
+          await prisma.$connect()
+          
+          const user = await prisma.user.findUnique({
             where: { email: credentials.email }
           })
+
+          await prisma.$disconnect()
 
           if (!user || !user.password) {
             return null

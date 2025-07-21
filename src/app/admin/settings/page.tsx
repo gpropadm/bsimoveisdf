@@ -16,7 +16,6 @@ interface SiteSettings {
   state: string
   socialFacebook: string
   socialInstagram: string
-  socialLinkedin: string
   featuredLimit: number
   enableRegistrations: boolean
   enableComments: boolean
@@ -49,7 +48,6 @@ export default function AdminSettings() {
     state: 'SC',
     socialFacebook: 'https://facebook.com',
     socialInstagram: 'https://instagram.com',
-    socialLinkedin: 'https://linkedin.com',
     featuredLimit: 6,
     enableRegistrations: true,
     enableComments: false
@@ -147,6 +145,11 @@ export default function AdminSettings() {
         throw new Error('Erro ao salvar configurações')
       }
 
+      // Disparar evento para atualizar todas as páginas com as novas configurações
+      console.log('📤 Salvamento concluído! Disparando evento settings-updated...')
+      window.dispatchEvent(new CustomEvent('settings-updated'))
+      console.log('✅ Evento settings-updated disparado!')
+      
       alert('Configurações do site salvas com sucesso!')
     } catch (error) {
       console.error('Erro ao salvar configurações:', error)
@@ -500,7 +503,7 @@ export default function AdminSettings() {
                 </div>
                 
                 <div className="p-6 space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Facebook
@@ -525,20 +528,6 @@ export default function AdminSettings() {
                         value={siteSettings.socialInstagram}
                         onChange={handleSiteSettingsChange}
                         placeholder="https://instagram.com/..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        LinkedIn
-                      </label>
-                      <input
-                        type="url"
-                        name="socialLinkedin"
-                        value={siteSettings.socialLinkedin}
-                        onChange={handleSiteSettingsChange}
-                        placeholder="https://linkedin.com/..."
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </div>

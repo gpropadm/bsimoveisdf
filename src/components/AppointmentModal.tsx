@@ -60,13 +60,6 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
     return days;
   };
 
-  // Buscar horários disponíveis quando data é selecionada
-  useEffect(() => {
-    if (selectedDate) {
-      fetchAvailableTimes();
-    }
-  }, [selectedDate, fetchAvailableTimes]);
-
   const fetchAvailableTimes = useCallback(async () => {
     setLoading(true);
     try {
@@ -108,6 +101,13 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
       setLoading(false);
     }
   }, [selectedDate]);
+
+  // Buscar horários disponíveis quando data é selecionada
+  useEffect(() => {
+    if (selectedDate) {
+      fetchAvailableTimes();
+    }
+  }, [selectedDate, fetchAvailableTimes]);
 
   const getDefaultTimeSlots = (): AvailableTime[] => {
     const times = [

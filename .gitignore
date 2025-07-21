@@ -44,3 +44,18 @@ next-env.d.ts
 
 # development only pages
 /src/app/imovel2/
+
+# database
+/prisma/dev.db*
+/prisma/migrations/
+
+# logs
+*.log
+server.log
+dev.log
+
+# whatsapp session
+/whatsapp-session/
+
+# uploads (for production, use cloud storage)
+/public/uploads/

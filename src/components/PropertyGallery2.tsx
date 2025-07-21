@@ -52,9 +52,9 @@ export default function PropertyGallery2({ propertyTitle }: PropertyGallery2Prop
 
 
   return (
-    <div className="w-full overflow-hidden bg-white">
+    <div className="w-full overflow-hidden bg-purple-500">
       {/* Slider Container */}
-      <div className="relative h-96 lg:h-[500px] overflow-hidden">
+      <div className="relative h-64 lg:h-80 overflow-hidden">
         {/* Images Container */}
         <div 
           className="flex transition-transform duration-700 ease-in-out h-full gap-1 sm:gap-2 px-2 sm:px-4"
@@ -81,7 +81,7 @@ export default function PropertyGallery2({ propertyTitle }: PropertyGallery2Prop
         <div className="absolute inset-0 flex items-center justify-between p-3 sm:p-6 pointer-events-none">
           <button
             onClick={prevImage}
-            className="bg-black bg-opacity-30 hover:bg-opacity-60 text-white p-2 sm:p-3 rounded-full transition-all duration-200 pointer-events-auto"
+            className="bg-white bg-opacity-30 hover:bg-opacity-60 text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-200 pointer-events-auto"
           >
             <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="15,18 9,12 15,6"></polyline>
@@ -89,7 +89,7 @@ export default function PropertyGallery2({ propertyTitle }: PropertyGallery2Prop
           </button>
           <button
             onClick={nextImage}
-            className="bg-black bg-opacity-30 hover:bg-opacity-60 text-white p-2 sm:p-3 rounded-full transition-all duration-200 pointer-events-auto"
+            className="bg-white bg-opacity-80 hover:bg-opacity-95 text-gray-800 p-2 sm:p-3 rounded-full transition-all duration-200 pointer-events-auto shadow-lg"
           >
             <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="9,18 15,12 9,6"></polyline>
