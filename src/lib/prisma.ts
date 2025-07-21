@@ -1,21 +1,20 @@
 import { PrismaClient } from '@prisma/client'
 
- // Configurar DATABASE_URL e corrigir formato postgres:// para postgresql://
-  if (process.env.DATABASE_URL_CUSTOM) {
-    process.env.DATABASE_URL = process.env.DATABASE_URL_CUSTOM;
-  } else if (process.env.DATABASE_URL_POSTGRES) {
-    process.env.DATABASE_URL = process.env.DATABASE_URL_POSTGRES;
-  }
+// Configurar DATABASE_URL usando POSTGRES_URL da Vercel/Neon
+if (process.env.POSTGRES_URL) {
+  // Converter postgres:// para postgresql:// se necessário
+  process.env.DATABASE_URL = process.env.POSTGRES_URL.replace('postgres://', 'postgresql://');
   
-  // Corrigir formato postgres:// para postgresql:// se necessário
-  if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres://')) {
-    process.env.DATABASE_URL = process.env.DATABASE_URL.replace('postgres://', 'postgresql://');
+  // Adicionar channel_binding=require se não estiver presente
+  if (!process.env.DATABASE_URL.includes('channel_binding=require')) {
+    process.env.DATABASE_URL += '&channel_binding=require';
   }
-  
-  // Log para debug (apenas em desenvolvimento)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('DATABASE_URL configurada:', process.env.DATABASE_URL?.substring(0, 50) + '...');
-  }
+}
+
+// Log para debug (apenas em desenvolvimento)
+if (process.env.NODE_ENV === 'development') {
+  console.log('DATABASE_URL configurada:', process.env.DATABASE_URL?.substring(0, 50) + '...');
+}
 
 declare global {
   var prisma: PrismaClient | undefined
