@@ -1,4 +1,4 @@
-# 🚀 Deploy na Vercel - famimovies.com.br
+# 🚀 Deploy na Vercel - faimoveis.com.br
 
 ## 📋 Passo a Passo Completo
 
@@ -35,8 +35,8 @@ vercel --prod
 1. Acesse: https://vercel.com/dashboard
 2. Clique no projeto
 3. Vá em **Settings → Domains**
-4. Adicione: `famimovies.com.br`
-5. Adicione: `www.famimovies.com.br`
+4. Adicione: `faimoveis.com.br`
+5. Adicione: `www.faimoveis.com.br`
 
 #### B. **No seu provedor de domínio:**
 Configure os DNS:
@@ -59,7 +59,7 @@ Na Vercel Dashboard → Settings → Environment Variables:
 DATABASE_URL="sua_url_do_banco_producao"
 
 # NextAuth
-NEXTAUTH_URL="https://famimovies.com.br"
+NEXTAUTH_URL="https://faimoveis.com.br"
 NEXTAUTH_SECRET="sua_chave_secreta_aqui"
 
 # Google Sheets (opcional)
@@ -68,11 +68,11 @@ GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
 GOOGLE_SHEET_ID="seu_id_da_planilha"
 
 # Site Config
-SITE_URL="https://famimovies.com.br"
+SITE_URL="https://faimoveis.com.br"
 SITE_NAME="FA Imóveis"
 CORRETOR_NAME="Seu Nome"
 CORRETOR_PHONE="5511999999999"
-CORRETOR_EMAIL="contato@famimovies.com.br"
+CORRETOR_EMAIL="contato@faimoveis.com.br"
 ```
 
 ### 5. **Configurar Banco de Dados**
@@ -132,7 +132,7 @@ vercel remove
 
 ### 8. **Verificações Finais**
 
-- [ ] Site carrega em https://famimovies.com.br
+- [ ] Site carrega em https://faimoveis.com.br
 - [ ] Banco de dados conectado
 - [ ] Imóveis aparecem na home
 - [ ] Agendamentos funcionam
