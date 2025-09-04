@@ -49,6 +49,7 @@ export default function NewProperty() {
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
+  const [imageIds, setImageIds] = useState<string[]>([])
   const [videoFiles, setVideoFiles] = useState<File[]>([])
   const [videoPreviews, setVideoPreviews] = useState<string[]>([])
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
@@ -181,9 +182,12 @@ export default function NewProperty() {
     const newImages = [...images, ...files]
     setImages(newImages)
 
-    // Criar previews
+    // Criar previews e IDs únicos
     const previews = newImages.map(file => URL.createObjectURL(file))
+    const newIds = newImages.map((_, index) => `img-${Date.now()}-${index}`)
+    
     setImagePreview(previews)
+    setImageIds(newIds)
   }
 
   const removeImage = (index: number) => {
@@ -198,6 +202,7 @@ export default function NewProperty() {
     // Filtrar arrays removendo o item no índice especificado
     const newImages = images.filter((_, i) => i !== index)
     const newPreviews = imagePreview.filter((_, i) => i !== index)
+    const newIds = imageIds.filter((_, i) => i !== index)
     
     // Resetar o estado de drag se estávamos arrastando o item removido
     if (draggedIndex === index) {
@@ -209,6 +214,7 @@ export default function NewProperty() {
     
     setImages(newImages)
     setImagePreview(newPreviews)
+    setImageIds(newIds)
   }
 
   // Funções para drag and drop das imagens
@@ -239,9 +245,10 @@ export default function NewProperty() {
     // Reordenar as imagens com mais segurança
     const newImages = [...images]
     const newPreviews = [...imagePreview]
+    const newIds = [...imageIds]
     
     // Verificar se os elementos existem antes de manipular
-    if (!newImages[draggedIndex] || !newPreviews[draggedIndex]) {
+    if (!newImages[draggedIndex] || !newPreviews[draggedIndex] || !newIds[draggedIndex]) {
       setDraggedIndex(null)
       return
     }
@@ -249,14 +256,17 @@ export default function NewProperty() {
     // Remove o item da posição original
     const draggedImage = newImages.splice(draggedIndex, 1)[0]
     const draggedPreview = newPreviews.splice(draggedIndex, 1)[0]
+    const draggedId = newIds.splice(draggedIndex, 1)[0]
     
     // Insere na nova posição
     newImages.splice(dropIndex, 0, draggedImage)
     newPreviews.splice(dropIndex, 0, draggedPreview)
+    newIds.splice(dropIndex, 0, draggedId)
     
     // Atualizar os estados
     setImages(newImages)
     setImagePreview(newPreviews)
+    setImageIds(newIds)
     setDraggedIndex(null)
   }
 
@@ -1279,7 +1289,7 @@ export default function NewProperty() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {imagePreview.map((preview, index) => (
                       <div 
-                        key={`image-${index}-${preview.slice(-10)}`} 
+                        key={imageIds[index] || `fallback-${index}`} 
                         className={`relative group cursor-move transition-all duration-200 ${
                           draggedIndex === index ? 'opacity-50 scale-95' : 'hover:scale-105'
                         }`}
