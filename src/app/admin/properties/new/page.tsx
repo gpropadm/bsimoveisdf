@@ -367,6 +367,7 @@ export default function NewProperty() {
 
         const uploadResponse = await fetch('/api/admin/upload', {
           method: 'POST',
+          credentials: 'include',
           body: uploadFormData
         })
 
@@ -388,6 +389,7 @@ export default function NewProperty() {
 
           const videoUploadResponse = await fetch('/api/admin/upload-video', {
             method: 'POST',
+            credentials: 'include',
             body: videoFormData
           })
 

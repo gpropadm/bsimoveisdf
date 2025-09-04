@@ -7,9 +7,12 @@ import { existsSync } from 'fs'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔐 Verificando sessão para upload...')
     const session = await getServerSession(authOptions)
+    console.log('👤 Sessão encontrada:', session ? 'SIM' : 'NÃO')
     
     if (!session) {
+      console.log('❌ Upload bloqueado - sem sessão')
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
