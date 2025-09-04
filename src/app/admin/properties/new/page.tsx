@@ -187,11 +187,25 @@ export default function NewProperty() {
   }
 
   const removeImage = (index: number) => {
+    // Verificar se o índice é válido
+    if (index < 0 || index >= images.length) return
+    
+    // Limpar URL object para evitar memory leaks
+    if (imagePreview[index]) {
+      URL.revokeObjectURL(imagePreview[index])
+    }
+    
+    // Filtrar arrays removendo o item no índice especificado
     const newImages = images.filter((_, i) => i !== index)
     const newPreviews = imagePreview.filter((_, i) => i !== index)
     
-    // Limpar URL object para evitar memory leaks
-    URL.revokeObjectURL(imagePreview[index])
+    // Resetar o estado de drag se estávamos arrastando o item removido
+    if (draggedIndex === index) {
+      setDraggedIndex(null)
+    } else if (draggedIndex !== null && draggedIndex > index) {
+      // Ajustar o índice se removemos um item antes do item sendo arrastado
+      setDraggedIndex(draggedIndex - 1)
+    }
     
     setImages(newImages)
     setImagePreview(newPreviews)
@@ -211,11 +225,26 @@ export default function NewProperty() {
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault()
     
-    if (draggedIndex === null || draggedIndex === dropIndex) return
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null)
+      return
+    }
 
-    // Reordenar as imagens
+    // Verificar se os índices são válidos
+    if (draggedIndex < 0 || draggedIndex >= images.length || dropIndex < 0 || dropIndex >= images.length) {
+      setDraggedIndex(null)
+      return
+    }
+
+    // Reordenar as imagens com mais segurança
     const newImages = [...images]
     const newPreviews = [...imagePreview]
+    
+    // Verificar se os elementos existem antes de manipular
+    if (!newImages[draggedIndex] || !newPreviews[draggedIndex]) {
+      setDraggedIndex(null)
+      return
+    }
     
     // Remove o item da posição original
     const draggedImage = newImages.splice(draggedIndex, 1)[0]
@@ -225,6 +254,7 @@ export default function NewProperty() {
     newImages.splice(dropIndex, 0, draggedImage)
     newPreviews.splice(dropIndex, 0, draggedPreview)
     
+    // Atualizar os estados
     setImages(newImages)
     setImagePreview(newPreviews)
     setDraggedIndex(null)
@@ -1249,7 +1279,7 @@ export default function NewProperty() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {imagePreview.map((preview, index) => (
                       <div 
-                        key={index} 
+                        key={`image-${index}-${preview.slice(-10)}`} 
                         className={`relative group cursor-move transition-all duration-200 ${
                           draggedIndex === index ? 'opacity-50 scale-95' : 'hover:scale-105'
                         }`}
@@ -1274,8 +1304,8 @@ export default function NewProperty() {
                           ×
                         </button>
                         {index === 0 && (
-                          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded font-medium">
-                            📸 Principal
+                          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded font-medium">
+                            Principal
                           </div>
                         )}
                         {/* Indicador de drag */}
