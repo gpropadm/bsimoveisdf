@@ -459,9 +459,18 @@ export default function NewProperty() {
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        console.error('API Error:', errorData)
-        throw new Error(errorData.details || 'Erro ao criar imóvel')
+        let errorMessage = 'Erro ao criar imóvel'
+        try {
+          const errorData = await response.json()
+          console.error('API Error:', errorData)
+          errorMessage = errorData.details || errorData.error || 'Erro ao criar imóvel'
+        } catch (parseError) {
+          console.error('Error parsing error response:', parseError)
+          const responseText = await response.text()
+          console.error('Raw error response:', responseText)
+          errorMessage = `Erro HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
 
       router.push('/admin/properties')
