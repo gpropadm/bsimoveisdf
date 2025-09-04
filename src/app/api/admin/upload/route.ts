@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,17 +27,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
     }
 
-    // Criar diretório para uploads se não existir
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'properties')
-    console.log('📁 Diretório de upload:', uploadDir)
-    console.log('📁 Diretório existe?', existsSync(uploadDir))
-    
-    if (!existsSync(uploadDir)) {
-      console.log('📁 Criando diretório...')
-      await mkdir(uploadDir, { recursive: true })
-      console.log('✅ Diretório criado')
-    }
-
     const uploadedUrls: string[] = []
 
     for (const file of files) {
@@ -56,24 +42,17 @@ export async function POST(request: NextRequest) {
         }, { status: 400 })
       }
 
-      // Gerar nome único para o arquivo
-      const timestamp = Date.now()
-      const randomId = Math.random().toString(36).substring(2, 15)
-      const fileExtension = file.name.split('.').pop()
-      const fileName = `${timestamp}-${randomId}.${fileExtension}`
-
-      // Converter File para Buffer
+      // Converter File para Base64
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
-
-      // Salvar arquivo
-      const filePath = join(uploadDir, fileName)
-      console.log('💾 Salvando arquivo:', filePath)
-      await writeFile(filePath, buffer)
-      console.log('✅ Arquivo salvo:', fileName)
-
-      // Adicionar URL ao resultado
-      uploadedUrls.push(`/uploads/properties/${fileName}`)
+      const base64 = buffer.toString('base64')
+      const mimeType = file.type
+      
+      // Criar Data URL
+      const dataUrl = `data:${mimeType};base64,${base64}`
+      
+      console.log('💾 Imagem convertida para Base64, tamanho:', base64.length)
+      uploadedUrls.push(dataUrl)
     }
 
     return NextResponse.json({ 
