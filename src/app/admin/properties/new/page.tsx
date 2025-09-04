@@ -51,6 +51,7 @@ export default function NewProperty() {
   const [imagePreview, setImagePreview] = useState<string[]>([])
   const [videoFiles, setVideoFiles] = useState<File[]>([])
   const [videoPreviews, setVideoPreviews] = useState<string[]>([])
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
 
   // Cleanup dos preview URLs quando o componente for desmontado
   useEffect(() => {
@@ -194,6 +195,43 @@ export default function NewProperty() {
     
     setImages(newImages)
     setImagePreview(newPreviews)
+  }
+
+  // Funções para drag and drop das imagens
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    
+    if (draggedIndex === null || draggedIndex === dropIndex) return
+
+    // Reordenar as imagens
+    const newImages = [...images]
+    const newPreviews = [...imagePreview]
+    
+    // Remove o item da posição original
+    const draggedImage = newImages.splice(draggedIndex, 1)[0]
+    const draggedPreview = newPreviews.splice(draggedIndex, 1)[0]
+    
+    // Insere na nova posição
+    newImages.splice(dropIndex, 0, draggedImage)
+    newPreviews.splice(dropIndex, 0, draggedPreview)
+    
+    setImages(newImages)
+    setImagePreview(newPreviews)
+    setDraggedIndex(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
   }
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1206,11 +1244,22 @@ export default function NewProperty() {
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-3">
                     Imagens Selecionadas ({imagePreview.length})
+                    <span className="text-xs text-gray-500 ml-2">• Arraste para reordenar</span>
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {imagePreview.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                      <div 
+                        key={index} 
+                        className={`relative group cursor-move transition-all duration-200 ${
+                          draggedIndex === index ? 'opacity-50 scale-95' : 'hover:scale-105'
+                        }`}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, index)}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-transparent hover:border-blue-300">
                           <img
                             src={preview}
                             alt={`Preview ${index + 1}`}
@@ -1225,15 +1274,22 @@ export default function NewProperty() {
                           ×
                         </button>
                         {index === 0 && (
-                          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                            Principal
+                          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded font-medium">
+                            📸 Principal
                           </div>
                         )}
+                        {/* Indicador de drag */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black bg-opacity-20 rounded-lg">
+                          <div className="text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                            ↕️ Arraste
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    A primeira imagem será usada como foto principal do imóvel
+                    🎯 <strong>Imagem Principal:</strong> A primeira imagem será a foto principal do imóvel.<br/>
+                    🖱️ <strong>Reordenar:</strong> Arraste qualquer imagem para a primeira posição para torná-la principal.
                   </p>
                 </div>
               )}
