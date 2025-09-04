@@ -48,6 +48,10 @@ export async function GET(request: NextRequest) {
         pastures: true,
         buildings: true,
         waterSources: true,
+        // Campos específicos para casas
+        houseType: true,
+        yard: true,
+        garage: true,
         createdAt: true,
       }
     })
@@ -97,7 +101,11 @@ export async function POST(request: NextRequest) {
       cultivatedArea,
       pastures,
       buildings,
-      waterSources
+      waterSources,
+      // Campos específicos para casas
+      houseType,
+      yard,
+      garage
     } = body
 
     // Criar slug a partir do título
@@ -150,6 +158,10 @@ export async function POST(request: NextRequest) {
         pastures: pastures || null,
         buildings: buildings || null,
         waterSources: waterSources || null,
+        // Campos específicos para casas
+        houseType: houseType || null,
+        yard: yard || null,
+        garage: garage || null,
       }
     })
 

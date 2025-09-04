@@ -35,7 +35,11 @@ export default function NewProperty() {
     cultivatedArea: '',
     pastures: '',
     buildings: [] as string[],
-    waterSources: ''
+    waterSources: '',
+    // Campos específicos para casa
+    houseType: '',
+    yard: false,
+    garage: ''
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
@@ -274,6 +278,10 @@ export default function NewProperty() {
           pastures: formData.pastures ? parseFloat(formData.pastures) : null,
           buildings: formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null,
           waterSources: formData.waterSources || null,
+          // Campos específicos para casa
+          houseType: formData.houseType || null,
+          yard: formData.yard || null,
+          garage: formData.garage || null,
           images: JSON.stringify(imageUrls),
           video: videoUrls.length > 0 ? JSON.stringify(videoUrls) : null
         })
@@ -483,72 +491,131 @@ export default function NewProperty() {
             </div>
           </div>
 
-          {/* Características */}
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Características</h3>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quartos
-                  </label>
-                  <input
-                    type="number"
-                    name="bedrooms"
-                    value={formData.bedrooms}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+          {/* Campos específicos para casa */}
+          {formData.category === 'casa' && (
+            <div className="bg-white shadow rounded-lg">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Características da Casa</h3>
+                <p className="text-sm text-gray-500 mt-1">Informações específicas para casas</p>
+              </div>
+              <div className="p-6 space-y-6">
+                {/* Características básicas */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quartos
+                    </label>
+                    <input
+                      type="number"
+                      name="bedrooms"
+                      value={formData.bedrooms}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Banheiros
+                    </label>
+                    <input
+                      type="number"
+                      name="bathrooms"
+                      value={formData.bathrooms}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Vagas de Garagem
+                    </label>
+                    <input
+                      type="number"
+                      name="parking"
+                      value={formData.parking}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Área (m²)
+                    </label>
+                    <input
+                      type="number"
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                      step="0.01"
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Banheiros
-                  </label>
-                  <input
-                    type="number"
-                    name="bathrooms"
-                    value={formData.bathrooms}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+                {/* Características específicas da casa */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tipo de Casa
+                    </label>
+                    <select
+                      name="houseType"
+                      value={formData.houseType}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Selecione o tipo</option>
+                      <option value="terrea">Térrea</option>
+                      <option value="sobrado">Sobrado</option>
+                      <option value="condominio">Condomínio Fechado</option>
+                      <option value="geminada">Geminada</option>
+                      <option value="vila">Vila</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Vagas de Garagem
-                  </label>
-                  <input
-                    type="number"
-                    name="parking"
-                    value={formData.parking}
-                    onChange={handleChange}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tipo de Garagem
+                    </label>
+                    <select
+                      name="garage"
+                      value={formData.garage}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Selecione o tipo</option>
+                      <option value="coberta">Coberta</option>
+                      <option value="descoberta">Descoberta</option>
+                      <option value="fechada">Fechada</option>
+                      <option value="nao-tem">Não tem</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Área (m²)
-                  </label>
-                  <input
-                    type="number"
-                    name="area"
-                    value={formData.area}
-                    onChange={handleChange}
-                    step="0.01"
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+                  <div className="flex items-center">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        name="yard"
+                        checked={formData.yard}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                      />
+                      <span className="text-sm text-gray-700">
+                        Possui quintal
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Campos específicos para apartamento/cobertura */}
           {(formData.category === 'apartamento' || formData.category === 'cobertura') && (

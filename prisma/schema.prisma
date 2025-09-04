@@ -103,6 +103,11 @@ model Property {
   buildings   String?  // JSON string com benfeitorias da fazenda
   waterSources String? // fontes de água (rios, poços, açudes)
   
+  // Campos específicos para casas
+  houseType   String?  // tipo de casa (térrea, sobrado, condomínio)
+  yard        Boolean? // quintal (sim/não)
+  garage      String?  // tipo de garagem (coberta, descoberta, fechada)
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
