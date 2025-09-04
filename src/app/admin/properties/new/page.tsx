@@ -588,7 +588,30 @@ export default function NewProperty() {
                       'Portaria 24h',
                       'Garagem Coberta',
                       'Jardim',
-                      'Área de Lazer'
+                      'Área de Lazer',
+                      'Piscina Aquecida',
+                      'Spa',
+                      'Brinquedoteca',
+                      'Espaço Gourmet',
+                      'Coworking',
+                      'Wifi Gratuito',
+                      'Lavanderia',
+                      'Depósito/Storage',
+                      'Bicicletário',
+                      'Pet Place',
+                      'Salão de Jogos',
+                      'Cinema/Home Theater',
+                      'Quadra de Tênis',
+                      'Beach Tennis',
+                      'Pista de Cooper',
+                      'Espaço Zen/Yoga',
+                      'Horta Comunitária',
+                      'Área para Eventos',
+                      'Gás Central',
+                      'Gerador',
+                      'CFTV',
+                      'Interfone',
+                      'Portão Eletrônico'
                     ].map((amenity) => (
                       <label key={amenity} className="flex items-center">
                         <input
