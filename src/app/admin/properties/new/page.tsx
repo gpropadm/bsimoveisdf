@@ -25,16 +25,16 @@ export default function NewProperty() {
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
-  const [videoFile, setVideoFile] = useState<File | null>(null)
-  const [videoPreview, setVideoPreview] = useState<string>('')
+  const [videoFiles, setVideoFiles] = useState<File[]>([])
+  const [videoPreviews, setVideoPreviews] = useState<string[]>([])
 
   // Cleanup dos preview URLs quando o componente for desmontado
   useEffect(() => {
     return () => {
       imagePreview.forEach(url => URL.revokeObjectURL(url))
-      if (videoPreview) URL.revokeObjectURL(videoPreview)
+      videoPreviews.forEach(url => URL.revokeObjectURL(url))
     }
-  }, [imagePreview, videoPreview])
+  }, [imagePreview, videoPreviews])
 
   // Função para formatar valor monetário
   const formatCurrency = (value: string) => {
@@ -142,11 +142,6 @@ export default function NewProperty() {
         dimensions: `${originalInfo.width}x${originalInfo.height}`
       })
 
-      // Limpar o preview anterior se existir
-      if (videoPreview) {
-        URL.revokeObjectURL(videoPreview)
-      }
-
       // Comprimir vídeo se necessário
       let processedFile = file
       if (file.size > 10 * 1024 * 1024) { // Comprimir se > 10MB
@@ -159,8 +154,9 @@ export default function NewProperty() {
         })
       }
 
-      setVideoFile(processedFile)
-      setVideoPreview(URL.createObjectURL(processedFile))
+      // Adicionar o novo vídeo à lista
+      setVideoFiles(prev => [...prev, processedFile])
+      setVideoPreviews(prev => [...prev, URL.createObjectURL(processedFile)])
       
     } catch (error) {
       console.error('Erro ao processar vídeo:', error)
@@ -168,12 +164,13 @@ export default function NewProperty() {
     }
   }
 
-  const removeVideo = () => {
-    if (videoPreview) {
-      URL.revokeObjectURL(videoPreview)
-    }
-    setVideoFile(null)
-    setVideoPreview('')
+  const removeVideo = (index: number) => {
+    // Limpar URL do preview
+    URL.revokeObjectURL(videoPreviews[index])
+    
+    // Remover vídeo e preview dos arrays
+    setVideoFiles(prev => prev.filter((_, i) => i !== index))
+    setVideoPreviews(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -203,24 +200,26 @@ export default function NewProperty() {
         imageUrls = uploadResult.urls
       }
 
-      // Upload do vídeo se houver
-      let videoUrl: string = ''
+      // Upload dos vídeos se houver
+      let videoUrls: string[] = []
       
-      if (videoFile) {
-        const videoFormData = new FormData()
-        videoFormData.append('video', videoFile)
+      if (videoFiles.length > 0) {
+        for (const videoFile of videoFiles) {
+          const videoFormData = new FormData()
+          videoFormData.append('video', videoFile)
 
-        const videoUploadResponse = await fetch('/api/admin/upload-video', {
-          method: 'POST',
-          body: videoFormData
-        })
+          const videoUploadResponse = await fetch('/api/admin/upload-video', {
+            method: 'POST',
+            body: videoFormData
+          })
 
-        if (!videoUploadResponse.ok) {
-          throw new Error('Erro ao fazer upload do vídeo')
+          if (!videoUploadResponse.ok) {
+            throw new Error('Erro ao fazer upload do vídeo')
+          }
+
+          const videoUploadResult = await videoUploadResponse.json()
+          videoUrls.push(videoUploadResult.url)
         }
-
-        const videoUploadResult = await videoUploadResponse.json()
-        videoUrl = videoUploadResult.url
       }
 
       // Criar o imóvel com as URLs das imagens
@@ -237,7 +236,7 @@ export default function NewProperty() {
           parking: parseInt(formData.parking) || null,
           area: parseFloat(formData.area) || null,
           images: JSON.stringify(imageUrls),
-          video: videoUrl || null
+          video: videoUrls.length > 0 ? JSON.stringify(videoUrls) : null
         })
       })
 
@@ -615,30 +614,37 @@ export default function NewProperty() {
                 </label>
               </div>
 
-              {/* Preview do Vídeo */}
-              {videoPreview && (
+              {/* Preview dos Vídeos */}
+              {videoPreviews.length > 0 && (
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-3">
-                    Vídeo Selecionado
+                    Vídeos Selecionados ({videoPreviews.length})
                   </h4>
-                  <div className="relative max-w-sm">
-                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                      <video
-                        src={videoPreview}
-                        controls
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={removeVideo}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
-                    >
-                      ×
-                    </button>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {videoPreviews.map((preview, index) => (
+                      <div key={index} className="relative">
+                        <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                          <video
+                            src={preview}
+                            controls
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeVideo(index)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                        >
+                          ×
+                        </button>
+                        <p className="text-xs text-gray-500 mt-1 text-center">
+                          Vídeo {index + 1}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    ✅ Vídeo processado e otimizado para web. Será comprimido se necessário.
+                    ✅ Vídeos processados e otimizados para web. Serão comprimidos se necessário.
                   </p>
                 </div>
               )}
