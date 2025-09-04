@@ -6,9 +6,12 @@ import { authOptions } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🎥 Verificando sessão para upload de vídeo...')
     // Verificar autenticação
     const session = await getServerSession(authOptions)
+    console.log('👤 Sessão encontrada:', session ? 'SIM' : 'NÃO')
     if (!session) {
+      console.log('❌ Upload de vídeo bloqueado - sem sessão')
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 

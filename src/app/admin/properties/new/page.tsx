@@ -372,7 +372,9 @@ export default function NewProperty() {
         })
 
         if (!uploadResponse.ok) {
-          throw new Error('Erro ao fazer upload das imagens')
+          const errorData = await uploadResponse.json().catch(() => ({}))
+          console.error('❌ Erro no upload de imagens:', errorData)
+          throw new Error(`Erro ao fazer upload das imagens: ${errorData.error || uploadResponse.statusText}`)
         }
 
         const uploadResult = await uploadResponse.json()
@@ -394,7 +396,9 @@ export default function NewProperty() {
           })
 
           if (!videoUploadResponse.ok) {
-            throw new Error('Erro ao fazer upload do vídeo')
+            const errorData = await videoUploadResponse.json().catch(() => ({}))
+            console.error('❌ Erro no upload de vídeo:', errorData)
+            throw new Error(`Erro ao fazer upload do vídeo: ${errorData.error || videoUploadResponse.statusText}`)
           }
 
           const videoUploadResult = await videoUploadResponse.json()
