@@ -407,12 +407,22 @@ export default function NewProperty() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
+          // Campos básicos
+          title: formData.title,
+          description: formData.description,
           price: parseCurrency(formData.price),
+          type: formData.type,
+          status: formData.status,
+          category: formData.category,
+          cep: formData.cep || null,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
           bedrooms: parseInt(formData.bedrooms) || null,
           bathrooms: parseInt(formData.bathrooms) || null,
           parking: parseInt(formData.parking) || null,
           area: parseFloat(formData.area) || null,
+          featured: formData.featured,
           // Campos específicos para apartamento
           floor: formData.floor ? parseInt(formData.floor) : null,
           condoFee: formData.condoFee ? parseCurrency(formData.condoFee) : null,
@@ -436,6 +446,7 @@ export default function NewProperty() {
           floor_commercial: formData.floor_commercial ? parseInt(formData.floor_commercial) : null,
           businessCenter: formData.businessCenter || null,
           features: formData.features.length > 0 ? JSON.stringify(formData.features) : null,
+          // Mídia
           images: JSON.stringify(imageUrls),
           video: videoUrls.length > 0 ? JSON.stringify(videoUrls) : null
         })
