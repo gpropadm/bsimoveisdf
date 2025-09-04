@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
+
 interface Lead {
   id: string
   name: string

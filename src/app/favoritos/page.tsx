@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useFavorites } from '@/hooks/useFavorites'
 import FavoriteButton from '@/components/FavoriteButton'
+import ShareButton from '@/components/ShareButton'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import { useSettings } from '@/hooks/useSettings'
 import Link from 'next/link'
 
 interface Property {
@@ -23,6 +27,7 @@ interface Property {
 
 export default function FavoritesPage() {
   const { favorites, isLoaded, favoritesCount } = useFavorites()
+  const { settings } = useSettings()
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -63,43 +68,24 @@ export default function FavoritesPage() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Carregando favoritos...</p>
+      <div className="min-h-screen bg-gray-50">
+        <Header settings={settings} />
+        <div className="py-8">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Carregando favoritos...</p>
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link href="/" className="text-2xl font-bold text-black font-display">
-              ImobiNext
-            </Link>
-            <nav className="flex space-x-6">
-              <Link href="/" className="text-gray-800 hover:text-black">Home</Link>
-              <Link href="/imoveis" className="text-gray-800 hover:text-black">Imóveis</Link>
-              <Link href="/venda" className="text-gray-800 hover:text-black">Venda</Link>
-              <Link href="/aluguel" className="text-gray-800 hover:text-black">Aluguel</Link>
-              <Link href="/favoritos" className="text-black font-medium flex items-center gap-1">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-                Favoritos
-              </Link>
-              <Link href="/sobre" className="text-gray-800 hover:text-black">Sobre</Link>
-              <Link href="/contato" className="text-gray-800 hover:text-black">Contato</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-100">
+      <Header settings={settings} />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -163,22 +149,23 @@ export default function FavoritesPage() {
                       alt={property.title}
                       className="w-full h-48 object-cover"
                     />
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 left-3 flex items-center gap-2">
                       <FavoriteButton propertyId={property.id} size="medium" variant="card" />
-                    </div>
-                    <div className="absolute bottom-3 left-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                         property.type === 'venda' 
                           ? 'bg-teal-100 text-teal-800' 
                           : 'bg-orange-100 text-orange-800'
                       }`}>
-                        {property.type === 'venda' ? 'Venda' : 'Aluguel'}
+                        {property.type === 'venda' ? 'V' : 'A'}
                       </span>
+                    </div>
+                    <div className="absolute top-3 right-3">
+                      <ShareButton property={property} />
                     </div>
                   </div>
                 
                 <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
                     {property.title}
                   </h3>
                   
@@ -218,15 +205,13 @@ export default function FavoritesPage() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <p className={`text-2xl font-bold ${
-                      property.type === 'venda' ? 'text-teal-600' : 'text-orange-600'
-                    }`}>
+                    <p className="text-lg font-bold text-gray-700">
                       R$ {property.price.toLocaleString('pt-BR')}
                       {property.type === 'aluguel' && <span className="text-sm font-normal text-gray-500">/mês</span>}
                     </p>
                     <Link 
                       href={`/imovel/${property.slug}`}
-                      className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                      className="border border-gray-400 hover:border-gray-600 text-gray-700 px-4 py-2 rounded-lg transition-colors text-sm font-medium bg-transparent cursor-pointer"
                     >
                       Ver Detalhes
                     </Link>
@@ -239,49 +224,7 @@ export default function FavoritesPage() {
         )}
       </div>
 
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold text-blue-400 mb-4">ImobiNext</h3>
-              <p className="text-gray-400 mb-4">Sua imobiliária de confiança há mais de 10 anos no mercado.</p>
-              <div className="flex space-x-4">
-                <span className="text-2xl">📘</span>
-                <span className="text-2xl">📸</span>
-                <span className="text-2xl">🐦</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Imóveis</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/venda" className="hover:text-white">Venda</Link></li>
-                <li><Link href="/aluguel" className="hover:text-white">Aluguel</Link></li>
-                <li><Link href="/lancamentos" className="hover:text-white">Lançamentos</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Contato</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>📞 (11) 9999-9999</li>
-                <li>📧 contato@imobinext.com</li>
-                <li>📍 Rua dos Imóveis, 123</li>
-                <li>São Paulo, SP</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Horário</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li>Segunda a Sexta: 8h às 18h</li>
-                <li>Sábado: 8h às 12h</li>
-                <li>Domingo: Fechado</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 ImobiNext. Todos os direitos reservados.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import HeroSection from '@/components/HeroSection'
-import FeaturedPropertiesSection from '@/components/FeaturedPropertiesSection'
-import ServicesSection from '@/components/ServicesSection'
+import PropertyStoriesSection from '@/components/PropertyStoriesSection'
+import NewsletterSection from '@/components/NewsletterSection'
 import Footer from '@/components/Footer'
 import CadastrarImovelModal from '@/components/CadastrarImovelModal'
 import EncomendarImovelModal from '@/components/EncomendarImovelModal'
@@ -13,46 +13,61 @@ import { useSettings } from '@/hooks/useSettings'
 
 export default function Home() {
   const [properties, setProperties] = useState<any[]>([])
+  const [filteredProperties, setFilteredProperties] = useState<any[]>([])
   const { settings } = useSettings()
-  const [loading, setLoading] = useState(true)
+  const [propertiesLoading, setPropertiesLoading] = useState(true)
+  const [initialLoad, setInitialLoad] = useState(true)
   
   // Estados dos modais
   const [showCadastroModal, setShowCadastroModal] = useState(false)
   const [showEncomendaModal, setShowEncomendaModal] = useState(false)
   const [showContatoModal, setShowContatoModal] = useState(false)
 
+  const handleFilterChange = (filtered: any[]) => {
+    setFilteredProperties(filtered)
+  }
+
   useEffect(() => {
     const loadProperties = async () => {
       try {
-        // Carregar propriedades
-        const propertiesResponse = await fetch('/api/properties?featured=true')
+        // Pequeno delay para mostrar skeleton (UX melhor)
+        if (initialLoad) {
+          await new Promise(resolve => setTimeout(resolve, 100))
+        }
+        
+        const propertiesResponse = await fetch('/api/properties')
         if (propertiesResponse.ok) {
           const propertiesData = await propertiesResponse.json()
           setProperties(propertiesData || [])
+          setFilteredProperties(propertiesData || [])
         }
       } catch (error) {
         console.error('❌ Erro ao carregar dados:', error)
       } finally {
-        setLoading(false)
+        setPropertiesLoading(false)
+        setInitialLoad(false)
       }
     }
 
     loadProperties()
-  }, [])
+  }, [initialLoad])
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
       <Header settings={settings} />
       
       <main>
-        <HeroSection />
-        <FeaturedPropertiesSection properties={properties} loading={loading} />
-        <ServicesSection 
-          onCadastroClick={() => setShowCadastroModal(true)}
-          onEncomendaClick={() => setShowEncomendaModal(true)}
-          onContatoClick={() => setShowContatoModal(true)}
+        <HeroSection 
+          properties={properties}
+          onFilterChange={handleFilterChange}
+        />
+        <PropertyStoriesSection 
+          properties={filteredProperties} 
+          loading={propertiesLoading} 
         />
       </main>
+
+      <NewsletterSection />
 
       <Footer />
 

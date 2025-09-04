@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/providers/AuthProvider";
-import { ToastProvider } from "@/contexts/ToastContext";
+import Providers from '@/components/Providers';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -50,17 +52,57 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // LocalBusiness structured data
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Faimoveis",
+    "description": "Imobiliária especializada em venda e aluguel de imóveis. Encontre casas, apartamentos e coberturas com os melhores preços da região.",
+    "url": "https://faimoveis.com.br",
+    "logo": "https://faimoveis.com.br/logo.png",
+    "image": "https://faimoveis.com.br/logo.png",
+    "telephone": "+55-48-99864-5864",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "BR",
+      "addressRegion": "SC",
+      "addressLocality": "Florianópolis"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-27.5973",
+      "longitude": "-48.5496"
+    },
+    "openingHours": "Mo-Fr 08:00-18:00, Sa 08:00-12:00",
+    "sameAs": [
+      "https://www.instagram.com/faimoveis",
+      "https://www.facebook.com/faimoveis"
+    ],
+    "areaServed": {
+      "@type": "State",
+      "name": "Santa Catarina"
+    },
+    "serviceType": ["Venda de Imóveis", "Aluguel de Imóveis", "Consultoria Imobiliária"]
+  }
+
   return (
     <html lang="pt-BR">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema),
+          }}
+        />
+      </head>
       <body
-        className={`${montserrat.variable} ${playfairDisplay.variable} antialiased`}
+        className={`${inter.variable} ${poppins.variable} antialiased`}
         suppressHydrationWarning={true}
       >
-        <AuthProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
-        </AuthProvider>
+        <Providers>
+          {children}
+          <WhatsAppButton />
+        </Providers>
       </body>
     </html>
   );

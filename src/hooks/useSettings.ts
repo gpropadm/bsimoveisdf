@@ -40,40 +40,38 @@ export function useSettings() {
 
   const fetchSettings = async () => {
     try {
-      console.log('🔄 Carregando configurações...')
-      const response = await fetch('/api/admin/settings?' + new Date().getTime(), { 
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+      // Usar API pública que não requer autenticação
+      const response = await fetch('/api/settings', { 
+        cache: 'no-store'
       })
+      
       if (response.ok) {
         const data = await response.json()
-        console.log('📥 Configurações recebidas:', data.site)
-        if (data.site) {
+        if (data.settings) {
           const newSettings = {
-            contactPhone: data.site.contactPhone || DEFAULT_SETTINGS.contactPhone,
-            contactEmail: data.site.contactEmail || DEFAULT_SETTINGS.contactEmail,
-            contactWhatsapp: data.site.contactWhatsapp || DEFAULT_SETTINGS.contactWhatsapp,
-            city: data.site.city || DEFAULT_SETTINGS.city,
-            state: data.site.state || DEFAULT_SETTINGS.state,
-            socialFacebook: data.site.socialFacebook || DEFAULT_SETTINGS.socialFacebook,
-            socialInstagram: data.site.socialInstagram || DEFAULT_SETTINGS.socialInstagram,
-            siteName: data.site.siteName || DEFAULT_SETTINGS.siteName,
-            featuredLimit: data.site.featuredLimit || DEFAULT_SETTINGS.featuredLimit,
-            siteDescription: data.site.siteDescription || DEFAULT_SETTINGS.siteDescription,
-            address: data.site.address || DEFAULT_SETTINGS.address,
-            enableRegistrations: data.site.enableRegistrations ?? DEFAULT_SETTINGS.enableRegistrations,
-            enableComments: data.site.enableComments ?? DEFAULT_SETTINGS.enableComments
+            contactPhone: data.settings.contactPhone || DEFAULT_SETTINGS.contactPhone,
+            contactEmail: data.settings.contactEmail || DEFAULT_SETTINGS.contactEmail,
+            contactWhatsapp: data.settings.contactWhatsapp || DEFAULT_SETTINGS.contactWhatsapp,
+            city: data.settings.city || DEFAULT_SETTINGS.city,
+            state: data.settings.state || DEFAULT_SETTINGS.state,
+            socialFacebook: data.settings.socialFacebook || DEFAULT_SETTINGS.socialFacebook,
+            socialInstagram: data.settings.socialInstagram || DEFAULT_SETTINGS.socialInstagram,
+            siteName: data.settings.siteName || DEFAULT_SETTINGS.siteName,
+            featuredLimit: data.settings.featuredLimit || DEFAULT_SETTINGS.featuredLimit,
+            siteDescription: data.settings.siteDescription || DEFAULT_SETTINGS.siteDescription,
+            address: data.settings.address || DEFAULT_SETTINGS.address,
+            enableRegistrations: data.settings.enableRegistrations ?? DEFAULT_SETTINGS.enableRegistrations,
+            enableComments: data.settings.enableComments ?? DEFAULT_SETTINGS.enableComments
           }
-          console.log('✅ Configurações atualizadas:', newSettings)
           setSettings(newSettings)
         }
+      } else {
+        console.log('Using default settings (API not available)')
+        setSettings(DEFAULT_SETTINGS)
       }
     } catch (error) {
-      console.error('Erro ao buscar configurações:', error)
+      console.log('Using default settings due to error:', error)
+      setSettings(DEFAULT_SETTINGS)
     } finally {
       setLoading(false)
     }
@@ -87,30 +85,15 @@ export function useSettings() {
   useEffect(() => {
     fetchSettings()
 
-    // Verificar mudanças a cada 30 segundos quando a página está ativa
-    const interval = setInterval(() => {
-      if (!document.hidden) {
-        fetchSettings()
-      }
-    }, 30000)
-
-    // Escutar eventos de foco na janela para recarregar configurações
-    const handleFocus = () => {
-      fetchSettings()
-    }
-
-    // Escutar evento customizado para reload imediato das configurações
+    // Apenas escutar evento customizado para reload imediato das configurações
     const handleSettingsUpdate = () => {
       console.log('🔔 Evento settings-updated recebido! Atualizando configurações...')
       fetchSettings()
     }
 
-    window.addEventListener('focus', handleFocus)
     window.addEventListener('settings-updated', handleSettingsUpdate)
 
     return () => {
-      clearInterval(interval)
-      window.removeEventListener('focus', handleFocus)
       window.removeEventListener('settings-updated', handleSettingsUpdate)
     }
   }, [])

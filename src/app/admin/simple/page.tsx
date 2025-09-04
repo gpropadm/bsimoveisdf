@@ -6,6 +6,9 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
+
 export default function SimpleAdminDashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()

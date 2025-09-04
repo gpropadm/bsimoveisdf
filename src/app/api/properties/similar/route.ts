@@ -10,25 +10,40 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type')
     const exclude = searchParams.get('exclude') // ID do imóvel atual para excluir
 
-    if (!city || !minPrice || !maxPrice || !type) {
+    if (!city) {
       return NextResponse.json(
-        { error: 'Parâmetros obrigatórios: city, minPrice, maxPrice, type' },
+        { error: 'Parâmetro obrigatório: city' },
         { status: 400 }
       )
     }
 
+    // Construir filtros dinamicamente
+    const whereClause: any = {
+      city: city,
+      status: 'disponivel'
+    }
+
+    // Adicionar filtro de tipo se fornecido e válido
+    if (type && type !== 'undefined') {
+      whereClause.type = type
+    }
+
+    // Adicionar filtro de preço se fornecido e válido
+    if (minPrice && !isNaN(parseFloat(minPrice)) && maxPrice && !isNaN(parseFloat(maxPrice))) {
+      whereClause.price = {
+        gte: parseFloat(minPrice),
+        lte: parseFloat(maxPrice)
+      }
+    }
+
+    // Excluir o imóvel atual se fornecido
+    if (exclude && exclude !== 'undefined') {
+      whereClause.id = { not: exclude }
+    }
+
     // Buscar imóveis similares
     const properties = await prisma.property.findMany({
-      where: {
-        city: city, // SQLite é case sensitive, mas vamos usar exato
-        type: type,
-        price: {
-          gte: parseFloat(minPrice),
-          lte: parseFloat(maxPrice)
-        },
-        // Excluir o imóvel atual
-        ...(exclude && { id: { not: exclude } })
-      },
+      where: whereClause,
       orderBy: [
         { featured: 'desc' }, // Priorizar imóveis em destaque
         { createdAt: 'desc' }  // Depois por data de criação

@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
       title: property.title,
       slug: property.slug,
       type: property.type,
+      category: property.category,
       price: property.price,
       city: property.city,
       neighborhood: property.city,

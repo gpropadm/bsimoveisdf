@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
+
 interface SiteSettings {
   siteName: string
   siteDescription: string

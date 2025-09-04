@@ -6,6 +6,9 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
+
 interface Property {
   id: string
   title: string
@@ -38,7 +41,9 @@ export default function EditProperty() {
   const [uploading, setUploading] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [images, setImages] = useState<string[]>([])
+  const [videos, setVideos] = useState<string[]>([])
   const [dragActive, setDragActive] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState<number | null>(null)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -79,6 +84,24 @@ export default function EditProperty() {
       const data = await response.json()
       setProperty(data)
       setImages(data.images ? JSON.parse(data.images) : [])
+      
+      // Parse videos from database
+      const parseVideos = (videoData: string) => {
+        console.log('🎬 Dados de vídeo do banco:', videoData)
+        if (!videoData) return [''] // Start with one empty video
+        try {
+          const parsed = JSON.parse(videoData)
+          console.log('🎬 Vídeos parseados:', parsed)
+          return Array.isArray(parsed) ? parsed : [videoData]
+        } catch {
+          console.log('🎬 Falha no parse, usando string única:', videoData)
+          return videoData ? [videoData] : ['']
+        }
+      }
+      const parsedVideos = parseVideos(data.video || '')
+      console.log('🎬 Vídeos inicializados:', parsedVideos)
+      setVideos(parsedVideos)
+      
       setFormData({
         title: data.title,
         description: data.description,
@@ -109,6 +132,9 @@ export default function EditProperty() {
     e.preventDefault()
     setSaving(true)
 
+    console.log('🎬 Vídeos antes do salvamento:', videos)
+    console.log('🎬 Vídeos filtrados:', videos.filter(v => v.trim()))
+
     try {
       const response = await fetch(`/api/admin/properties/${propertyId}`, {
         method: 'PUT',
@@ -122,7 +148,7 @@ export default function EditProperty() {
           bathrooms: parseInt(formData.bathrooms),
           parking: parseInt(formData.parking),
           area: parseFloat(formData.area),
-          video: formData.video || null,
+          video: videos.filter(v => v.trim()).length > 0 ? JSON.stringify(videos.filter(v => v.trim())) : null,
           images: JSON.stringify(images)
         })
       })
@@ -245,6 +271,55 @@ export default function EditProperty() {
       newImages.splice(toIndex, 0, removed)
       return newImages
     })
+  }
+
+  // Funções para gerenciar vídeos
+  const addVideo = () => {
+    setVideos(prev => [...prev, ''])
+  }
+
+  const removeVideo = (index: number) => {
+    setVideos(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const updateVideo = (index: number, url: string) => {
+    setVideos(prev => prev.map((video, i) => i === index ? url : video))
+  }
+
+  const moveVideo = (fromIndex: number, toIndex: number) => {
+    setVideos(prev => {
+      const newVideos = [...prev]
+      const [removed] = newVideos.splice(fromIndex, 1)
+      newVideos.splice(toIndex, 0, removed)
+      return newVideos
+    })
+  }
+
+  const handleVideoUpload = async (file: File, index: number) => {
+    if (!file) return
+    
+    setUploadingVideo(index)
+    try {
+      const formData = new FormData()
+      formData.append('video', file)
+      
+      const response = await fetch('/api/admin/upload-video', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (!response.ok) {
+        throw new Error('Erro no upload')
+      }
+      
+      const data = await response.json()
+      updateVideo(index, data.url)
+    } catch (error) {
+      console.error('Erro no upload:', error)
+      alert('Erro ao fazer upload do vídeo. Tente novamente.')
+    } finally {
+      setUploadingVideo(null)
+    }
   }
 
   if (status === 'loading' || loading) {
@@ -774,68 +849,175 @@ export default function EditProperty() {
               </div>
             </div>
 
-            {/* Vídeo */}
+            {/* Vídeos */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Vídeo do Imóvel</h3>
-                <p className="text-sm text-gray-600 mt-1">Adicione um vídeo do YouTube para mostrar o imóvel</p>
+                <h3 className="text-lg font-semibold text-gray-900">Vídeos do Imóvel</h3>
+                <p className="text-sm text-gray-600 mt-1">Adicione vídeos para criar stories do imóvel</p>
               </div>
               
               <div className="p-6">
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      URL do Vídeo (YouTube)
-                    </label>
-                    <input
-                      type="url"
-                      name="video"
-                      value={formData.video}
-                      onChange={handleChange}
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Cole o link do YouTube do vídeo do imóvel. Exemplo: https://www.youtube.com/watch?v=abc123
-                    </p>
-                  </div>
-                  
-                  {/* Preview do vídeo */}
-                  {formData.video && (
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Prévia do Vídeo
-                      </label>
-                      <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                        {(() => {
-                          const videoId = extractYouTubeId(formData.video)
-                          if (videoId && videoId !== formData.video) {
-                            return (
-                              <iframe
-                                src={`https://www.youtube.com/embed/${videoId}`}
-                                className="w-full h-full border-0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title="Vídeo do Imóvel"
-                              />
-                            )
-                          } else {
-                            return (
-                              <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                <div className="text-center">
-                                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-2">
-                                    <polygon points="23 7 16 12 23 17 23 7"/>
-                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                                  </svg>
-                                  <p className="text-sm">URL inválida ou não é do YouTube</p>
-                                </div>
-                              </div>
-                            )
-                          }
-                        })()}
+                  {videos.map((video, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Vídeo {index + 1} {index === 0 && <span className="text-blue-600">(Principal)</span>}
+                        </label>
+                        <div className="flex items-center space-x-2">
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => moveVideo(index, index - 1)}
+                              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center"
+                              title="Mover para cima"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="18,15 12,9 6,15"/>
+                              </svg>
+                            </button>
+                          )}
+                          {index < videos.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => moveVideo(index, index + 1)}
+                              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center"
+                              title="Mover para baixo"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="6,9 12,15 18,9"/>
+                              </svg>
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeVideo(index)}
+                            className="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-full flex items-center justify-center"
+                            title="Remover vídeo"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M18 6L6 18"/>
+                              <path d="M6 6l12 12"/>
+                            </svg>
+                          </button>
+                        </div>
                       </div>
+                      
+                      <div className="flex gap-2">
+                        <input
+                          type="url"
+                          value={video}
+                          onChange={(e) => updateVideo(index, e.target.value)}
+                          placeholder="Cole a URL do vídeo aqui (YouTube, MP4, etc.)"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <div className="relative">
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0], index)}
+                            className="hidden"
+                            id={`video-upload-${index}`}
+                            disabled={uploadingVideo === index}
+                          />
+                          <label
+                            htmlFor={`video-upload-${index}`}
+                            className={`cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                              uploadingVideo === index ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
+                            title="Upload de arquivo de vídeo"
+                          >
+                            {uploadingVideo === index ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                              </svg>
+                            )}
+                            <span className="ml-1">
+                              {uploadingVideo === index ? 'Enviando...' : 'Upload'}
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Cole uma URL ou faça upload de um arquivo de vídeo (máx. 50MB)
+                      </p>
+                      
+                      {/* Preview do vídeo */}
+                      {video && (
+                        <div className="mt-3">
+                          <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                            {(() => {
+                              const videoId = extractYouTubeId(video)
+                              if (videoId && videoId !== video) {
+                                return (
+                                  <iframe
+                                    src={`https://www.youtube.com/embed/${videoId}`}
+                                    className="w-full h-full border-0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={`Vídeo ${index + 1}`}
+                                  />
+                                )
+                              } else if (video.includes('.mp4') || video.includes('.mov') || video.includes('.webm')) {
+                                return (
+                                  <video
+                                    src={video}
+                                    className="w-full h-full object-cover"
+                                    controls
+                                    title={`Vídeo ${index + 1}`}
+                                  />
+                                )
+                              } else {
+                                return (
+                                  <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                    <div className="text-center">
+                                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-2">
+                                        <polygon points="23 7 16 12 23 17 23 7"/>
+                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                      </svg>
+                                      <p className="text-sm">Aguardando URL válida</p>
+                                    </div>
+                                  </div>
+                                )
+                              }
+                            })()}
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  ))}
+                  
+                  <button
+                    type="button"
+                    onClick={addVideo}
+                    className="w-full border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-lg p-4 text-center text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    <div className="flex items-center justify-center space-x-2">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                      </svg>
+                      <span>Adicionar Vídeo</span>
+                    </div>
+                  </button>
+                  
+                  {videos.length === 0 && (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      Nenhum vídeo adicionado. Clique no botão acima para adicionar o primeiro vídeo.
+                    </p>
                   )}
+                  
+                  <div className="text-xs text-gray-500 space-y-1">
+                    <p>• <strong>URLs:</strong> Suporte a YouTube, links diretos MP4/MOV/WebM</p>
+                    <p>• <strong>Upload:</strong> Faça upload de arquivos até 50MB</p>
+                    <p>• <strong>Stories:</strong> O primeiro vídeo será o principal no modal</p>
+                    <p>• <strong>Organização:</strong> Use as setas para reordenar os vídeos</p>
+                  </div>
                 </div>
               </div>
             </div>

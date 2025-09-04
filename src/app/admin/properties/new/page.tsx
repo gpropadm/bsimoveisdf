@@ -25,13 +25,16 @@ export default function NewProperty() {
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [videoPreview, setVideoPreview] = useState<string>('')
 
   // Cleanup dos preview URLs quando o componente for desmontado
   useEffect(() => {
     return () => {
       imagePreview.forEach(url => URL.revokeObjectURL(url))
+      if (videoPreview) URL.revokeObjectURL(videoPreview)
     }
-  }, [imagePreview])
+  }, [imagePreview, videoPreview])
 
   // Função para formatar valor monetário
   const formatCurrency = (value: string) => {
@@ -104,6 +107,75 @@ export default function NewProperty() {
     setImagePreview(newPreviews)
   }
 
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Verificar se é um arquivo de vídeo
+    if (!file.type.startsWith('video/')) {
+      alert('Por favor, selecione apenas arquivos de vídeo.')
+      return
+    }
+
+    // Verificar tamanho inicial (máximo 100MB para upload)
+    if (file.size > 100 * 1024 * 1024) {
+      alert('O vídeo deve ter no máximo 100MB para upload.')
+      return
+    }
+
+    try {
+      // Importar utilitários de vídeo dinamicamente
+      const { validateShortsVideo, compressVideo, getVideoInfo } = await import('@/lib/videoUtils')
+      
+      // Validar se é adequado para shorts
+      const validation = await validateShortsVideo(file)
+      if (!validation.valid) {
+        alert(`Problemas encontrados:\n\n${validation.issues.join('\n')}`)
+        return
+      }
+
+      // Mostrar informações do vídeo original
+      const originalInfo = await getVideoInfo(file)
+      console.log('📹 Vídeo original:', {
+        duration: `${Math.round(originalInfo.duration)}s`,
+        size: `${(originalInfo.size / 1024 / 1024).toFixed(2)}MB`,
+        dimensions: `${originalInfo.width}x${originalInfo.height}`
+      })
+
+      // Limpar o preview anterior se existir
+      if (videoPreview) {
+        URL.revokeObjectURL(videoPreview)
+      }
+
+      // Comprimir vídeo se necessário
+      let processedFile = file
+      if (file.size > 10 * 1024 * 1024) { // Comprimir se > 10MB
+        console.log('🔄 Comprimindo vídeo...')
+        processedFile = await compressVideo(file, {
+          quality: 0.8,
+          maxWidth: 720,
+          maxHeight: 1280,
+          maxSizeMB: 10
+        })
+      }
+
+      setVideoFile(processedFile)
+      setVideoPreview(URL.createObjectURL(processedFile))
+      
+    } catch (error) {
+      console.error('Erro ao processar vídeo:', error)
+      alert('Erro ao processar o vídeo. Tente novamente com um arquivo diferente.')
+    }
+  }
+
+  const removeVideo = () => {
+    if (videoPreview) {
+      URL.revokeObjectURL(videoPreview)
+    }
+    setVideoFile(null)
+    setVideoPreview('')
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -131,6 +203,26 @@ export default function NewProperty() {
         imageUrls = uploadResult.urls
       }
 
+      // Upload do vídeo se houver
+      let videoUrl: string = ''
+      
+      if (videoFile) {
+        const videoFormData = new FormData()
+        videoFormData.append('video', videoFile)
+
+        const videoUploadResponse = await fetch('/api/admin/upload-video', {
+          method: 'POST',
+          body: videoFormData
+        })
+
+        if (!videoUploadResponse.ok) {
+          throw new Error('Erro ao fazer upload do vídeo')
+        }
+
+        const videoUploadResult = await videoUploadResponse.json()
+        videoUrl = videoUploadResult.url
+      }
+
       // Criar o imóvel com as URLs das imagens
       const response = await fetch('/api/admin/properties', {
         method: 'POST',
@@ -144,7 +236,8 @@ export default function NewProperty() {
           bathrooms: parseInt(formData.bathrooms) || null,
           parking: parseInt(formData.parking) || null,
           area: parseFloat(formData.area) || null,
-          images: JSON.stringify(imageUrls)
+          images: JSON.stringify(imageUrls),
+          video: videoUrl || null
         })
       })
 
@@ -484,6 +577,68 @@ export default function NewProperty() {
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
                     A primeira imagem será usada como foto principal do imóvel
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Upload de Vídeo */}
+          <div className="bg-white shadow rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">Vídeo Shorts do Imóvel</h3>
+              <p className="text-sm text-gray-500 mt-1">Adicione um vídeo vertical de até 60 segundos (formato shorts - máx 100MB)</p>
+            </div>
+            <div className="p-6">
+              {/* Upload Area */}
+              <div className="mb-6">
+                <label className="block">
+                  <input
+                    type="file"
+                    accept="video/mp4,video/webm,video/mov"
+                    onChange={handleVideoUpload}
+                    className="hidden"
+                  />
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium text-blue-600 hover:text-blue-500">Clique para fazer upload</span> ou arraste o vídeo aqui
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Formatos: MP4, WebM, MOV • Vertical • Máx 60s • Até 100MB
+                      </p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              {/* Preview do Vídeo */}
+              {videoPreview && (
+                <div>
+                  <h4 className="text-sm font-medium text-gray-900 mb-3">
+                    Vídeo Selecionado
+                  </h4>
+                  <div className="relative max-w-sm">
+                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                      <video
+                        src={videoPreview}
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeVideo}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    ✅ Vídeo processado e otimizado para web. Será comprimido se necessário.
                   </p>
                 </div>
               )}

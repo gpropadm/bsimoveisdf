@@ -63,6 +63,9 @@ export async function PUT(
       images
     } = body
 
+    console.log('🎬 Dados de vídeo recebidos na API:', video)
+    console.log('🎬 Tipo do dado de vídeo:', typeof video)
+
     // Verificar se o imóvel existe
     const { id } = await params
     const existingProperty = await prisma.property.findUnique({

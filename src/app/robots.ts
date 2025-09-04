@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: ['/admin/', '/api/', '/test/', '/setup-admin/', '/test-login-direct/', '/test-appointments/', '/test-loft-carousel/'],
     },
-    sitemap: 'https://imobinext.com.br/sitemap.xml',
+    sitemap: `${process.env.NEXTAUTH_URL || 'https://faimoveis.com.br'}/sitemap.xml`,
   }
 }

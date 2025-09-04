@@ -1,6 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import PropertyCard from './PropertyCard'
+import PropertyVideoModal from './PropertyVideoModal'
 
 interface Property {
   id: string
@@ -16,6 +18,7 @@ interface Property {
   parking?: number
   area?: number
   images?: string[]
+  video?: string
 }
 
 interface FeaturedPropertiesSectionProps {
@@ -24,6 +27,18 @@ interface FeaturedPropertiesSectionProps {
 }
 
 export default function FeaturedPropertiesSection({ properties, loading }: FeaturedPropertiesSectionProps) {
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOpenVideo = (property: Property) => {
+    setSelectedProperty(property)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProperty(null)
+  }
   return (
     <section className="py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,11 +67,18 @@ export default function FeaturedPropertiesSection({ properties, loading }: Featu
             ))
           ) : (
             properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard key={property.id} property={property} onOpenVideo={handleOpenVideo} />
             ))
           )}
         </div>
       </div>
+
+      {/* Video Modal */}
+      <PropertyVideoModal 
+        property={selectedProperty}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </section>
   )
 }

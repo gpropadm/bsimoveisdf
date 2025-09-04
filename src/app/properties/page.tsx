@@ -81,7 +81,7 @@ export default async function Properties() {
                 <div className="mt-4">
                   <Link 
                     href={`/properties/${property.id}`}
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center block"
+                    className="w-full border border-gray-400 hover:border-gray-600 text-gray-700 py-2 px-4 rounded-lg transition-colors text-center block bg-transparent cursor-pointer"
                   >
                     Ver detalhes
                   </Link>

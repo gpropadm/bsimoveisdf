@@ -3,13 +3,12 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import dynamic from 'next/dynamic'
+import AdminDashboard from '../../components/AdminDashboard'
 
-const AdminDashboardContent = dynamic(() => import('../../components/AdminDashboardContent'), {
-  ssr: false
-})
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
 
-export default function AdminDashboard() {
+export default function AdminPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
@@ -37,8 +36,16 @@ export default function AdminDashboard() {
     )
   }
 
-  if (!session) return null
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 text-lg">Acesso negado</p>
+        </div>
+      </div>
+    )
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <AdminDashboardContent session={session as any} />
+  return <AdminDashboard session={session as any} />
 }

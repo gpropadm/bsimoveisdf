@@ -5,6 +5,9 @@ import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
+// Force dynamic rendering for admin pages
+export const dynamic = 'force-dynamic'
+
 interface PropertySubmission {
   id: string
   ownerName: string

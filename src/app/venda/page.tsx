@@ -8,6 +8,9 @@ import Footer from '@/components/Footer'
 import FavoriteButton from '@/components/FavoriteButton'
 import { useSettings } from '@/hooks/useSettings'
 
+// Force dynamic rendering for pages that use useSearchParams
+export const dynamic = 'force-dynamic'
+
 interface Property {
   id: string
   title: string
@@ -392,12 +395,10 @@ export default function VendaPage() {
                               alt={property.title}
                               className="w-full h-full object-cover"
                             />
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute top-3 left-3 flex items-center gap-2">
                               <FavoriteButton propertyId={property.id} propertyTitle={property.title} size="small" variant="card" />
-                            </div>
-                            <div className="absolute bottom-3 left-3">
                               <span className="bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-xs font-semibold">
-                                Venda
+                                V
                               </span>
                             </div>
                             {property.featured && (
@@ -478,12 +479,10 @@ export default function VendaPage() {
                             alt={property.title}
                             className="w-full h-48 object-cover"
                           />
-                          <div className="absolute top-3 right-3">
+                          <div className="absolute top-3 left-3 flex items-center gap-2">
                             <FavoriteButton propertyId={property.id} propertyTitle={property.title} size="small" variant="card" />
-                          </div>
-                          <div className="absolute bottom-3 left-3">
                             <span className="bg-teal-100 text-teal-800 px-2 py-1 rounded-full text-xs font-semibold">
-                              Venda
+                              V
                             </span>
                           </div>
                           {property.featured && (
