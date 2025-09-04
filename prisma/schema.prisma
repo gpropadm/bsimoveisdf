@@ -91,6 +91,18 @@ model Property {
   condoFee    Float?   // valor do condomínio
   amenities   String?  // JSON string com comodidades do condomínio
   
+  // Campos específicos para terrenos
+  zoning      String?  // zoneamento (residencial, comercial, industrial)
+  slope       String?  // topografia (plano, aclive, declive)
+  frontage    Float?   // frente do terreno (metros)
+  
+  // Campos específicos para fazendas
+  totalArea   Float?   // área total da fazenda (hectares)
+  cultivatedArea Float? // área cultivada (hectares)
+  pastures    Float?   // área de pastagens (hectares)
+  buildings   String?  // JSON string com benfeitorias da fazenda
+  waterSources String? // fontes de água (rios, poços, açudes)
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

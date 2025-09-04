@@ -38,6 +38,16 @@ export async function GET(request: NextRequest) {
         floor: true,
         condoFee: true,
         amenities: true,
+        // Campos específicos para terrenos
+        zoning: true,
+        slope: true,
+        frontage: true,
+        // Campos específicos para fazendas
+        totalArea: true,
+        cultivatedArea: true,
+        pastures: true,
+        buildings: true,
+        waterSources: true,
         createdAt: true,
       }
     })
@@ -77,7 +87,17 @@ export async function POST(request: NextRequest) {
       // Campos específicos para apartamentos
       floor,
       condoFee,
-      amenities
+      amenities,
+      // Campos específicos para terrenos
+      zoning,
+      slope,
+      frontage,
+      // Campos específicos para fazendas
+      totalArea,
+      cultivatedArea,
+      pastures,
+      buildings,
+      waterSources
     } = body
 
     // Criar slug a partir do título
@@ -120,6 +140,16 @@ export async function POST(request: NextRequest) {
         floor: floor || null,
         condoFee: condoFee || null,
         amenities: amenities || null,
+        // Campos específicos para terrenos
+        zoning: zoning || null,
+        slope: slope || null,
+        frontage: frontage || null,
+        // Campos específicos para fazendas
+        totalArea: totalArea || null,
+        cultivatedArea: cultivatedArea || null,
+        pastures: pastures || null,
+        buildings: buildings || null,
+        waterSources: waterSources || null,
       }
     })
 
