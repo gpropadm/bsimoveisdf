@@ -176,8 +176,8 @@ export default function NewProperty() {
     const files = Array.from(e.target.files || [])
     if (files.length === 0) return
 
-    // Limitar a 10 imagens
-    const newImages = [...images, ...files].slice(0, 10)
+    // Adicionar todas as imagens sem limitação
+    const newImages = [...images, ...files]
     setImages(newImages)
 
     // Criar previews
@@ -1172,7 +1172,7 @@ export default function NewProperty() {
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-medium text-gray-900">Imagens do Imóvel</h3>
-              <p className="text-sm text-gray-500 mt-1">Adicione até 10 imagens (JPEG, PNG - máx 5MB cada)</p>
+              <p className="text-sm text-gray-500 mt-1">Adicione quantas imagens quiser (JPEG, PNG - máx 5MB cada)</p>
             </div>
             <div className="p-6">
               {/* Upload Area */}
@@ -1205,7 +1205,7 @@ export default function NewProperty() {
               {imagePreview.length > 0 && (
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-3">
-                    Imagens Selecionadas ({imagePreview.length}/10)
+                    Imagens Selecionadas ({imagePreview.length})
                   </h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {imagePreview.map((preview, index) => (
