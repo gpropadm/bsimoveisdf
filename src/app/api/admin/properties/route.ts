@@ -186,6 +186,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(property, { status: 201 })
   } catch (error) {
     console.error('Error creating property:', error)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
+    return NextResponse.json({ 
+      error: 'Internal Server Error',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
   }
 }

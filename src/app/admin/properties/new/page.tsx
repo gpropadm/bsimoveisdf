@@ -453,13 +453,16 @@ export default function NewProperty() {
       })
 
       if (!response.ok) {
-        throw new Error('Erro ao criar imóvel')
+        const errorData = await response.json()
+        console.error('API Error:', errorData)
+        throw new Error(errorData.details || 'Erro ao criar imóvel')
       }
 
       router.push('/admin/properties')
     } catch (error) {
       console.error('Erro ao criar imóvel:', error)
-      alert('Erro ao criar imóvel. Tente novamente.')
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      alert(`Erro ao criar imóvel: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
