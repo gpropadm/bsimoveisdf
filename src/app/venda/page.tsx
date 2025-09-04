@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Header from '@/components/Header'
@@ -49,7 +49,7 @@ interface Settings {
   socialInstagram: string
 }
 
-export default function VendaPage() {
+function VendaPageContent() {
   const [properties, setProperties] = useState<Property[]>([])
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
@@ -560,5 +560,20 @@ export default function VendaPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function VendaPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Carregando imóveis...</p>
+        </div>
+      </div>
+    }>
+      <VendaPageContent />
+    </Suspense>
   )
 }
