@@ -12,7 +12,10 @@ export const authOptions = {
         password: { label: 'Senha', type: 'password' }
       },
       async authorize(credentials) {
+        console.log('🔐 Tentativa de login:', { email: credentials?.email, hasPassword: !!credentials?.password });
+        
         if (!credentials?.email || !credentials?.password) {
+          console.log('❌ Credenciais faltando');
           return null
         }
 
@@ -26,18 +29,24 @@ export const authOptions = {
             where: { email: credentials.email }
           })
 
+          console.log('👤 Usuário encontrado:', { found: !!user, email: user?.email });
+
           await prisma.$disconnect()
 
           if (!user || !user.password) {
+            console.log('❌ Usuário ou senha não encontrados');
             return null
           }
 
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+          console.log('🔑 Senha válida:', isPasswordValid);
 
           if (!isPasswordValid) {
+            console.log('❌ Senha inválida');
             return null
           }
 
+          console.log('✅ Login bem-sucedido');
           return {
             id: user.id,
             email: user.email,
@@ -45,7 +54,7 @@ export const authOptions = {
             role: user.role,
           }
         } catch (error) {
-          console.error('Auth error:', error)
+          console.error('❌ Auth error:', error)
           return null
         }
       }

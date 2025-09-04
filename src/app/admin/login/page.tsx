@@ -22,6 +22,8 @@ export default function AdminLogin() {
     setLoading(true)
     setError('')
 
+    console.log('🔐 Tentando fazer login:', { email, hasPassword: !!password });
+
     try {
       const result = await signIn('credentials', {
         email,
@@ -29,12 +31,17 @@ export default function AdminLogin() {
         redirect: false,
       })
 
+      console.log('🔐 Resultado do signIn:', result);
+
       if (result?.error) {
+        console.log('❌ Erro no signIn:', result.error);
         setError('Email ou senha inválidos')
       } else {
+        console.log('✅ Login bem-sucedido, redirecionando...');
         router.push('/admin')
       }
-    } catch {
+    } catch (error) {
+      console.log('❌ Exceção no login:', error);
       setError('Erro ao fazer login. Tente novamente.')
     } finally {
       setLoading(false)
