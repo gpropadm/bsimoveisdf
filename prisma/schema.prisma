@@ -75,6 +75,7 @@ model Property {
   type        String   // "venda" or "aluguel"
   status      String   @default("disponivel") // "disponivel", "vendido", "alugado"
   category    String   // "casa", "apartamento", "cobertura", etc.
+  cep         String?  // CEP do imóvel
   address     String
   city        String
   state       String

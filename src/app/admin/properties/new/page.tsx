@@ -14,6 +14,7 @@ export default function NewProperty() {
     type: 'venda',
     status: 'disponivel',
     category: 'apartamento',
+    cep: '',
     address: '',
     city: '',
     state: '',
@@ -83,6 +84,54 @@ export default function NewProperty() {
     return numbers ? parseFloat(numbers) / 100 : 0
   }
 
+  // Função para formatar CEP
+  const formatCep = (value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '')
+    
+    // Se não há números, retorna vazio
+    if (!numbers) return ''
+    
+    // Aplica a máscara 00000-000
+    if (numbers.length <= 5) {
+      return numbers
+    } else {
+      return numbers.slice(0, 5) + '-' + numbers.slice(5, 8)
+    }
+  }
+
+  // Função para buscar endereço pelo CEP
+  const fetchAddressByCep = async (cep: string) => {
+    // Remove formatação do CEP
+    const cleanCep = cep.replace(/\D/g, '')
+    
+    if (cleanCep.length !== 8) return
+    
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
+      if (!response.ok) throw new Error('CEP not found')
+      
+      const data = await response.json()
+      
+      if (data.erro) {
+        alert('CEP não encontrado!')
+        return
+      }
+      
+      // Preenche os campos automaticamente
+      setFormData(prev => ({
+        ...prev,
+        address: data.logradouro || '',
+        city: data.localidade || '',
+        state: data.uf || ''
+      }))
+      
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error)
+      alert('Erro ao buscar CEP. Verifique se o CEP está correto.')
+    }
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
     
@@ -103,6 +152,23 @@ export default function NewProperty() {
         ...prev,
         [name]: value
       }))
+    }
+  }
+
+  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    const formattedCep = formatCep(value)
+    
+    // Atualiza o campo CEP com formatação
+    setFormData(prev => ({
+      ...prev,
+      cep: formattedCep
+    }))
+    
+    // Se o CEP tem 8 dígitos, busca o endereço
+    const cleanCep = value.replace(/\D/g, '')
+    if (cleanCep.length === 8) {
+      fetchAddressByCep(formattedCep)
     }
   }
 
@@ -451,6 +517,22 @@ export default function NewProperty() {
               <h3 className="text-lg font-medium text-gray-900">Localização</h3>
             </div>
             <div className="p-6 space-y-6">
+              {/* Campo CEP */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CEP
+                </label>
+                <input
+                  type="text"
+                  name="cep"
+                  value={formData.cep}
+                  onChange={handleCepChange}
+                  maxLength={9}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="00000-000"
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Endereço *
