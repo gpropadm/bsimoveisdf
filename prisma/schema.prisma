@@ -85,6 +85,12 @@ model Property {
   images      String?  // JSON string of image URLs
   video       String?  // URL do vídeo (YouTube, Vimeo, etc.)
   featured    Boolean  @default(false)
+  
+  // Campos específicos para apartamentos/coberturas
+  floor       Int?     // andar do apartamento
+  condoFee    Float?   // valor do condomínio
+  amenities   String?  // JSON string com comodidades do condomínio
+  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

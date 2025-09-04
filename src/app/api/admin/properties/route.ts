@@ -34,6 +34,10 @@ export async function GET(request: NextRequest) {
         video: true,
         featured: true,
         images: true,
+        // Campos específicos para apartamentos
+        floor: true,
+        condoFee: true,
+        amenities: true,
         createdAt: true,
       }
     })
@@ -69,7 +73,11 @@ export async function POST(request: NextRequest) {
       area,
       video,
       featured,
-      images
+      images,
+      // Campos específicos para apartamentos
+      floor,
+      condoFee,
+      amenities
     } = body
 
     // Criar slug a partir do título
@@ -108,6 +116,10 @@ export async function POST(request: NextRequest) {
         video: video || null,
         featured: featured || false,
         images: images || null,
+        // Campos específicos para apartamentos
+        floor: floor || null,
+        condoFee: condoFee || null,
+        amenities: amenities || null,
       }
     })
 

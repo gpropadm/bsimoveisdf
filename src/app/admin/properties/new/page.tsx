@@ -21,7 +21,11 @@ export default function NewProperty() {
     bathrooms: '',
     parking: '',
     area: '',
-    featured: false
+    featured: false,
+    // Campos específicos para apartamento
+    floor: '',
+    condoFee: '',
+    amenities: [] as string[]
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
@@ -68,8 +72,8 @@ export default function NewProperty() {
         ...prev,
         [name]: (e.target as HTMLInputElement).checked
       }))
-    } else if (name === 'price') {
-      // Aplicar máscara de dinheiro no campo preço
+    } else if (name === 'price' || name === 'condoFee') {
+      // Aplicar máscara de dinheiro no campo preço e condomínio
       const formattedValue = formatCurrency(value)
       setFormData(prev => ({
         ...prev,
@@ -246,6 +250,10 @@ export default function NewProperty() {
           bathrooms: parseInt(formData.bathrooms) || null,
           parking: parseInt(formData.parking) || null,
           area: parseFloat(formData.area) || null,
+          // Campos específicos para apartamento
+          floor: formData.floor ? parseInt(formData.floor) : null,
+          condoFee: formData.condoFee ? parseCurrency(formData.condoFee) : null,
+          amenities: formData.amenities.length > 0 ? JSON.stringify(formData.amenities) : null,
           images: JSON.stringify(imageUrls),
           video: videoUrls.length > 0 ? JSON.stringify(videoUrls) : null
         })
@@ -520,6 +528,95 @@ export default function NewProperty() {
               </div>
             </div>
           </div>
+
+          {/* Campos específicos para apartamento/cobertura */}
+          {(formData.category === 'apartamento' || formData.category === 'cobertura') && (
+            <div className="bg-white shadow rounded-lg">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Informações do Apartamento</h3>
+                <p className="text-sm text-gray-500 mt-1">Dados específicos para apartamentos e coberturas</p>
+              </div>
+              <div className="p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Andar
+                    </label>
+                    <input
+                      type="number"
+                      name="floor"
+                      value={formData.floor}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Ex: 5"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Valor do Condomínio (R$)
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">R$</span>
+                      <input
+                        type="text"
+                        name="condoFee"
+                        value={formData.condoFee}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="500,00"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Comodidades do Condomínio
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      'Piscina',
+                      'Academia',
+                      'Playground',
+                      'Churrasqueira',
+                      'Salão de Festas',
+                      'Quadra Esportiva',
+                      'Sauna',
+                      'Elevador',
+                      'Portaria 24h',
+                      'Garagem Coberta',
+                      'Jardim',
+                      'Área de Lazer'
+                    ].map((amenity) => (
+                      <label key={amenity} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.amenities.includes(amenity)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setFormData(prev => ({
+                                ...prev,
+                                amenities: [...prev.amenities, amenity]
+                              }))
+                            } else {
+                              setFormData(prev => ({
+                                ...prev,
+                                amenities: prev.amenities.filter(a => a !== amenity)
+                              }))
+                            }
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                        />
+                        <span className="text-sm text-gray-700">{amenity}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Upload de Imagens */}
           <div className="bg-white shadow rounded-lg">
