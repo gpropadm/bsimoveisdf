@@ -52,6 +52,11 @@ export async function GET(request: NextRequest) {
         houseType: true,
         yard: true,
         garage: true,
+        // Campos específicos para comerciais
+        commercialType: true,
+        floor_commercial: true,
+        businessCenter: true,
+        features: true,
         createdAt: true,
       }
     })
@@ -105,7 +110,12 @@ export async function POST(request: NextRequest) {
       // Campos específicos para casas
       houseType,
       yard,
-      garage
+      garage,
+      // Campos específicos para comerciais
+      commercialType,
+      floor_commercial,
+      businessCenter,
+      features
     } = body
 
     // Criar slug a partir do título
@@ -162,6 +172,11 @@ export async function POST(request: NextRequest) {
         houseType: houseType || null,
         yard: yard || null,
         garage: garage || null,
+        // Campos específicos para comerciais
+        commercialType: commercialType || null,
+        floor_commercial: floor_commercial || null,
+        businessCenter: businessCenter || null,
+        features: features || null,
       }
     })
 

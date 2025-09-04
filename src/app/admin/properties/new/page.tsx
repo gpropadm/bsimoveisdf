@@ -39,7 +39,12 @@ export default function NewProperty() {
     // Campos específicos para casa
     houseType: '',
     yard: false,
-    garage: ''
+    garage: '',
+    // Campos específicos para comercial
+    commercialType: '',
+    floor_commercial: '',
+    businessCenter: '',
+    features: [] as string[]
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreview, setImagePreview] = useState<string[]>([])
@@ -282,6 +287,11 @@ export default function NewProperty() {
           houseType: formData.houseType || null,
           yard: formData.yard || null,
           garage: formData.garage || null,
+          // Campos específicos para comercial
+          commercialType: formData.commercialType || null,
+          floor_commercial: formData.floor_commercial ? parseInt(formData.floor_commercial) : null,
+          businessCenter: formData.businessCenter || null,
+          features: formData.features.length > 0 ? JSON.stringify(formData.features) : null,
           images: JSON.stringify(imageUrls),
           video: videoUrls.length > 0 ? JSON.stringify(videoUrls) : null
         })
@@ -912,6 +922,162 @@ export default function NewProperty() {
                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
                         />
                         <span className="text-sm text-gray-700">{building}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Campos específicos para comercial */}
+          {formData.category === 'comercial' && (
+            <div className="bg-white shadow rounded-lg">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Características Comerciais</h3>
+                <p className="text-sm text-gray-500 mt-1">Informações específicas para imóveis comerciais</p>
+              </div>
+              <div className="p-6 space-y-6">
+                {/* Informações básicas comerciais */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tipo de Imóvel Comercial
+                    </label>
+                    <select
+                      name="commercialType"
+                      value={formData.commercialType}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Selecione o tipo</option>
+                      <option value="loja">Loja</option>
+                      <option value="sala-comercial">Sala Comercial</option>
+                      <option value="galpao">Galpão</option>
+                      <option value="deposito">Depósito</option>
+                      <option value="escritorio">Escritório</option>
+                      <option value="consultorio">Consultório</option>
+                      <option value="clinica">Clínica</option>
+                      <option value="restaurante">Restaurante</option>
+                      <option value="hotel">Hotel</option>
+                      <option value="pousada">Pousada</option>
+                      <option value="posto-gasolina">Posto de Gasolina</option>
+                      <option value="industria">Indústria</option>
+                      <option value="shopping">Shopping Center</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Área Total (m²)
+                    </label>
+                    <input
+                      type="number"
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                      step="0.01"
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Ex: 150.50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Andar (se aplicável)
+                    </label>
+                    <input
+                      type="number"
+                      name="floor_commercial"
+                      value={formData.floor_commercial}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Ex: 3"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Vagas de Garagem
+                    </label>
+                    <input
+                      type="number"
+                      name="parking"
+                      value={formData.parking}
+                      onChange={handleChange}
+                      min="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Centro Empresarial/Edifício/Shopping
+                  </label>
+                  <input
+                    type="text"
+                    name="businessCenter"
+                    value={formData.businessCenter}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Ex: Centro Empresarial ABC, Shopping XYZ"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Características e Facilidades
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {[
+                      'Ar Condicionado',
+                      'Internet/Wifi',
+                      'Elevador',
+                      'Estacionamento',
+                      'Segurança 24h',
+                      'Recepção',
+                      'CFTV',
+                      'Gerador',
+                      'Copa/Cozinha',
+                      'Banheiro Privativo',
+                      'Sala de Reunião',
+                      'Depósito',
+                      'Vitrine',
+                      'Pé Direito Alto',
+                      'Rampa de Acesso',
+                      'Entrada Independente',
+                      'Mezanino',
+                      'Escritório Anexo',
+                      'Área Externa',
+                      'Próximo ao Centro',
+                      'Transporte Público',
+                      'Fácil Acesso'
+                    ].map((feature) => (
+                      <label key={feature} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={formData.features.includes(feature)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setFormData(prev => ({
+                                ...prev,
+                                features: [...prev.features, feature]
+                              }))
+                            } else {
+                              setFormData(prev => ({
+                                ...prev,
+                                features: prev.features.filter(f => f !== feature)
+                              }))
+                            }
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                        />
+                        <span className="text-sm text-gray-700">{feature}</span>
                       </label>
                     ))}
                   </div>
