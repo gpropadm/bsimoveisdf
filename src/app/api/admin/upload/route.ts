@@ -32,8 +32,13 @@ export async function POST(request: NextRequest) {
 
     // Criar diretório para uploads se não existir
     const uploadDir = join(process.cwd(), 'public', 'uploads', 'properties')
+    console.log('📁 Diretório de upload:', uploadDir)
+    console.log('📁 Diretório existe?', existsSync(uploadDir))
+    
     if (!existsSync(uploadDir)) {
+      console.log('📁 Criando diretório...')
       await mkdir(uploadDir, { recursive: true })
+      console.log('✅ Diretório criado')
     }
 
     const uploadedUrls: string[] = []
@@ -63,7 +68,9 @@ export async function POST(request: NextRequest) {
 
       // Salvar arquivo
       const filePath = join(uploadDir, fileName)
+      console.log('💾 Salvando arquivo:', filePath)
       await writeFile(filePath, buffer)
+      console.log('✅ Arquivo salvo:', fileName)
 
       // Adicionar URL ao resultado
       uploadedUrls.push(`/uploads/properties/${fileName}`)
@@ -75,9 +82,14 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erro no upload:', error)
+    console.error('❌ Erro detalhado no upload:', {
+      message: error instanceof Error ? error.message : 'Erro desconhecido',
+      stack: error instanceof Error ? error.stack : undefined,
+      error: error
+    })
     return NextResponse.json({ 
-      error: 'Erro interno do servidor' 
+      error: 'Erro interno do servidor',
+      details: error instanceof Error ? error.message : 'Erro desconhecido'
     }, { status: 500 })
   }
 }
