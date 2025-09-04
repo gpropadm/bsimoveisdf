@@ -108,60 +108,71 @@ export default function NewProperty() {
   }
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
-    // Verificar se é um arquivo de vídeo
-    if (!file.type.startsWith('video/')) {
-      alert('Por favor, selecione apenas arquivos de vídeo.')
-      return
-    }
-
-    // Verificar tamanho inicial (máximo 100MB para upload)
-    if (file.size > 100 * 1024 * 1024) {
-      alert('O vídeo deve ter no máximo 100MB para upload.')
-      return
-    }
-
-    try {
-      // Importar utilitários de vídeo dinamicamente
-      const { validateShortsVideo, compressVideo, getVideoInfo } = await import('@/lib/videoUtils')
+    // Processar cada arquivo selecionado
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
       
-      // Validar se é adequado para shorts
-      const validation = await validateShortsVideo(file)
-      if (!validation.valid) {
-        alert(`Problemas encontrados:\n\n${validation.issues.join('\n')}`)
-        return
+      // Verificar se é um arquivo de vídeo
+      if (!file.type.startsWith('video/')) {
+        alert(`${file.name}: Por favor, selecione apenas arquivos de vídeo.`)
+        continue
       }
 
-      // Mostrar informações do vídeo original
-      const originalInfo = await getVideoInfo(file)
-      console.log('📹 Vídeo original:', {
-        duration: `${Math.round(originalInfo.duration)}s`,
-        size: `${(originalInfo.size / 1024 / 1024).toFixed(2)}MB`,
-        dimensions: `${originalInfo.width}x${originalInfo.height}`
-      })
+      // Verificar tamanho inicial (máximo 100MB para upload)
+      if (file.size > 100 * 1024 * 1024) {
+        alert(`${file.name}: O vídeo deve ter no máximo 100MB para upload.`)
+        continue
+      }
 
-      // Comprimir vídeo se necessário
-      let processedFile = file
-      if (file.size > 10 * 1024 * 1024) { // Comprimir se > 10MB
-        console.log('🔄 Comprimindo vídeo...')
-        processedFile = await compressVideo(file, {
-          quality: 0.8,
-          maxWidth: 720,
-          maxHeight: 1280,
-          maxSizeMB: 10
+      try {
+        console.log(`🎬 Processando vídeo ${i + 1}/${files.length}: ${file.name}`)
+        
+        // Importar utilitários de vídeo dinamicamente
+        const { validateShortsVideo, compressVideo, getVideoInfo } = await import('@/lib/videoUtils')
+        
+        // Validar se é adequado para shorts
+        const validation = await validateShortsVideo(file)
+        if (!validation.valid) {
+          alert(`${file.name}: Problemas encontrados:\n\n${validation.issues.join('\n')}`)
+          continue
+        }
+
+        // Mostrar informações do vídeo original
+        const originalInfo = await getVideoInfo(file)
+        console.log('📹 Vídeo original:', {
+          name: file.name,
+          duration: `${Math.round(originalInfo.duration)}s`,
+          size: `${(originalInfo.size / 1024 / 1024).toFixed(2)}MB`,
+          dimensions: `${originalInfo.width}x${originalInfo.height}`
         })
-      }
 
-      // Adicionar o novo vídeo à lista
-      setVideoFiles(prev => [...prev, processedFile])
-      setVideoPreviews(prev => [...prev, URL.createObjectURL(processedFile)])
-      
-    } catch (error) {
-      console.error('Erro ao processar vídeo:', error)
-      alert('Erro ao processar o vídeo. Tente novamente com um arquivo diferente.')
+        // Comprimir vídeo se necessário
+        let processedFile = file
+        if (file.size > 10 * 1024 * 1024) { // Comprimir se > 10MB
+          console.log('🔄 Comprimindo vídeo...')
+          processedFile = await compressVideo(file, {
+            quality: 0.8,
+            maxWidth: 720,
+            maxHeight: 1280,
+            maxSizeMB: 10
+          })
+        }
+
+        // Adicionar o novo vídeo à lista
+        setVideoFiles(prev => [...prev, processedFile])
+        setVideoPreviews(prev => [...prev, URL.createObjectURL(processedFile)])
+        
+      } catch (error) {
+        console.error(`Erro ao processar vídeo ${file.name}:`, error)
+        alert(`Erro ao processar o vídeo ${file.name}. Continuando com outros arquivos...`)
+      }
     }
+    
+    // Limpar o input para permitir reselecionar
+    e.target.value = ''
   }
 
   const removeVideo = (index: number) => {
@@ -596,6 +607,7 @@ export default function NewProperty() {
                     type="file"
                     accept="video/mp4,video/webm,video/mov"
                     onChange={handleVideoUpload}
+                    multiple
                     className="hidden"
                   />
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer">
@@ -604,10 +616,10 @@ export default function NewProperty() {
                     </svg>
                     <div className="mt-4">
                       <p className="text-sm text-gray-600">
-                        <span className="font-medium text-blue-600 hover:text-blue-500">Clique para fazer upload</span> ou arraste o vídeo aqui
+                        <span className="font-medium text-blue-600 hover:text-blue-500">Clique para fazer upload</span> ou arraste os vídeos aqui
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Formatos: MP4, WebM, MOV • Vertical • Máx 60s • Até 100MB
+                        Formatos: MP4, WebM, MOV • Vertical • Máx 60s • Até 100MB cada • Múltiplos vídeos
                       </p>
                     </div>
                   </div>
