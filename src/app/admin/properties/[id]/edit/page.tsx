@@ -107,22 +107,22 @@ export default function EditProperty() {
       setVideos(parsedVideos)
       
       setFormData({
-        title: data.title,
-        description: data.description,
-        address: data.address,
-        city: data.city,
-        state: data.state,
-        zipcode: data.zipcode,
-        price: data.price.toString(),
-        type: data.type,
+        title: data.title || '',
+        description: data.description || '',
+        address: data.address || '',
+        city: data.city || '',
+        state: data.state || '',
+        zipcode: data.zipcode || '',
+        price: data.price ? data.price.toString() : '',
+        type: data.type || '',
         status: data.status || 'disponivel',
-        category: data.category,
-        bedrooms: data.bedrooms.toString(),
-        bathrooms: data.bathrooms.toString(),
-        parking: data.parking.toString(),
-        area: data.area.toString(),
+        category: data.category || '',
+        bedrooms: data.bedrooms ? data.bedrooms.toString() : '',
+        bathrooms: data.bathrooms ? data.bathrooms.toString() : '',
+        parking: data.parking ? data.parking.toString() : '',
+        area: data.area ? data.area.toString() : '',
         video: data.video || '',
-        featured: data.featured
+        featured: data.featured || false
       })
     } catch (error) {
       console.error('Erro ao carregar imóvel:', error)
