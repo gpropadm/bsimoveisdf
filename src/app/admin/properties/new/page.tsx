@@ -391,8 +391,8 @@ export default function NewProperty() {
           console.log('📹 Processando vídeo:', videoFile.name, 'Tamanho:', (videoFile.size / 1024 / 1024).toFixed(2) + 'MB')
           
           // Verificar tamanho antes do upload
-          if (videoFile.size > 2 * 1024 * 1024) {
-            throw new Error(`Vídeo ${videoFile.name} é muito grande. Máximo 2MB.`)
+          if (videoFile.size > 50 * 1024 * 1024) {
+            throw new Error(`Vídeo ${videoFile.name} é muito grande. Máximo 50MB.`)
           }
           
           const videoFormData = new FormData()

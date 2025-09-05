@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
         continue
       }
 
-      // Validar tamanho (1MB máximo para Base64)
-      if (file.size > 1 * 1024 * 1024) {
+      // Validar tamanho (5MB máximo)
+      if (file.size > 5 * 1024 * 1024) {
         return NextResponse.json({ 
-          error: `Arquivo ${file.name} é muito grande. Máximo 1MB.` 
+          error: `Arquivo ${file.name} é muito grande. Máximo 5MB.` 
         }, { status: 400 })
       }
 
