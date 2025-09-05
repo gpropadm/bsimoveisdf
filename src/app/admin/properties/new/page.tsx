@@ -385,7 +385,16 @@ export default function NewProperty() {
       let videoUrls: string[] = []
       
       if (videoFiles.length > 0) {
+        console.log('📹 Iniciando upload de', videoFiles.length, 'vídeos...')
+        
         for (const videoFile of videoFiles) {
+          console.log('📹 Processando vídeo:', videoFile.name, 'Tamanho:', (videoFile.size / 1024 / 1024).toFixed(2) + 'MB')
+          
+          // Verificar tamanho antes do upload
+          if (videoFile.size > 10 * 1024 * 1024) {
+            throw new Error(`Vídeo ${videoFile.name} é muito grande. Máximo 10MB.`)
+          }
+          
           const videoFormData = new FormData()
           videoFormData.append('video', videoFile)
 
@@ -395,13 +404,30 @@ export default function NewProperty() {
             body: videoFormData
           })
 
+          console.log('📹 Resposta do upload:', videoUploadResponse.status, videoUploadResponse.statusText)
+
           if (!videoUploadResponse.ok) {
-            const errorData = await videoUploadResponse.json().catch(() => ({}))
-            console.error('❌ Erro no upload de vídeo:', errorData)
-            throw new Error(`Erro ao fazer upload do vídeo: ${errorData.error || videoUploadResponse.statusText}`)
+            let errorMessage = 'Erro ao fazer upload do vídeo'
+            try {
+              const responseText = await videoUploadResponse.text()
+              console.error('❌ Raw video upload error:', responseText)
+              
+              try {
+                const errorData = JSON.parse(responseText)
+                errorMessage = errorData.details || errorData.error || errorMessage
+              } catch {
+                errorMessage = responseText || `HTTP ${videoUploadResponse.status}: ${videoUploadResponse.statusText}`
+              }
+            } catch (readError) {
+              console.error('❌ Error reading video upload response:', readError)
+              errorMessage = `HTTP ${videoUploadResponse.status}: ${videoUploadResponse.statusText}`
+            }
+            
+            throw new Error(`Erro ao fazer upload do vídeo: ${errorMessage}`)
           }
 
           const videoUploadResult = await videoUploadResponse.json()
+          console.log('✅ Vídeo uploadado com sucesso')
           videoUrls.push(videoUploadResult.url)
         }
       }
