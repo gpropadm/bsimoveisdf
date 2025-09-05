@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { v2 as cloudinary } from 'cloudinary'
+
+// Configurar Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,29 +38,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Vídeo muito grande. Máximo 50MB' }, { status: 400 })
     }
 
-    console.log('🎥 Iniciando conversão do vídeo para Base64...')
+    console.log('🎥 Iniciando upload do vídeo para Cloudinary...')
     
-    // Converter vídeo para Base64
+    // Converter vídeo para Buffer
     const bytes = await video.arrayBuffer()
     const buffer = Buffer.from(bytes)
     
-    console.log('🔄 Buffer criado, convertendo para Base64...')
-    const base64 = buffer.toString('base64')
-    const mimeType = video.type
-    
-    // Verificar se Base64 não é muito grande (limite adicional de segurança)
-    if (base64.length > 15 * 1024 * 1024) { // ~15MB em Base64
-      return NextResponse.json({ error: 'Vídeo resultante muito grande após conversão' }, { status: 400 })
-    }
-    
-    // Criar Data URL
-    const dataUrl = `data:${mimeType};base64,${base64}`
-    
-    console.log('✅ Vídeo convertido para Base64, tamanho:', base64.length)
+    console.log('☁️ Fazendo upload para Cloudinary...', video.name)
+
+    // Upload para Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'video',
+          folder: 'imoveis/videos',
+          transformation: [
+            { quality: 'auto' },
+            { video_codec: 'h264' }
+          ]
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(buffer)
+    }) as any
+
+    console.log('✅ Vídeo upload concluído:', uploadResult.secure_url)
 
     return NextResponse.json({
       success: true,
-      url: dataUrl
+      url: uploadResult.secure_url
     })
 
   } catch (error) {

@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
+import { v2 as cloudinary } from 'cloudinary'
+
+// Configurar Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,17 +50,32 @@ export async function POST(request: NextRequest) {
         }, { status: 400 })
       }
 
-      // Converter File para Base64
+      // Converter File para Buffer
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
-      const base64 = buffer.toString('base64')
-      const mimeType = file.type
       
-      // Criar Data URL
-      const dataUrl = `data:${mimeType};base64,${base64}`
-      
-      console.log('💾 Imagem convertida para Base64, tamanho:', base64.length)
-      uploadedUrls.push(dataUrl)
+      console.log('☁️ Fazendo upload para Cloudinary...', file.name)
+
+      // Upload para Cloudinary
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'image',
+            folder: 'imoveis',
+            transformation: [
+              { width: 1200, height: 800, crop: 'limit' },
+              { quality: 'auto', fetch_format: 'auto' }
+            ]
+          },
+          (error, result) => {
+            if (error) reject(error)
+            else resolve(result)
+          }
+        ).end(buffer)
+      }) as any
+
+      console.log('✅ Upload concluído:', uploadResult.secure_url)
+      uploadedUrls.push(uploadResult.secure_url)
     }
 
     return NextResponse.json({ 
