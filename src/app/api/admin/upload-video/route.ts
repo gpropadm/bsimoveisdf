@@ -25,9 +25,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Arquivo deve ser um vídeo' }, { status: 400 })
     }
 
-    // Verificar tamanho (máximo 10MB para Base64)
-    if (video.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Vídeo muito grande. Máximo 10MB' }, { status: 400 })
+    // Verificar tamanho (máximo 2MB para Base64)  
+    if (video.size > 2 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Vídeo muito grande. Máximo 2MB' }, { status: 400 })
     }
 
     console.log('🎥 Iniciando conversão do vídeo para Base64...')
