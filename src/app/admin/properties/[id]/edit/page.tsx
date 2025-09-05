@@ -77,9 +77,13 @@ export default function EditProperty() {
 
   const fetchProperty = async () => {
     try {
-      const response = await fetch(`/api/admin/properties/${propertyId}`)
+      const response = await fetch(`/api/admin/properties/${propertyId}`, {
+        credentials: 'include' // Incluir cookies de sessão
+      })
       if (!response.ok) {
-        throw new Error('Imóvel não encontrado')
+        const errorText = await response.text()
+        console.error('Erro na API:', response.status, errorText)
+        throw new Error(`Erro ${response.status}: ${errorText}`)
       }
       const data = await response.json()
       setProperty(data)
@@ -122,7 +126,11 @@ export default function EditProperty() {
       })
     } catch (error) {
       console.error('Erro ao carregar imóvel:', error)
-      router.push('/admin/properties')
+      // Só redirecionar após 3 segundos para mostrar o erro
+      alert(`Erro ao carregar imóvel: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+      setTimeout(() => {
+        router.push('/admin/properties')
+      }, 3000)
     } finally {
       setLoading(false)
     }
