@@ -243,8 +243,9 @@ ${formData.message}
               {/* Property Gallery */}
               <PropertyGallery 
                 images={images} 
-                title={property.title}
-                videoUrl={videoUrl}
+                propertyTitle={property.title}
+                propertyPrice={property.price}
+                propertyType={property.type}
               />
               
               {/* Property Features */}

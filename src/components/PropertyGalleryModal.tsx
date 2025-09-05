@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { RxMobile, RxEnvelopeClosed } from 'react-icons/rx'
 
@@ -26,8 +26,27 @@ export default function PropertyGalleryModal({
     name: '',
     phone: '',
     email: '',
-    message: `Olá! Tenho interesse no imóvel "${propertyTitle}". Gostaria de mais informações.`
+    message: ''
   })
+
+  // Atualizar mensagem quando as props mudarem
+  useEffect(() => {
+    if (propertyTitle && propertyPrice) {
+      const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }).format(price)
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        message: `Olá! Tenho interesse no imóvel "${propertyTitle}" no valor de ${formatPrice(propertyPrice)}. Gostaria de mais informações.`
+      }))
+    }
+  }, [propertyTitle, propertyPrice])
 
   // Usar imagens fornecidas ou fallback
   const photos = images.length > 0 ? images : [
@@ -119,11 +138,20 @@ ${formData.message}
       
       // Limpar formulário após 2 segundos
       setTimeout(() => {
+        const formatPrice = (price: number) => {
+          return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          }).format(price)
+        }
+
         setFormData({
           name: '',
           phone: '',
           email: '',
-          message: `Olá! Tenho interesse no imóvel "${propertyTitle}". Gostaria de mais informações.`
+          message: `Olá! Tenho interesse no imóvel "${propertyTitle}" no valor de ${formatPrice(propertyPrice)}. Gostaria de mais informações.`
         })
         setSubmitMessage('')
       }, 2000)
