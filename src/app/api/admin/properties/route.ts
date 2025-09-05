@@ -32,9 +32,9 @@ export async function GET(request: NextRequest) {
         bathrooms: true,
         parking: true,
         area: true,
-        video: true,
+        video: false, // Não carregar vídeo na listagem para performance
         featured: true,
-        images: true,
+        images: false, // Não carregar imagens na listagem para performance
         // Campos específicos para apartamentos
         floor: true,
         condoFee: true,
