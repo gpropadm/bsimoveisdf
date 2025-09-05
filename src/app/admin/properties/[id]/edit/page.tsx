@@ -42,6 +42,8 @@ export default function EditProperty() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [images, setImages] = useState<string[]>([])
   const [videos, setVideos] = useState<string[]>([])
+  const [originalImages, setOriginalImages] = useState<string[]>([]) // Para comparar mudanças
+  const [originalVideos, setOriginalVideos] = useState<string[]>([]) // Para comparar mudanças
   const [dragActive, setDragActive] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState<number | null>(null)
 
@@ -87,24 +89,25 @@ export default function EditProperty() {
       }
       const data = await response.json()
       setProperty(data)
-      setImages(data.images ? JSON.parse(data.images) : [])
-      
-      // Parse videos from database
-      const parseVideos = (videoData: string) => {
-        console.log('🎬 Dados de vídeo do banco:', videoData)
-        if (!videoData) return [''] // Start with one empty video
+      const parsedImages = data.images ? JSON.parse(data.images) : []
+      const parsedVideos = (() => {
+        console.log('🎬 Dados de vídeo do banco:', data.video)
+        if (!data.video) return [''] // Start with one empty video
         try {
-          const parsed = JSON.parse(videoData)
+          const parsed = JSON.parse(data.video)
           console.log('🎬 Vídeos parseados:', parsed)
-          return Array.isArray(parsed) ? parsed : [videoData]
+          return Array.isArray(parsed) ? parsed : [data.video]
         } catch {
-          console.log('🎬 Falha no parse, usando string única:', videoData)
-          return videoData ? [videoData] : ['']
+          console.log('🎬 Falha no parse, usando string única:', data.video)
+          return data.video ? [data.video] : ['']
         }
-      }
-      const parsedVideos = parseVideos(data.video || '')
-      console.log('🎬 Vídeos inicializados:', parsedVideos)
+      })()
+      
+      setImages(parsedImages)
       setVideos(parsedVideos)
+      // Salvar versões originais para comparação
+      setOriginalImages(parsedImages)
+      setOriginalVideos(parsedVideos)
       
       setFormData({
         title: data.title || '',
@@ -143,6 +146,33 @@ export default function EditProperty() {
     console.log('🎬 Vídeos antes do salvamento:', videos)
     console.log('🎬 Vídeos filtrados:', videos.filter(v => v.trim()))
 
+    // Verificar se imagens ou vídeos mudaram
+    const imagesChanged = JSON.stringify(images) !== JSON.stringify(originalImages)
+    const videosChanged = JSON.stringify(videos) !== JSON.stringify(originalVideos)
+    
+    console.log('📸 Imagens mudaram:', imagesChanged)
+    console.log('🎬 Vídeos mudaram:', videosChanged)
+
+    const updateData: any = {
+      ...formData,
+      price: parseFloat(formData.price),
+      bedrooms: parseInt(formData.bedrooms),
+      bathrooms: parseInt(formData.bathrooms),
+      parking: parseInt(formData.parking),
+      area: parseFloat(formData.area),
+    }
+
+    // Só incluir imagens/vídeos se mudaram (para evitar payload muito grande)
+    if (imagesChanged) {
+      updateData.images = JSON.stringify(images)
+    }
+    
+    if (videosChanged) {
+      updateData.video = videos.filter(v => v.trim()).length > 0 ? JSON.stringify(videos.filter(v => v.trim())) : null
+    }
+
+    console.log('📦 Tamanho do payload:', JSON.stringify(updateData).length, 'bytes')
+
     try {
       const response = await fetch(`/api/admin/properties/${propertyId}`, {
         method: 'PUT',
@@ -150,16 +180,7 @@ export default function EditProperty() {
           'Content-Type': 'application/json',
         },
         credentials: 'include', // Incluir cookies de sessão
-        body: JSON.stringify({
-          ...formData,
-          price: parseFloat(formData.price),
-          bedrooms: parseInt(formData.bedrooms),
-          bathrooms: parseInt(formData.bathrooms),
-          parking: parseInt(formData.parking),
-          area: parseFloat(formData.area),
-          video: videos.filter(v => v.trim()).length > 0 ? JSON.stringify(videos.filter(v => v.trim())) : null,
-          images: JSON.stringify(images)
-        })
+        body: JSON.stringify(updateData)
       })
 
       console.log('Response status:', response.status)
