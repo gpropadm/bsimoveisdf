@@ -54,25 +54,35 @@ export async function POST(request: NextRequest) {
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
       
-      console.log('☁️ Fazendo upload para Cloudinary...', file.name)
+      console.log('☁️ Fazendo upload para Cloudinary...', file.name, 'Tamanho:', (buffer.length/1024/1024).toFixed(2) + 'MB')
 
-      // Upload para Cloudinary
-      const uploadResult = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          {
-            resource_type: 'image',
-            folder: 'imoveis',
-            transformation: [
-              { width: 1200, height: 800, crop: 'limit' },
-              { quality: 'auto', fetch_format: 'auto' }
-            ]
-          },
-          (error, result) => {
-            if (error) reject(error)
-            else resolve(result)
-          }
-        ).end(buffer)
-      }) as any
+      // Upload para Cloudinary com timeout
+      const uploadResult = await Promise.race([
+        new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            {
+              resource_type: 'image',
+              folder: 'imoveis',
+              transformation: [
+                { width: 1200, height: 800, crop: 'limit' },
+                { quality: 'auto', fetch_format: 'auto' }
+              ]
+            },
+            (error, result) => {
+              if (error) {
+                console.error('❌ Erro do Cloudinary:', error)
+                reject(error)
+              } else {
+                console.log('✅ Upload Cloudinary sucesso:', result?.public_id)
+                resolve(result)
+              }
+            }
+          ).end(buffer)
+        }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Upload timeout após 30s')), 30000)
+        )
+      ]) as any
 
       console.log('✅ Upload concluído:', uploadResult.secure_url)
       uploadedUrls.push(uploadResult.secure_url)
