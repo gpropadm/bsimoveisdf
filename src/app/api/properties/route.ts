@@ -66,7 +66,21 @@ export async function GET(request: NextRequest) {
       video: property.video,
       featured: property.featured,
       status: property.status,
-      images: property.images ? JSON.parse(property.images) : [],
+      images: property.images ? (() => {
+        try {
+          const parsedImages = JSON.parse(property.images)
+          // Filtrar apenas URLs válidas (Cloudinary ou URLs http/https)
+          return Array.isArray(parsedImages) 
+            ? parsedImages.filter(img => 
+                typeof img === 'string' && 
+                (img.startsWith('http') || img.startsWith('https')) &&
+                !img.startsWith('data:image')
+              )
+            : []
+        } catch {
+          return []
+        }
+      })() : [],
       createdAt: property.createdAt,
       updatedAt: property.updatedAt
     }))
