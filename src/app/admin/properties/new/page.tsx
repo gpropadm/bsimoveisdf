@@ -461,13 +461,20 @@ export default function NewProperty() {
       if (!response.ok) {
         let errorMessage = 'Erro ao criar imóvel'
         try {
-          const errorData = await response.json()
-          console.error('API Error:', errorData)
-          errorMessage = errorData.details || errorData.error || 'Erro ao criar imóvel'
-        } catch (parseError) {
-          console.error('Error parsing error response:', parseError)
+          // Primeiro, tentamos ler como texto
           const responseText = await response.text()
           console.error('Raw error response:', responseText)
+          
+          // Depois tentamos fazer parse JSON
+          try {
+            const errorData = JSON.parse(responseText)
+            errorMessage = errorData.details || errorData.error || 'Erro ao criar imóvel'
+          } catch {
+            // Se não for JSON válido, usamos o texto bruto
+            errorMessage = responseText || `Erro HTTP ${response.status}: ${response.statusText}`
+          }
+        } catch (readError) {
+          console.error('Error reading response:', readError)
           errorMessage = `Erro HTTP ${response.status}: ${response.statusText}`
         }
         throw new Error(errorMessage)
