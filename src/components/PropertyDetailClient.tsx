@@ -28,6 +28,29 @@ interface Property {
   images: string | null
   video: string | null
   slug: string
+  // Campos específicos para apartamentos/coberturas
+  floor: number | null
+  condoFee: number | null
+  amenities: string | null
+  // Campos específicos para terrenos
+  zoning: string | null
+  slope: string | null
+  frontage: number | null
+  // Campos específicos para fazendas
+  totalArea: number | null
+  cultivatedArea: number | null
+  pastures: number | null
+  buildings: string | null
+  waterSources: string | null
+  // Campos específicos para casas
+  houseType: string | null
+  yard: boolean | null
+  garage: string | null
+  // Campos específicos para imóveis comerciais
+  commercialType: string | null
+  floor_commercial: number | null
+  businessCenter: string | null
+  features: string | null
 }
 
 interface PropertyDetailClientProps {
@@ -285,6 +308,31 @@ ${formData.message}
                 </div>
               </div>
 
+              {/* Apartment/Condo Specific Info */}
+              {(property.category === 'apartamento' || property.category === 'cobertura') && (
+                <ApartmentInfo property={property} />
+              )}
+
+              {/* House Specific Info */}
+              {property.category === 'casa' && (
+                <HouseInfo property={property} />
+              )}
+
+              {/* Farm Specific Info */}
+              {property.category === 'fazenda' && (
+                <FarmInfo property={property} />
+              )}
+
+              {/* Land Specific Info */}
+              {property.category === 'terreno' && (
+                <LandInfo property={property} />
+              )}
+
+              {/* Commercial Specific Info */}
+              {(property.category === 'comercial' || property.category === 'loja' || property.category === 'sala') && (
+                <CommercialInfo property={property} />
+              )}
+
               {/* Description */}
               {property.description && (
                 <div className="mb-8">
@@ -413,5 +461,404 @@ ${formData.message}
         <Footer />
       </div>
     </ToastProvider>
+  )
+}
+
+// Componente para informações específicas de apartamentos/coberturas
+function ApartmentInfo({ property }: { property: Property }) {
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price)
+  }
+
+  const parseAmenities = (amenities: string | null): string[] => {
+    if (!amenities) return []
+    try {
+      return JSON.parse(amenities)
+    } catch {
+      return []
+    }
+  }
+
+  const amenitiesList = parseAmenities(property.amenities)
+
+  if (!property.floor && !property.condoFee && amenitiesList.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="bg-blue-50 rounded-2xl p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Apartamento</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {property.floor && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-900">{property.floor}º Andar</div>
+                <div className="text-sm text-gray-600">Andar do apartamento</div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {property.condoFee && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-900">{formatPrice(property.condoFee)}</div>
+                <div className="text-sm text-gray-600">Taxa de condomínio</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {amenitiesList.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Comodidades do Condomínio</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {amenitiesList.map((amenity, index) => (
+              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {amenity}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Componente para informações específicas de casas
+function HouseInfo({ property }: { property: Property }) {
+  if (!property.houseType && property.yard === null && !property.garage) {
+    return null
+  }
+
+  return (
+    <div className="bg-green-50 rounded-2xl p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Casa</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {property.houseType && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Tipo</div>
+                <div className="font-semibold text-gray-900 capitalize">{property.houseType}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.yard !== null && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Quintal</div>
+                <div className="font-semibold text-gray-900">{property.yard ? 'Sim' : 'Não'}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.garage && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Garagem</div>
+                <div className="font-semibold text-gray-900 capitalize">{property.garage}</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Componente para informações específicas de fazendas
+function FarmInfo({ property }: { property: Property }) {
+  const parseBuildings = (buildings: string | null): string[] => {
+    if (!buildings) return []
+    try {
+      return JSON.parse(buildings)
+    } catch {
+      return []
+    }
+  }
+
+  const buildingsList = parseBuildings(property.buildings)
+
+  if (!property.totalArea && !property.cultivatedArea && !property.pastures && buildingsList.length === 0 && !property.waterSources) {
+    return null
+  }
+
+  return (
+    <div className="bg-yellow-50 rounded-2xl p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Fazenda</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {property.totalArea && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-900">{property.totalArea} ha</div>
+                <div className="text-sm text-gray-600">Área total</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.cultivatedArea && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-900">{property.cultivatedArea} ha</div>
+                <div className="text-sm text-gray-600">Área cultivada</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.pastures && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-gray-900">{property.pastures} ha</div>
+                <div className="text-sm text-gray-600">Pastagens</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {buildingsList.length > 0 && (
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Benfeitorias</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {buildingsList.map((building, index) => (
+              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
+                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {building}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {property.waterSources && (
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Fontes de Água</h3>
+          <div className="bg-white p-4 rounded-lg">
+            <p className="text-gray-700">{property.waterSources}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Componente para informações específicas de terrenos
+function LandInfo({ property }: { property: Property }) {
+  if (!property.zoning && !property.slope && !property.frontage) {
+    return null
+  }
+
+  return (
+    <div className="bg-orange-50 rounded-2xl p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Terreno</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {property.zoning && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Zoneamento</div>
+                <div className="font-semibold text-gray-900 capitalize">{property.zoning}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.slope && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Topografia</div>
+                <div className="font-semibold text-gray-900 capitalize">{property.slope}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.frontage && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Frente</div>
+                <div className="font-semibold text-gray-900">{property.frontage}m</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Componente para informações específicas de imóveis comerciais
+function CommercialInfo({ property }: { property: Property }) {
+  const parseFeatures = (features: string | null): string[] => {
+    if (!features) return []
+    try {
+      return JSON.parse(features)
+    } catch {
+      return []
+    }
+  }
+
+  const featuresList = parseFeatures(property.features)
+
+  if (!property.commercialType && !property.floor_commercial && !property.businessCenter && featuresList.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="bg-purple-50 rounded-2xl p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações Comerciais</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {property.commercialType && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Tipo</div>
+                <div className="font-semibold text-gray-900 capitalize">{property.commercialType}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.floor_commercial && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Andar</div>
+                <div className="font-semibold text-gray-900">{property.floor_commercial}º</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {property.businessCenter && (
+          <div className="bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Empreendimento</div>
+                <div className="font-semibold text-gray-900">{property.businessCenter}</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {featuresList.length > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Características Comerciais</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {featuresList.map((feature, index) => (
+              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
+                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {feature}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
