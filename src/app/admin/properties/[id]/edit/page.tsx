@@ -149,6 +149,7 @@ export default function EditProperty() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Incluir cookies de sessão
         body: JSON.stringify({
           ...formData,
           price: parseFloat(formData.price),
@@ -161,14 +162,32 @@ export default function EditProperty() {
         })
       })
 
+      console.log('Response status:', response.status)
+      
       if (!response.ok) {
-        throw new Error('Erro ao salvar imóvel')
+        let errorMessage = 'Erro ao salvar imóvel'
+        try {
+          const responseText = await response.text()
+          console.error('Response error:', responseText)
+          
+          try {
+            const errorData = JSON.parse(responseText)
+            errorMessage = errorData.details || errorData.error || errorMessage
+          } catch {
+            errorMessage = responseText || `HTTP ${response.status}: ${response.statusText}`
+          }
+        } catch (readError) {
+          console.error('Error reading response:', readError)
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
 
       router.push('/admin/properties')
     } catch (error) {
       console.error('Erro ao salvar:', error)
-      alert('Erro ao salvar imóvel. Tente novamente.')
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      alert(`Erro ao salvar imóvel: ${errorMessage}`)
     } finally {
       setSaving(false)
     }
