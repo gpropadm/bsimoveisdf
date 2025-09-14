@@ -99,16 +99,8 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
             </div>
 
             {/* Desktop: Full header */}
-            <div className="hidden lg:flex items-center justify-start">
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className={`inline-flex items-center p-2 text-sm rounded-lg focus:outline-none focus:ring-2 ${isDarkMode ? 'text-gray-400 hover:bg-gray-700 focus:ring-gray-600' : 'text-gray-500 hover:bg-gray-100 focus:ring-gray-200'}`}
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
-                </svg>
-              </button>
-              <a href="#" className="flex ml-2 md:mr-24">
+            <div className="hidden lg:flex items-center justify-center flex-1">
+              <a href="#" className="flex">
                 <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
@@ -169,7 +161,7 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r ${isSidebarOpen ? 'lg:translate-x-0' : ''}`}>
+      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r`}>
         <div className="h-full px-3 pb-4 overflow-y-auto">
           <ul className="space-y-2 font-medium">
             {navigationItems.map((item) => (
