@@ -160,7 +160,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                   </button>
                   <Link
                     href="/"
-                    className={`hidden sm:block px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
+                    className={`hidden lg:block px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
                   >
                     Ver Site
                   </Link>
