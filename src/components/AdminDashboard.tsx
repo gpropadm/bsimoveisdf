@@ -85,7 +85,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
     { name: 'Imóveis', href: '/admin/properties', icon: 'home', current: false },
     { name: 'Leads', href: '/admin/leads', icon: 'users', current: false },
     { name: 'Usuários', href: '/admin/users', icon: 'users', current: false },
-    { name: 'Uso Cloudinary', href: '/admin/cloudinary-usage', icon: 'cloud', current: false },
+    { name: 'Central de Mídia', href: '/admin/cloudinary-usage', icon: 'cloud', current: false },
     { name: 'Configurações', href: '/admin/settings', icon: 'settings', current: false },
   ]
 

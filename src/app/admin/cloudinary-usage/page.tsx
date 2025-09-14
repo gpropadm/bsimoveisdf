@@ -140,8 +140,8 @@ export default function CloudinaryUsagePage() {
               <span>Voltar ao Admin</span>
             </Link>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">Uso do Cloudinary</h1>
-          <p className="text-gray-600">Monitore o uso de armazenamento, largura de banda e transformações</p>
+          <h1 className="text-2xl font-bold text-gray-900 mt-2">Central de Mídia</h1>
+          <p className="text-gray-600">Monitore o uso de armazenamento, largura de banda e processamento de mídia</p>
         </div>
       </div>
 
@@ -243,7 +243,7 @@ export default function CloudinaryUsagePage() {
             </div>
 
             <p className="text-xs text-gray-500">
-              Créditos para otimização e redimensionamento
+              Créditos para processamento e otimização de mídia
             </p>
           </div>
         </div>
