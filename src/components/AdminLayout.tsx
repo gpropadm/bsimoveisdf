@@ -16,17 +16,16 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title, subtitle, currentPage, actions }: AdminLayoutProps) {
   const { settings } = useSettings()
   const { data: session } = useSession()
+  const [isMobile, setIsMobile] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
-  // Set initial sidebar state based on screen size
+  // Detect screen size and set mobile state
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsSidebarOpen(true)
-      } else {
-        setIsSidebarOpen(false)
-      }
+      const mobile = window.innerWidth < 1024
+      setIsMobile(mobile)
+      setIsSidebarOpen(!mobile) // Desktop: sidebar always open, Mobile: closed by default
     }
 
     handleResize() // Set initial state
@@ -69,37 +68,99 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
     return icons[iconName as keyof typeof icons] || icons.dashboard
   }
 
-  return (
-    <div className={`min-h-screen font-inter ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Mobile Header */}
-      <nav className={`lg:hidden fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
-        <div className="px-3 py-3">
-          <div className="flex items-center justify-between">
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
-              </svg>
-            </button>
-            
-            {/* Mobile logout */}
-            <button
-              onClick={() => signOut({ callbackUrl: '/admin/login' })}
-              className="flex text-sm bg-gray-800 rounded-full"
-            >
-              <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
-                {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
+  // Render completely different layouts for mobile vs desktop
+  if (isMobile) {
+    // MOBILE LAYOUT
+    return (
+      <div className={`min-h-screen font-inter ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        {/* Mobile Header - Only hamburger and logout */}
+        <nav className={`fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+          <div className="px-3 py-3">
+            <div className="flex items-center justify-between">
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
+                </svg>
+              </button>
+              
+              {/* Mobile logout */}
+              <button
+                onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                className="flex text-sm bg-gray-800 rounded-full"
+              >
+                <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
+                  {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                </div>
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        {/* Mobile Backdrop */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-30"
+            onClick={() => setIsSidebarOpen(false)}
+          ></div>
+        )}
+
+        {/* Mobile Sidebar */}
+        <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r pt-16`}>
+          <div className="h-full px-3 pb-4 overflow-y-auto">
+            <ul className="space-y-2 font-medium">
+              {navigationItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsSidebarOpen(false)}
+                    className={`flex items-center p-2 rounded-lg group ${
+                      item.current
+                        ? `${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20'}`
+                        : `${isDarkMode ? 'text-white hover:bg-gray-700' : 'text-gray-900 hover:bg-gray-100'}`
+                    }`}
+                  >
+                    {getIcon(item.icon, `w-5 h-5 ${isDarkMode ? 'text-gray-400 group-hover:text-white' : 'text-gray-500 group-hover:text-gray-900'} transition duration-75 ${item.current ? (isDarkMode ? 'text-white' : 'text-[#7360ee]') : ''}`)}
+                    <span className="ml-3">{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        {/* Mobile Main Content */}
+        <div className="pt-16">
+          <div className="p-4">
+            {/* Header */}
+            <header className="bg-white border-b border-gray-200 px-4 py-4 rounded-lg mb-6">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+                  {subtitle && <p className="text-gray-600 text-sm">{subtitle}</p>}
+                </div>
+                {actions && <div className="flex-shrink-0">{actions}</div>}
               </div>
-            </button>
+            </header>
+
+            {/* Content */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+              {children}
+            </div>
           </div>
         </div>
-      </nav>
+      </div>
+    )
+  }
 
-      {/* Desktop Header */}
-      <nav className={`hidden lg:fixed lg:top-0 lg:z-50 lg:w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} lg:border-b lg:pl-64`}>
+  // DESKTOP LAYOUT - Traditional admin layout
+  return (
+    <div className={`min-h-screen font-inter ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Desktop Header - Traditional layout with sidebar space */}
+      <nav className={`fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b pl-64`}>
         <div className="px-5 py-3">
           <div className="flex items-center justify-between">
             {/* Desktop: Site name centered */}
@@ -155,23 +216,14 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
         </div>
       </nav>
 
-      {/* Mobile Backdrop */}
-      {isSidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={() => setIsSidebarOpen(false)}
-        ></div>
-      )}
-
-      {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform lg:translate-x-0 lg:pt-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:z-30 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r pt-16 lg:pt-20`}>
+      {/* Desktop Sidebar - Always visible */}
+      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r pt-20`}>
         <div className="h-full px-3 pb-4 overflow-y-auto">
           <ul className="space-y-2 font-medium">
             {navigationItems.map((item) => (
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  onClick={() => window.innerWidth < 1024 && setIsSidebarOpen(false)}
                   className={`flex items-center p-2 rounded-lg group ${
                     item.current
                       ? `${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20'}`
@@ -187,15 +239,15 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="lg:pl-64 pt-16 lg:pt-20">
+      {/* Desktop Main Content */}
+      <div className="pl-64 pt-20">
         <div className="p-4">
           {/* Header */}
-          <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4 rounded-lg mb-6">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <header className="bg-white border-b border-gray-200 px-4 py-4 rounded-lg mb-6">
+            <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-900">{title}</h1>
-                {subtitle && <p className="text-gray-600 text-sm lg:text-base">{subtitle}</p>}
+                <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                {subtitle && <p className="text-gray-600">{subtitle}</p>}
               </div>
               {actions && <div className="flex-shrink-0">{actions}</div>}
             </div>
