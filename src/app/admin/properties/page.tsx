@@ -82,7 +82,7 @@ export default function AdminProperties() {
   const router = useRouter()
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
@@ -95,6 +95,21 @@ export default function AdminProperties() {
 
     fetchProperties()
   }, [status, router])
+
+  // Set initial sidebar state based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(true)
+      } else {
+        setIsSidebarOpen(false)
+      }
+    }
+
+    handleResize() // Set initial state
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const fetchProperties = async () => {
     try {
@@ -174,7 +189,11 @@ export default function AdminProperties() {
       </div>
 
       {/* Sidebar */}
-      <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 lg:z-auto w-64 lg:w-${isSidebarOpen ? '64' : '16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-full lg:h-auto inset-y-0 left-0`}>
+      <aside className={`${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 fixed lg:relative z-50 lg:z-auto w-64 ${
+        isSidebarOpen ? 'lg:w-64' : 'lg:w-16'
+      } bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-full lg:h-auto inset-y-0 left-0`}>
         {/* Logo/Header - Hidden on mobile */}
         <div className="hidden lg:block p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
