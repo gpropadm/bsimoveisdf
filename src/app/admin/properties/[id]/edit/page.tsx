@@ -1094,9 +1094,16 @@ export default function EditProperty() {
                                 return (
                                   <div className="w-full h-full flex items-center justify-center text-gray-500">
                                     <div className="text-center">
-                                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mx-auto mb-2">
-                                        <polygon points="23 7 16 12 23 17 23 7"/>
-                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                      <svg width="48" height="48" viewBox="0 0 48 48" className="mx-auto mb-2">
+                                        <defs>
+                                          <linearGradient id="shortsGradient" x1="11.195" x2="38.591" y1="11.196" y2="38.592" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" stopColor="#f44f5a"/>
+                                            <stop offset=".443" stopColor="#ee3d4a"/>
+                                            <stop offset="1" stopColor="#e52030"/>
+                                          </linearGradient>
+                                        </defs>
+                                        <path fill="url(#shortsGradient)" d="M29.103,2.631c4.217-2.198,9.438-0.597,11.658,3.577c2.22,4.173,0.6,9.337-3.617,11.534	l-3.468,1.823c2.987,0.109,5.836,1.75,7.328,4.555c2.22,4.173,0.604,9.337-3.617,11.534L18.897,45.37	c-4.217,2.198-9.438,0.597-11.658-3.577s-0.6-9.337,3.617-11.534l3.468-1.823c-2.987-0.109-5.836-1.75-7.328-4.555	c-2.22-4.173-0.6-9.337,3.617-11.534C10.612,12.346,29.103,2.631,29.103,2.631z"/>
+                                        <path fill="#fff" d="M19.122,18.152v11.725c0,0.532,0.583,0.857,1.036,0.579l9.518-5.848	c0.431-0.265,0.432-0.892,0.001-1.158l-9.518-5.876C19.706,17.295,19.122,17.62,19.122,18.152z"/>
                                       </svg>
                                       <p className="text-sm">Aguardando URL válida</p>
                                     </div>
