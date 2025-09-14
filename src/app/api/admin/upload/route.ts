@@ -59,11 +59,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
     }
 
-    // Limite de 10 arquivos por vez para evitar timeout
-    if (files.length > 10) {
-      console.log(`❌ [${requestId}] Muitos arquivos (${files.length}). Limite: 10`)
+    // Limite de 30 arquivos por vez - suficiente para a maioria dos imóveis
+    if (files.length > 30) {
+      console.log(`❌ [${requestId}] Muitos arquivos (${files.length}). Limite: 30`)
       return NextResponse.json({
-        error: `Muitos arquivos selecionados (${files.length}). Limite máximo: 10 arquivos por vez.`
+        error: `Muitos arquivos selecionados (${files.length}). Limite máximo: 30 arquivos por vez.`
       }, { status: 400 })
     }
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const errors: string[] = []
 
     // Processar arquivos em lotes para evitar sobrecarga
-    const BATCH_SIZE = 3 // Máximo 3 uploads simultâneos
+    const BATCH_SIZE = 5 // Máximo 5 uploads simultâneos para melhor performance
     const batches = []
 
     for (let i = 0; i < files.length; i += BATCH_SIZE) {

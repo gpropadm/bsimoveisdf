@@ -40,6 +40,7 @@ export default function EditProperty() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 })
   const [images, setImages] = useState<string[]>([])
   const [videos, setVideos] = useState<string[]>([])
   const [originalImages, setOriginalImages] = useState<string[]>([]) // Para comparar mudanças
@@ -251,8 +252,8 @@ export default function EditProperty() {
     if (!files || files.length === 0) return
 
     // Verificar limite de arquivos
-    if (files.length > 10) {
-      alert(`❌ Muitos arquivos selecionados (${files.length}). Limite máximo: 10 arquivos por vez.`)
+    if (files.length > 30) {
+      alert(`❌ Muitos arquivos selecionados (${files.length}). Limite máximo: 30 arquivos por vez.`)
       return
     }
 
@@ -270,6 +271,7 @@ export default function EditProperty() {
     }
 
     setUploading(true)
+    setUploadProgress({ current: 0, total: files.length })
     try {
       const formData = new FormData()
 
@@ -326,6 +328,7 @@ export default function EditProperty() {
 
       if (data.urls && Array.isArray(data.urls)) {
         setImages(prev => [...prev, ...data.urls])
+        setUploadProgress({ current: data.urls.length, total: files.length })
 
         let message = `✅ ${data.urls.length} imagem(ns) enviada(s) com sucesso!`
         if (data.errors && data.errors.length > 0) {
@@ -342,6 +345,7 @@ export default function EditProperty() {
       alert(`❌ Erro ao fazer upload das imagens: ${errorMessage}`)
     } finally {
       setUploading(false)
+      setUploadProgress({ current: 0, total: 0 })
     }
   }
 
@@ -859,8 +863,18 @@ export default function EditProperty() {
                       {uploading ? (
                         <div className="text-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7360ee] mx-auto mb-2"></div>
-                          <p className="text-[#7360ee] font-medium">Fazendo upload...</p>
-                          <p className="text-xs text-gray-500">Processando em lotes para melhor performance</p>
+                          <p className="text-[#7360ee] font-medium">
+                            Fazendo upload... {uploadProgress.total > 0 && `(${uploadProgress.current}/${uploadProgress.total})`}
+                          </p>
+                          <p className="text-xs text-gray-500">Processando em lotes de 5 imagens simultaneamente</p>
+                          {uploadProgress.total > 0 && (
+                            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                              <div
+                                className="bg-[#7360ee] h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                              />
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <>
@@ -868,7 +882,7 @@ export default function EditProperty() {
                             Clique para selecionar imagens ou arraste aqui
                           </p>
                           <p className="text-sm text-gray-500">
-                            PNG, JPG até 5MB cada (máximo 10 imagens por vez)
+                            PNG, JPG até 5MB cada (máximo 30 imagens por vez)
                           </p>
                         </>
                       )}
