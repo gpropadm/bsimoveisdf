@@ -23,21 +23,19 @@ export async function POST(request: NextRequest) {
 
     const { resource_type = 'video' } = await request.json()
 
-    // Parâmetros para o upload
+    // Parâmetros para o upload (apenas os necessários)
     const timestamp = Math.round(new Date().getTime() / 1000)
     const params = {
       timestamp,
-      folder: resource_type === 'video' ? 'imoveis/videos' : 'imoveis',
-      resource_type,
-      // Transformações para vídeo
-      ...(resource_type === 'video' && {
-        transformation: 'q_auto,vc_h264',
-        eager: 'sp_hd|q_auto,vc_h264', // Gerar versão HD automaticamente
-      })
+      folder: resource_type === 'video' ? 'imoveis/videos' : 'imoveis'
     }
+
+    console.log('🔐 Parâmetros para assinatura:', params)
 
     // Gerar assinatura
     const signature = cloudinary.utils.api_sign_request(params, process.env.CLOUDINARY_API_SECRET!)
+
+    console.log('✅ Assinatura gerada:', { signature: signature.substring(0, 10) + '...' })
 
     console.log('✅ Assinatura gerada para upload direto')
 

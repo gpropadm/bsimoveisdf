@@ -395,22 +395,20 @@ export default function EditProperty() {
 
       console.log('☁️ Upload direto para Cloudinary...', cloud_name)
 
-      // Preparar dados para Cloudinary
+      // Preparar dados para Cloudinary (apenas os parâmetros assinados)
       const formData = new FormData()
       formData.append('file', file)
       formData.append('signature', signature)
       formData.append('timestamp', timestamp.toString())
       formData.append('api_key', api_key)
       formData.append('folder', params.folder)
-      formData.append('resource_type', 'video')
 
-      // Adicionar transformações se existirem
-      if (params.transformation) {
-        formData.append('transformation', params.transformation)
-      }
-      if (params.eager) {
-        formData.append('eager', params.eager)
-      }
+      console.log('📤 Dados para Cloudinary:', {
+        signature: signature.substring(0, 10) + '...',
+        timestamp,
+        api_key: api_key.substring(0, 10) + '...',
+        folder: params.folder
+      })
 
       // Upload direto para Cloudinary
       const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
@@ -420,8 +418,21 @@ export default function EditProperty() {
 
       if (!uploadResponse.ok) {
         const errorText = await uploadResponse.text()
-        console.error('❌ Erro do Cloudinary:', errorText)
-        throw new Error(`Upload falhou: ${uploadResponse.status}`)
+        console.error('❌ Erro do Cloudinary:', {
+          status: uploadResponse.status,
+          statusText: uploadResponse.statusText,
+          response: errorText
+        })
+
+        let errorMessage = `Upload falhou: ${uploadResponse.status}`
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData.error?.message || errorMessage
+        } catch {
+          // Se não conseguir fazer parse, usar mensagem padrão
+        }
+
+        throw new Error(errorMessage)
       }
 
       const uploadResult = await uploadResponse.json()
