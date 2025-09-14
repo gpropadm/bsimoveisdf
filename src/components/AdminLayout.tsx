@@ -71,35 +71,39 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
 
   return (
     <div className={`min-h-screen font-inter ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Navbar */}
-      <nav className={`fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
-        <div className="px-3 py-3 lg:px-5 lg:pl-3">
+      {/* Mobile Header */}
+      <nav className={`lg:hidden fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
+        <div className="px-3 py-3">
           <div className="flex items-center justify-between">
-            {/* Mobile: Just hamburger and logout */}
-            <div className="flex items-center justify-between w-full lg:w-auto">
-              {/* Mobile hamburger */}
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className={`lg:hidden p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
-                </svg>
-              </button>
-              
-              {/* Mobile logout */}
-              <button
-                onClick={() => signOut({ callbackUrl: '/admin/login' })}
-                className="lg:hidden flex text-sm bg-gray-800 rounded-full"
-              >
-                <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
-                  {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
-                </div>
-              </button>
-            </div>
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
+              </svg>
+            </button>
+            
+            {/* Mobile logout */}
+            <button
+              onClick={() => signOut({ callbackUrl: '/admin/login' })}
+              className="flex text-sm bg-gray-800 rounded-full"
+            >
+              <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
+                {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
+              </div>
+            </button>
+          </div>
+        </div>
+      </nav>
 
-            {/* Desktop: Full header */}
-            <div className="hidden lg:flex items-center justify-center flex-1">
+      {/* Desktop Header */}
+      <nav className={`hidden lg:fixed lg:top-0 lg:z-50 lg:w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} lg:border-b lg:pl-64`}>
+        <div className="px-5 py-3">
+          <div className="flex items-center justify-between">
+            {/* Desktop: Site name centered */}
+            <div className="flex items-center justify-center flex-1">
               <a href="#" className="flex">
                 <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -112,39 +116,38 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
               </a>
             </div>
             
-            <div className="hidden lg:flex items-center">
-              <div className="flex items-center ml-3">
-                <div className="flex items-center space-x-3">
+            {/* Desktop: Right side buttons */}
+            <div className="flex items-center">
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                >
+                  {isDarkMode ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                  )}
+                </button>
+                <Link
+                  href="/"
+                  className={`px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
+                >
+                  Ver Site
+                </Link>
+                <div className="flex items-center">
                   <button
-                    onClick={() => setIsDarkMode(!isDarkMode)}
-                    className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                    onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                    className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                   >
-                    {isDarkMode ? (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                      </svg>
-                    )}
+                    <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
+                      {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                    </div>
                   </button>
-                  <Link
-                    href="/"
-                    className={`px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
-                  >
-                    Ver Site
-                  </Link>
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => signOut({ callbackUrl: '/admin/login' })}
-                      className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                    >
-                      <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
-                        {session?.user?.name?.charAt(0)?.toUpperCase() || 'A'}
-                      </div>
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -161,7 +164,7 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r`}>
+      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform lg:translate-x-0 lg:pt-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:z-30 ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r pt-16 lg:pt-20`}>
         <div className="h-full px-3 pb-4 overflow-y-auto">
           <ul className="space-y-2 font-medium">
             {navigationItems.map((item) => (
@@ -185,8 +188,8 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       </aside>
 
       {/* Main Content */}
-      <div className="p-4 sm:ml-64">
-        <div className="p-4 rounded-lg mt-14">
+      <div className="lg:pl-64 pt-16 lg:pt-20">
+        <div className="p-4">
           {/* Header */}
           <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4 rounded-lg mb-6">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
