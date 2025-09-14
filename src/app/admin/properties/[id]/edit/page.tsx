@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
+import AdminLayout from '@/components/AdminLayout'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -39,7 +40,6 @@ export default function EditProperty() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [images, setImages] = useState<string[]>([])
   const [videos, setVideos] = useState<string[]>([])
   const [originalImages, setOriginalImages] = useState<string[]>([]) // Para comparar mudanças
@@ -465,131 +465,38 @@ export default function EditProperty() {
 
   if (!session || !property) return null
 
+  const actions = (
+    <Link
+      href={`/imovel/${property.id}`}
+      target="_blank"
+      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+        <polyline points="15,3 21,3 21,9"/>
+        <line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+      <span>Visualizar</span>
+    </Link>
+  )
+
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className={`${isSidebarOpen ? 'w-64' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}>
-        {/* Logo/Header */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-[#7360ee] rounded-lg flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-              </svg>
-            </div>
-            {isSidebarOpen && (
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">ImobiNext</h1>
-                <p className="text-xs text-gray-500">Admin Panel</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          <Link href="/admin" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="7" height="7"/>
-              <rect x="14" y="3" width="7" height="7"/>
-              <rect x="14" y="14" width="7" height="7"/>
-              <rect x="3" y="14" width="7" height="7"/>
-            </svg>
-            {isSidebarOpen && <span>Dashboard</span>}
-          </Link>
-          
-          <Link href="/admin/properties" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-            </svg>
-            {isSidebarOpen && <span className="font-medium">Imóveis</span>}
-          </Link>
-          
-          <Link href="/admin/users" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-              <path d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            {isSidebarOpen && <span>Usuários</span>}
-          </Link>
-          
-          <Link href="/admin/analytics" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 3v18h18"/>
-              <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/>
-            </svg>
-            {isSidebarOpen && <span>Analytics</span>}
-          </Link>
-          
-          <Link href="/admin/settings" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
-            </svg>
-            {isSidebarOpen && <span>Configurações</span>}
-          </Link>
-        </nav>
-
-        {/* Toggle Button */}
-        <div className="p-4 border-t border-gray-200">
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="w-full flex items-center justify-center p-2 rounded-lg text-gray-500 hover:bg-gray-100"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transition-transform ${isSidebarOpen ? 'rotate-180' : ''}`}>
-              <polyline points="15,18 9,12 15,6"/>
-            </svg>
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="flex items-center space-x-4 mb-2">
-                <Link href="/admin/properties" className="text-[#7360ee] hover:text-[#7360ee] flex items-center space-x-2">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                  <span>Voltar</span>
-                </Link>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">Editar Imóvel</h1>
-              <p className="text-gray-600">{property.title}</p>
-            </div>
-            <div className="flex space-x-3">
-              <Link 
-                href={`/imovel/${property.id}`} 
-                target="_blank"
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 flex items-center space-x-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                  <polyline points="15,3 21,3 21,9"/>
-                  <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-                <span>Visualizar</span>
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+    <AdminLayout
+      title="Editar Imóvel"
+      subtitle={property.title}
+      currentPage="properties"
+      actions={actions}
+    >
+      <div className="p-4 lg:p-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
               {/* Informações Básicas */}
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Informações Básicas</h3>
               </div>
               
-              <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Título *
@@ -640,7 +547,7 @@ export default function EditProperty() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Tipo *
@@ -708,11 +615,11 @@ export default function EditProperty() {
 
             {/* Localização */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Localização</h3>
               </div>
               
-              <div className="p-6 space-y-6">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Endereço *
@@ -727,7 +634,7 @@ export default function EditProperty() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Cidade *
@@ -775,12 +682,12 @@ export default function EditProperty() {
 
             {/* Características */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Características</h3>
               </div>
               
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Quartos *
@@ -847,12 +754,12 @@ export default function EditProperty() {
 
             {/* Imagens */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Imagens do Imóvel</h3>
                 <p className="text-sm text-gray-600 mt-1">Arraste e solte imagens ou clique para selecionar</p>
               </div>
               
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {/* Upload Area */}
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
@@ -903,7 +810,7 @@ export default function EditProperty() {
                     <h4 className="text-sm font-medium text-gray-900 mb-4">
                       Imagens Atuais ({images.length})
                     </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                       {images.map((imageUrl, index) => (
                         <div key={index} className="relative group">
                           <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
@@ -977,12 +884,12 @@ export default function EditProperty() {
 
             {/* Vídeos */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Vídeos do Imóvel</h3>
                 <p className="text-sm text-gray-600 mt-1">Adicione vídeos para criar stories do imóvel</p>
               </div>
               
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="space-y-4">
                   {videos.map((video, index) => (
                     <div key={index} className="border border-gray-200 rounded-lg p-4">
@@ -1150,39 +1057,38 @@ export default function EditProperty() {
               </div>
             </div>
 
-            {/* Botões de Ação */}
-            <div className="flex justify-end space-x-4 mt-6">
-              <Link
-                href="/admin/properties"
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-              >
-                Cancelar
-              </Link>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-              >
-                {saving ? (
-                  <>
-                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                    <span>Salvando...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
-                      <polyline points="17,21 17,13 7,13 7,21"/>
-                      <polyline points="7,3 7,8 15,8"/>
-                    </svg>
-                    <span>Salvar Alterações</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </main>
+          {/* Botões de Ação */}
+          <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+            <Link
+              href="/admin/properties"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-center"
+            >
+              Cancelar
+            </Link>
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            >
+              {saving ? (
+                <>
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Salvando...</span>
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                    <polyline points="17,21 17,13 7,13 7,21"/>
+                    <polyline points="7,3 7,8 15,8"/>
+                  </svg>
+                  <span>Salvar Alterações</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-    </div>
+    </AdminLayout>
   )
 }
