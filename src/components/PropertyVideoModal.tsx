@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 interface Property {
@@ -30,46 +30,119 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
   const router = useRouter()
   const [isClosing, setIsClosing] = useState(false)
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   // Função para obter lista de vídeos
   const getVideos = (videoData: string | null): string[] => {
-    if (!videoData) return [`https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4`]
-    
+    console.log('🎬 Getting videos from:', videoData)
+
+    // Se não há vídeo, retornar 2 vídeos de teste para demonstrar stories
+    if (!videoData) {
+      console.log('📹 No video data, using test videos')
+      return [
+        `https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4`,
+        `https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4`
+      ]
+    }
+
     try {
       // Tentar fazer parse como JSON array
       const videos = JSON.parse(videoData)
+      console.log('✅ Parsed videos:', videos)
       if (Array.isArray(videos) && videos.length > 0) {
         return videos
       }
     } catch {
+      console.log('📹 Not JSON, using as single video')
       // Se não for JSON válido, assumir que é string única
       if (videoData.trim()) {
         return [videoData]
       }
     }
-    
-    // Fallback para vídeo de exemplo
-    return [`https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4`]
+
+    // Fallback para vídeos de exemplo
+    console.log('📹 Using fallback test videos')
+    return [
+      `https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4`,
+      `https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4`
+    ]
   }
 
   const videos = getVideos(property?.video || null)
 
+  // Controle de progresso e navegação automática
+  useEffect(() => {
+    console.log('📊 Progress effect:', { isOpen, isPlaying, videoIndex: currentVideoIndex })
+
+    if (!isOpen || !isPlaying || !videoRef.current) return
+
+    const video = videoRef.current
+    const duration = video.duration || 8 // 8 segundos para teste
+
+    console.log('⏱️ Starting timer:', { duration, currentVideoIndex, totalVideos: videos.length })
+
+    // Limpar intervalo anterior
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current)
+    }
+
+    // Iniciar progresso
+    setProgress(0)
+    const startTime = Date.now()
+
+    progressIntervalRef.current = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000
+      const newProgress = Math.min((elapsed / duration) * 100, 100)
+
+      setProgress(newProgress)
+
+      // Avançar para próximo vídeo quando terminar
+      if (newProgress >= 100) {
+        console.log('✅ Video finished, going to next')
+        goToNextVideo()
+      }
+    }, 100)
+
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
+    }
+  }, [isOpen, isPlaying, currentVideoIndex])
+
   // Reset video index when property changes
   useEffect(() => {
     setCurrentVideoIndex(0)
+    setProgress(0)
   }, [property])
 
+  // Body overflow control
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      setCurrentVideoIndex(0) // Reset to first video
     } else {
       document.body.style.overflow = 'unset'
     }
 
     return () => {
       document.body.style.overflow = 'unset'
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
     }
   }, [isOpen])
+
+  // Reset progress when video changes
+  useEffect(() => {
+    setProgress(0)
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0
+    }
+  }, [currentVideoIndex])
 
   const handleClose = () => {
     setIsClosing(true)
@@ -91,14 +164,31 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
   }
 
   const goToNextVideo = () => {
+    console.log('⏭️ Next video:', { current: currentVideoIndex, total: videos.length })
     if (currentVideoIndex < videos.length - 1) {
       setCurrentVideoIndex(prev => prev + 1)
+    } else {
+      // Fechar modal quando terminar todos os vídeos
+      console.log('🔚 All videos finished, closing modal')
+      handleClose()
     }
   }
 
   const goToPreviousVideo = () => {
+    console.log('⏮️ Previous video:', { current: currentVideoIndex })
     if (currentVideoIndex > 0) {
       setCurrentVideoIndex(prev => prev - 1)
+    }
+  }
+
+  const togglePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
     }
   }
 
@@ -148,17 +238,56 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
         <div className="relative bg-black rounded-2xl overflow-hidden" style={{ aspectRatio: '9/16' }}>
           {/* Video */}
           <video
+            ref={videoRef}
             key={currentVideoIndex} // Force re-render when video changes
             className="w-full h-full object-cover"
             autoPlay
-            loop
             muted
             playsInline
             controls={false}
+            onLoadedData={() => {
+              if (videoRef.current && isPlaying) {
+                videoRef.current.play()
+              }
+            }}
           >
             <source src={currentVideoUrl} type="video/mp4" />
+            {currentVideoUrl.includes('.mov') && <source src={currentVideoUrl} type="video/quicktime" />}
             Seu navegador não suporta vídeo.
           </video>
+
+          {/* Touch areas for navigation */}
+          <div className="absolute inset-0 flex">
+            {/* Left side - previous video */}
+            {currentVideoIndex > 0 && (
+              <div
+                className="w-1/3 h-full cursor-pointer"
+                onClick={goToPreviousVideo}
+              />
+            )}
+
+            {/* Center - play/pause */}
+            <div
+              className="flex-1 h-full cursor-pointer flex items-center justify-center"
+              onClick={togglePlayPause}
+            >
+              {!isPlaying && (
+                <div className="bg-black/50 rounded-full p-4">
+                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8 5v10l8-5-8-5z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+
+            {/* Right side - next video */}
+            {currentVideoIndex < videos.length - 1 && (
+              <div
+                className="w-1/3 h-full cursor-pointer"
+                onClick={goToNextVideo}
+              />
+            )}
+          </div>
 
           {/* Navigation Controls */}
           {videos.length > 1 && (
@@ -191,8 +320,26 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
 
           {/* Video Controls Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none">
+            {/* Stories Progress Bars - Instagram Style */}
+            <div className="absolute top-4 left-4 right-4 flex space-x-1 z-20">
+              {videos.map((_, index) => (
+                <div key={index} className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-white transition-all duration-100"
+                    style={{
+                      width: index < currentVideoIndex
+                        ? '100%'
+                        : index === currentVideoIndex
+                        ? `${progress}%`
+                        : '0%'
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+
             {/* Top Info */}
-            <div className="absolute top-4 left-4 right-4 pointer-events-auto">
+            <div className="absolute top-12 left-4 right-4 pointer-events-auto">
               <div className="flex items-start justify-between">
                 <button
                   onClick={handleTitleClick}
@@ -201,7 +348,7 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
                   <h3 className="font-semibold text-lg mb-1 text-left">{property.title}</h3>
                   <p className="text-sm text-gray-200">{property.city}</p>
                 </button>
-                
+
                 {/* Video Counter */}
                 {videos.length > 1 && (
                   <div className="bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full text-white text-sm">
@@ -269,43 +416,9 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
               </div>
             </div>
 
-            {/* Video Dots Indicators */}
-            {videos.length > 1 && (
-              <div className="absolute top-14 left-1/2 -translate-x-1/2 flex space-x-2">
-                {videos.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToVideo(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentVideoIndex ? 'bg-white' : 'bg-white/50'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Progress bar - only show for single video */}
-            {videos.length === 1 && (
-              <div className="absolute top-12 left-4 right-4 h-1 bg-white/30 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-white rounded-full animate-pulse"
-                  style={{ 
-                    width: '100%',
-                    animation: 'progress 15s linear infinite'
-                  }}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes progress {
-          0% { width: 0% }
-          100% { width: 100% }
-        }
-      `}</style>
     </div>
   )
 }
