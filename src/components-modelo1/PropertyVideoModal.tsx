@@ -40,32 +40,53 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
   const getVideos = (): string[] => {
     if (!property) return []
 
+    console.log('🎬 Property data:', {
+      id: property.id,
+      title: property.title,
+      videoUrl: property.videoUrl,
+      video: property.video,
+      hasVideo: !!property.video,
+      videoType: typeof property.video
+    })
+
     const videos: string[] = []
 
     // Adicionar videoUrl se existir
     if (property.videoUrl) {
+      console.log('📹 Found videoUrl:', property.videoUrl)
       videos.push(property.videoUrl)
     }
 
     // Adicionar vídeos do campo video (JSON)
     if (property.video) {
+      console.log('🎥 Found video field:', property.video)
       try {
         const parsedVideos = JSON.parse(property.video)
+        console.log('🎬 Parsed videos:', parsedVideos)
         if (Array.isArray(parsedVideos)) {
-          videos.push(...parsedVideos.filter(v => v.trim()))
+          const validVideos = parsedVideos.filter(v => v && v.trim())
+          console.log('✅ Valid videos:', validVideos)
+          videos.push(...validVideos)
         }
-      } catch {
+      } catch (error) {
+        console.log('❌ Failed to parse video JSON:', error)
         if (property.video.trim()) {
+          console.log('📹 Using video as single URL:', property.video)
           videos.push(property.video)
         }
       }
     }
 
-    // Vídeo placeholder se não houver nenhum
+    // Vídeos de teste se não houver nenhum (2 vídeos para testar stories)
     if (videos.length === 0) {
-      videos.push('https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4')
+      console.log('⚠️ No videos found, using placeholder videos')
+      videos.push(
+        'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
+        'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4'
+      )
     }
 
+    console.log('🎬 Final videos array:', videos)
     return videos
   }
 
@@ -73,10 +94,14 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
 
   // Controle de progresso e navegação automática
   useEffect(() => {
+    console.log('📊 Progress effect triggered:', { isOpen, isPlaying, hasVideoRef: !!videoRef.current })
+
     if (!isOpen || !isPlaying || !videoRef.current) return
 
     const video = videoRef.current
-    const duration = video.duration || 15 // Fallback para 15s se não conseguir pegar a duração
+    const duration = video.duration || 10 // Fallback para 10s para teste mais rápido
+
+    console.log('⏱️ Starting progress timer:', { duration, currentVideoIndex, totalVideos: videos.length })
 
     // Limpar intervalo anterior
     if (progressIntervalRef.current) {
@@ -92,9 +117,11 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
       const newProgress = Math.min((elapsed / duration) * 100, 100)
 
       setProgress(newProgress)
+      console.log(`📈 Progress: ${newProgress.toFixed(1)}% (${elapsed.toFixed(1)}s / ${duration}s)`)
 
       // Avançar para próximo vídeo quando terminar
       if (newProgress >= 100) {
+        console.log('✅ Video finished, calling nextVideo()')
         nextVideo()
       }
     }, 100)
@@ -132,17 +159,24 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
   }, [currentVideoIndex])
 
   const nextVideo = () => {
+    console.log('⏭️ nextVideo called:', { currentVideoIndex, totalVideos: videos.length })
     if (currentVideoIndex < videos.length - 1) {
-      setCurrentVideoIndex(currentVideoIndex + 1)
+      const newIndex = currentVideoIndex + 1
+      console.log(`🎬 Moving to video ${newIndex + 1}/${videos.length}`)
+      setCurrentVideoIndex(newIndex)
     } else {
+      console.log('🔚 All videos finished, closing modal')
       // Fechar modal quando terminar todos os vídeos
       handleClose()
     }
   }
 
   const previousVideo = () => {
+    console.log('⏮️ previousVideo called:', { currentVideoIndex })
     if (currentVideoIndex > 0) {
-      setCurrentVideoIndex(currentVideoIndex - 1)
+      const newIndex = currentVideoIndex - 1
+      console.log(`🎬 Moving back to video ${newIndex + 1}/${videos.length}`)
+      setCurrentVideoIndex(newIndex)
     }
   }
 
