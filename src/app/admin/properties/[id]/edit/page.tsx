@@ -345,26 +345,51 @@ export default function EditProperty() {
 
   const handleVideoUpload = async (file: File, index: number) => {
     if (!file) return
-    
+
+    console.log('🎥 Iniciando upload do arquivo:', {
+      name: file.name,
+      type: file.type,
+      size: `${(file.size / 1024 / 1024).toFixed(2)}MB`
+    })
+
     setUploadingVideo(index)
     try {
       const formData = new FormData()
       formData.append('video', file)
-      
+
+      console.log('📤 Enviando arquivo para API...')
       const response = await fetch('/api/admin/upload-video', {
         method: 'POST',
         body: formData
       })
-      
+
+      console.log('📥 Resposta da API:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      })
+
       if (!response.ok) {
-        throw new Error('Erro no upload')
+        // Tentar extrair detalhes do erro
+        let errorMessage = 'Erro no upload'
+        try {
+          const errorData = await response.json()
+          console.error('❌ Detalhes do erro:', errorData)
+          errorMessage = errorData.details || errorData.error || errorMessage
+        } catch (parseError) {
+          console.error('❌ Erro ao parsear resposta:', parseError)
+          errorMessage = `Erro ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
-      
+
       const data = await response.json()
+      console.log('✅ Upload concluído:', data.url)
       updateVideo(index, data.url)
     } catch (error) {
-      console.error('Erro no upload:', error)
-      alert('Erro ao fazer upload do vídeo. Tente novamente.')
+      console.error('❌ Erro no upload:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      alert(`Erro ao fazer upload do vídeo: ${errorMessage}`)
     } finally {
       setUploadingVideo(null)
     }

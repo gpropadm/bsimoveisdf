@@ -12,7 +12,9 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🎥 === INÍCIO DO UPLOAD DE VÍDEO ===')
     console.log('🎥 Verificando sessão para upload de vídeo...')
+
     // Verificar autenticação
     const session = await getServerSession(authOptions)
     console.log('👤 Sessão encontrada:', session ? 'SIM' : 'NÃO')
@@ -21,10 +23,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
+    console.log('📦 Extraindo dados do FormData...')
     const data = await request.formData()
     const video: File | null = data.get('video') as unknown as File
 
     if (!video) {
+      console.log('❌ Nenhum arquivo de vídeo encontrado no FormData')
       return NextResponse.json({ error: 'Nenhum vídeo enviado' }, { status: 400 })
     }
 
@@ -98,15 +102,34 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    console.error('❌ === ERRO NO UPLOAD DE VÍDEO ===')
     console.error('❌ Erro detalhado no upload do vídeo:', {
       message: error instanceof Error ? error.message : 'Erro desconhecido',
+      name: error instanceof Error ? error.name : 'Unknown',
       stack: error instanceof Error ? error.stack : undefined,
       error: error
     })
+
+    // Tratamento específico para erros do Cloudinary
+    if (error && typeof error === 'object' && 'http_code' in error) {
+      console.error('☁️ Erro específico do Cloudinary:', {
+        http_code: (error as any).http_code,
+        message: (error as any).message
+      })
+
+      if ((error as any).http_code === 401) {
+        return NextResponse.json({
+          error: 'Erro de autenticação com Cloudinary',
+          details: 'Verifique as credenciais do Cloudinary'
+        }, { status: 500 })
+      }
+    }
+
     return NextResponse.json(
-      { 
+      {
         error: 'Erro interno do servidor',
-        details: error instanceof Error ? error.message : 'Erro desconhecido'
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+        type: error instanceof Error ? error.name : 'Unknown'
       },
       { status: 500 }
     )
