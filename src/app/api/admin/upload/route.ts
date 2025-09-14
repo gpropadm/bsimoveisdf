@@ -11,26 +11,37 @@ cloudinary.config({
 })
 
 export async function POST(request: NextRequest) {
+  const requestId = Math.random().toString(36).substr(2, 9)
+  console.log(`🚀 [${requestId}] Iniciando upload request...`)
+
   try {
-    console.log('🔐 Verificando sessão para upload...')
+    console.log(`🔐 [${requestId}] Verificando sessão para upload...`)
     const session = await getServerSession(authOptions)
-    console.log('👤 Sessão encontrada:', session ? 'SIM' : 'NÃO')
-    
+    console.log(`👤 [${requestId}] Sessão encontrada:`, session ? 'SIM' : 'NÃO')
+
     if (!session) {
-      console.log('❌ Upload bloqueado - sem sessão')
+      console.log(`❌ [${requestId}] Upload bloqueado - sem sessão`)
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const formData = await request.formData()
-    const files = []
+    console.log(`📦 [${requestId}] Processando FormData...`)
 
-    console.log('📦 Processando FormData...')
+    let formData
+    try {
+      formData = await request.formData()
+      console.log(`✅ [${requestId}] FormData processado com sucesso`)
+    } catch (error) {
+      console.error(`❌ [${requestId}] Erro ao processar FormData:`, error)
+      throw new Error('Erro ao processar dados do formulário')
+    }
+
+    const files = []
 
     // Extrair todos os arquivos do FormData
     for (const [key, value] of formData.entries()) {
-      console.log('🔍 FormData entry:', key, typeof value, value instanceof File ? value.name : value)
+      console.log(`🔍 [${requestId}] FormData entry:`, key, typeof value, value instanceof File ? `File: ${value.name}` : value)
       if (key.startsWith('image-') && value instanceof File) {
-        console.log('✅ Arquivo válido encontrado:', {
+        console.log(`✅ [${requestId}] Arquivo válido encontrado:`, {
           key,
           name: value.name,
           type: value.type,
@@ -41,81 +52,114 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    console.log('📊 Total de arquivos extraídos:', files.length)
+    console.log(`📊 [${requestId}] Total de arquivos extraídos:`, files.length)
 
     if (files.length === 0) {
-      console.log('❌ Nenhum arquivo válido encontrado no FormData')
+      console.log(`❌ [${requestId}] Nenhum arquivo válido encontrado no FormData`)
       return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
     }
 
     const uploadedUrls: string[] = []
+    const errors: string[] = []
 
-    for (const file of files) {
-      console.log(`🔄 Processando arquivo: "${file.name}"`)
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      console.log(`🔄 [${requestId}] Processando arquivo ${i + 1}/${files.length}: "${file.name}"`)
 
-      // Validar tipo de arquivo
-      if (!file.type.startsWith('image/')) {
-        console.log(`❌ Tipo de arquivo inválido: "${file.name}" (${file.type})`)
-        continue
-      }
+      try {
+        // Validar tipo de arquivo
+        if (!file.type.startsWith('image/')) {
+          const error = `Tipo de arquivo inválido: "${file.name}" (${file.type})`
+          console.log(`❌ [${requestId}] ${error}`)
+          errors.push(error)
+          continue
+        }
 
-      // Validar tamanho (5MB máximo)
-      if (file.size > 5 * 1024 * 1024) {
-        const errorMsg = `Arquivo "${file.name}" é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo 5MB.`
-        console.log('❌', errorMsg)
-        return NextResponse.json({ error: errorMsg }, { status: 400 })
-      }
+        // Validar tamanho (5MB máximo)
+        if (file.size > 5 * 1024 * 1024) {
+          const error = `Arquivo "${file.name}" é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo 5MB.`
+          console.log(`❌ [${requestId}] ${error}`)
+          errors.push(error)
+          continue
+        }
 
-      // Converter File para Buffer
-      const bytes = await file.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-      
-      console.log('☁️ Fazendo upload para Cloudinary...', file.name, 'Tamanho:', (buffer.length/1024/1024).toFixed(2) + 'MB')
+        // Converter File para Buffer
+        console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)
+        const bytes = await file.arrayBuffer()
+        const buffer = Buffer.from(bytes)
 
-      // Upload para Cloudinary com timeout
-      const uploadResult = await Promise.race([
-        new Promise((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            {
-              resource_type: 'image',
-              folder: 'imoveis',
-              transformation: [
-                { width: 1200, height: 800, crop: 'limit' },
-                { quality: 'auto', fetch_format: 'auto' }
-              ]
-            },
-            (error, result) => {
-              if (error) {
-                console.error('❌ Erro do Cloudinary:', error)
-                reject(error)
-              } else {
-                console.log('✅ Upload Cloudinary sucesso:', result?.public_id)
-                resolve(result)
+        console.log(`☁️ [${requestId}] Fazendo upload para Cloudinary: "${file.name}" - Tamanho: ${(buffer.length/1024/1024).toFixed(2)}MB`)
+
+        // Upload para Cloudinary com timeout
+        const uploadResult = await Promise.race([
+          new Promise((resolve, reject) => {
+            console.log(`⬆️ [${requestId}] Iniciando upload para Cloudinary: "${file.name}"`)
+            cloudinary.uploader.upload_stream(
+              {
+                resource_type: 'image',
+                folder: 'imoveis',
+                transformation: [
+                  { width: 1200, height: 800, crop: 'limit' },
+                  { quality: 'auto', fetch_format: 'auto' }
+                ]
+              },
+              (error, result) => {
+                if (error) {
+                  console.error(`❌ [${requestId}] Erro do Cloudinary para "${file.name}":`, error)
+                  reject(error)
+                } else {
+                  console.log(`✅ [${requestId}] Upload Cloudinary sucesso para "${file.name}":`, result?.public_id)
+                  resolve(result)
+                }
               }
-            }
-          ).end(buffer)
-        }),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Upload timeout após 30s')), 30000)
-        )
-      ]) as any
+            ).end(buffer)
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error(`Upload timeout após 30s para "${file.name}"`)), 30000)
+          )
+        ]) as any
 
-      console.log('✅ Upload concluído:', uploadResult.secure_url)
-      uploadedUrls.push(uploadResult.secure_url)
+        console.log(`✅ [${requestId}] Upload concluído: "${file.name}" -> ${uploadResult.secure_url}`)
+        uploadedUrls.push(uploadResult.secure_url)
+
+      } catch (fileError) {
+        const error = `Erro no upload de "${file.name}": ${fileError instanceof Error ? fileError.message : 'Erro desconhecido'}`
+        console.error(`❌ [${requestId}] ${error}`)
+        errors.push(error)
+      }
     }
 
-    return NextResponse.json({ 
-      urls: uploadedUrls,
-      message: `${uploadedUrls.length} imagens enviadas com sucesso`
+    console.log(`📊 [${requestId}] Resumo do upload:`, {
+      totalArquivos: files.length,
+      sucessos: uploadedUrls.length,
+      erros: errors.length,
+      errorsList: errors
     })
 
+    if (uploadedUrls.length === 0 && errors.length > 0) {
+      console.log(`❌ [${requestId}] Nenhum arquivo foi carregado com sucesso`)
+      return NextResponse.json({
+        error: 'Nenhum arquivo foi carregado com sucesso',
+        details: errors.join('; ')
+      }, { status: 400 })
+    }
+
+    const response = {
+      urls: uploadedUrls,
+      message: `${uploadedUrls.length} imagens enviadas com sucesso`,
+      errors: errors.length > 0 ? errors : undefined
+    }
+
+    console.log(`✅ [${requestId}] Upload concluído:`, response)
+    return NextResponse.json(response)
+
   } catch (error) {
-    console.error('❌ Erro detalhado no upload:', {
+    console.error(`❌ [${requestId}] Erro detalhado no upload:`, {
       message: error instanceof Error ? error.message : 'Erro desconhecido',
       stack: error instanceof Error ? error.stack : undefined,
       error: error
     })
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Erro interno do servidor',
       details: error instanceof Error ? error.message : 'Erro desconhecido'
     }, { status: 500 })

@@ -306,8 +306,11 @@ export default function EditProperty() {
 
         try {
           const errorData = JSON.parse(errorText)
-          throw new Error(errorData.error || errorData.details || 'Erro no upload')
-        } catch {
+          const errorMsg = errorData.error || errorData.details || 'Erro no upload'
+          console.error('❌ Dados de erro do servidor:', errorData)
+          throw new Error(errorMsg)
+        } catch (parseError) {
+          console.error('❌ Erro ao fazer parse da resposta:', parseError)
           throw new Error(`Erro ${response.status}: ${errorText || response.statusText}`)
         }
       }
@@ -317,7 +320,12 @@ export default function EditProperty() {
 
       if (data.urls && Array.isArray(data.urls)) {
         setImages(prev => [...prev, ...data.urls])
-        alert(`✅ ${data.urls.length} imagem(ns) enviada(s) com sucesso!`)
+
+        let message = `✅ ${data.urls.length} imagem(ns) enviada(s) com sucesso!`
+        if (data.errors && data.errors.length > 0) {
+          message += `\n\n⚠️ Alguns arquivos tiveram problemas:\n${data.errors.join('\n')}`
+        }
+        alert(message)
       } else {
         console.error('❌ Resposta inválida do servidor:', data)
         throw new Error('Resposta inválida do servidor')
