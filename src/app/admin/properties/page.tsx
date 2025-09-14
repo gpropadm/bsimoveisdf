@@ -22,6 +22,10 @@ interface Property {
   area?: number
   description?: string
   status: string
+  images?: string
+  featured?: boolean
+  createdAt?: string
+  slug?: string
 }
 
 export default function AdminProperties() {
@@ -220,6 +224,9 @@ export default function AdminProperties() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Foto
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Imóvel
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -245,6 +252,28 @@ export default function AdminProperties() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {properties.map((property) => (
                   <tr key={property.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        {property.images ? (
+                          <img 
+                            src={JSON.parse(property.images)[0] || '/placeholder-image.jpg'} 
+                            alt={property.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = '/placeholder-image.jpg'
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                              <circle cx="8.5" cy="8.5" r="1.5"/>
+                              <polyline points="21,15 16,10 5,21"/>
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{property.title}</div>
@@ -285,7 +314,7 @@ export default function AdminProperties() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(property.createdAt).toLocaleDateString('pt-BR')}
+                      {property.createdAt ? new Date(property.createdAt).toLocaleDateString('pt-BR') : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <Link 
