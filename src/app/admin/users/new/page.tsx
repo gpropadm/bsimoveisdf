@@ -66,7 +66,7 @@ export default function NewUserPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4 animate-pulse">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#7360ee] rounded-xl mb-4 animate-pulse">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
             </svg>
@@ -95,7 +95,7 @@ export default function NewUserPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start">
               <Link href="/admin" className="flex ml-2 md:mr-24">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                   </svg>
@@ -165,7 +165,7 @@ export default function NewUserPage() {
             <nav className="flex" aria-label="Breadcrumb">
               <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li className="inline-flex items-center">
-                  <Link href="/admin" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                  <Link href="/admin" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-[#7360ee]">
                     <svg className="w-3 h-3 me-2.5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                     </svg>
@@ -177,7 +177,7 @@ export default function NewUserPage() {
                     <svg className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" fill="none" viewBox="0 0 6 10">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <Link href="/admin/users" className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2">Usuários</Link>
+                    <Link href="/admin/users" className="ms-1 text-sm font-medium text-gray-700 hover:text-[#7360ee] md:ms-2">Usuários</Link>
                   </div>
                 </li>
                 <li aria-current="page">
@@ -208,7 +208,7 @@ export default function NewUserPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#7360ee] focus:border-[#7360ee] block w-full p-2.5"
                 placeholder="Digite o nome completo"
               />
             </div>
@@ -224,7 +224,7 @@ export default function NewUserPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#7360ee] focus:border-[#7360ee] block w-full p-2.5"
                 placeholder="Digite o email"
               />
             </div>
@@ -240,7 +240,7 @@ export default function NewUserPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#7360ee] focus:border-[#7360ee] block w-full p-2.5"
                 placeholder="Digite a senha"
               />
             </div>
@@ -254,7 +254,7 @@ export default function NewUserPage() {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#7360ee] focus:border-[#7360ee] block w-full p-2.5"
               >
                 <option value="user">Usuário</option>
                 <option value="admin">Administrador</option>
@@ -265,7 +265,7 @@ export default function NewUserPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
+                className="text-white bg-[#7360ee]/90 hover:bg-[#7360ee]/95 focus:ring-4 focus:outline-none focus:ring-[#7360ee]/30 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50"
               >
                 {loading ? 'Criando...' : 'Criar Usuário'}
               </button>

@@ -555,7 +555,7 @@ export default function NewProperty() {
                   value={formData.title}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   placeholder="Ex: Apartamento 3 quartos no Centro"
                 />
               </div>
@@ -569,7 +569,7 @@ export default function NewProperty() {
                   value={formData.description}
                   onChange={handleChange}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   placeholder="Descreva as características do imóvel..."
                 />
               </div>
@@ -587,7 +587,7 @@ export default function NewProperty() {
                       value={formData.price}
                       onChange={handleChange}
                       required
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="500.000,00"
                     />
                   </div>
@@ -602,7 +602,7 @@ export default function NewProperty() {
                     value={formData.type}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   >
                     <option value="venda">Venda</option>
                     <option value="aluguel">Aluguel</option>
@@ -620,7 +620,7 @@ export default function NewProperty() {
                     value={formData.status}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   >
                     <option value="disponivel">Disponível</option>
                     <option value="vendido">Vendido</option>
@@ -637,7 +637,7 @@ export default function NewProperty() {
                     value={formData.category}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   >
                     <option value="apartamento">Apartamento</option>
                     <option value="casa">Casa</option>
@@ -668,7 +668,7 @@ export default function NewProperty() {
                   value={formData.cep}
                   onChange={handleCepChange}
                   maxLength={9}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   placeholder="00000-000"
                 />
               </div>
@@ -683,7 +683,7 @@ export default function NewProperty() {
                   value={formData.address}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   placeholder="Rua das Flores, 123"
                 />
               </div>
@@ -699,7 +699,7 @@ export default function NewProperty() {
                     value={formData.city}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     placeholder="Florianópolis"
                   />
                 </div>
@@ -715,7 +715,7 @@ export default function NewProperty() {
                     onChange={handleChange}
                     required
                     maxLength={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     placeholder="SC"
                   />
                 </div>
@@ -743,7 +743,7 @@ export default function NewProperty() {
                       value={formData.bedrooms}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -757,7 +757,7 @@ export default function NewProperty() {
                       value={formData.bathrooms}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -771,7 +771,7 @@ export default function NewProperty() {
                       value={formData.parking}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -786,7 +786,7 @@ export default function NewProperty() {
                       onChange={handleChange}
                       step="0.01"
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                 </div>
@@ -801,7 +801,7 @@ export default function NewProperty() {
                       name="houseType"
                       value={formData.houseType}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione o tipo</option>
                       <option value="terrea">Térrea</option>
@@ -820,7 +820,7 @@ export default function NewProperty() {
                       name="garage"
                       value={formData.garage}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione o tipo</option>
                       <option value="coberta">Coberta</option>
@@ -837,7 +837,7 @@ export default function NewProperty() {
                         name="yard"
                         checked={formData.yard}
                         onChange={handleChange}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
                       />
                       <span className="text-sm text-gray-700">
                         Possui quintal
@@ -868,7 +868,7 @@ export default function NewProperty() {
                       value={formData.floor}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 5"
                     />
                   </div>
@@ -884,7 +884,7 @@ export default function NewProperty() {
                         name="condoFee"
                         value={formData.condoFee}
                         onChange={handleChange}
-                        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                         placeholder="500,00"
                       />
                     </div>
@@ -950,7 +950,7 @@ export default function NewProperty() {
                               }))
                             }
                           }}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
                         />
                         <span className="text-sm text-gray-700">{amenity}</span>
                       </label>
@@ -978,7 +978,7 @@ export default function NewProperty() {
                       name="zoning"
                       value={formData.zoning}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione o zoneamento</option>
                       <option value="residencial">Residencial</option>
@@ -997,7 +997,7 @@ export default function NewProperty() {
                       name="slope"
                       value={formData.slope}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione a topografia</option>
                       <option value="plano">Plano</option>
@@ -1019,7 +1019,7 @@ export default function NewProperty() {
                     onChange={handleChange}
                     step="0.01"
                     min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     placeholder="Ex: 12.50"
                   />
                 </div>
@@ -1047,7 +1047,7 @@ export default function NewProperty() {
                       onChange={handleChange}
                       step="0.01"
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 50.75"
                     />
                   </div>
@@ -1063,7 +1063,7 @@ export default function NewProperty() {
                       onChange={handleChange}
                       step="0.01"
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 30.00"
                     />
                   </div>
@@ -1079,7 +1079,7 @@ export default function NewProperty() {
                       onChange={handleChange}
                       step="0.01"
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 15.25"
                     />
                   </div>
@@ -1094,7 +1094,7 @@ export default function NewProperty() {
                     name="waterSources"
                     value={formData.waterSources}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     placeholder="Ex: Rio, 2 poços artesianos, açude"
                   />
                 </div>
@@ -1141,7 +1141,7 @@ export default function NewProperty() {
                               }))
                             }
                           }}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
                         />
                         <span className="text-sm text-gray-700">{building}</span>
                       </label>
@@ -1170,7 +1170,7 @@ export default function NewProperty() {
                       name="commercialType"
                       value={formData.commercialType}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione o tipo</option>
                       <option value="loja">Loja</option>
@@ -1200,7 +1200,7 @@ export default function NewProperty() {
                       onChange={handleChange}
                       step="0.01"
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 150.50"
                     />
                   </div>
@@ -1217,7 +1217,7 @@ export default function NewProperty() {
                       value={formData.floor_commercial}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       placeholder="Ex: 3"
                     />
                   </div>
@@ -1232,7 +1232,7 @@ export default function NewProperty() {
                       value={formData.parking}
                       onChange={handleChange}
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                 </div>
@@ -1246,7 +1246,7 @@ export default function NewProperty() {
                     name="businessCenter"
                     value={formData.businessCenter}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     placeholder="Ex: Centro Empresarial ABC, Shopping XYZ"
                   />
                 </div>
@@ -1297,7 +1297,7 @@ export default function NewProperty() {
                               }))
                             }
                           }}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mr-2"
+                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
                         />
                         <span className="text-sm text-gray-700">{feature}</span>
                       </label>
@@ -1331,7 +1331,7 @@ export default function NewProperty() {
                     </svg>
                     <div className="mt-4">
                       <p className="text-sm text-gray-600">
-                        <span className="font-medium text-blue-600 hover:text-blue-500">Clique para fazer upload</span> ou arraste as imagens aqui
+                        <span className="font-medium text-[#7360ee] hover:text-blue-500">Clique para fazer upload</span> ou arraste as imagens aqui
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Formatos: JPEG, PNG • Tamanho máximo: 5MB por arquivo
@@ -1361,7 +1361,7 @@ export default function NewProperty() {
                         onDrop={(e) => handleDrop(e, index)}
                         onDragEnd={handleDragEnd}
                       >
-                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-transparent hover:border-blue-300">
+                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-dashed border-transparent hover:border-[#7360ee]/30">
                           <img
                             src={preview}
                             alt={`Preview ${index + 1}`}
@@ -1376,7 +1376,7 @@ export default function NewProperty() {
                           ×
                         </button>
                         {index === 0 && (
-                          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded font-medium z-10">
+                          <div className="absolute top-2 left-2 bg-[#7360ee]/100 text-white text-xs px-2 py-1 rounded font-medium z-10">
                             Principal
                           </div>
                         )}
@@ -1421,7 +1421,7 @@ export default function NewProperty() {
                     </svg>
                     <div className="mt-4">
                       <p className="text-sm text-gray-600">
-                        <span className="font-medium text-blue-600 hover:text-blue-500">Clique para fazer upload</span> ou arraste os vídeos aqui
+                        <span className="font-medium text-[#7360ee] hover:text-blue-500">Clique para fazer upload</span> ou arraste os vídeos aqui
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Formatos: MP4, WebM, MOV • Vertical • Máx 60s • Até 100MB cada • Múltiplos vídeos
@@ -1480,7 +1480,7 @@ export default function NewProperty() {
                   name="featured"
                   checked={formData.featured}
                   onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                 />
                 <span className="ml-2 text-sm text-gray-700">
                   Imóvel em destaque (aparecerá na página inicial)
@@ -1500,7 +1500,7 @@ export default function NewProperty() {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2 bg-[#7360ee] text-white rounded-lg hover:bg-[#7360ee]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Salvando...' : 'Criar Imóvel'}
             </button>

@@ -374,7 +374,7 @@ export default function EditProperty() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4 animate-pulse">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#7360ee] rounded-xl mb-4 animate-pulse">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
             </svg>
@@ -394,7 +394,7 @@ export default function EditProperty() {
         {/* Logo/Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="flex-shrink-0 w-10 h-10 bg-[#7360ee] rounded-lg flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
               </svg>
@@ -420,7 +420,7 @@ export default function EditProperty() {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
           
-          <Link href="/admin/properties" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+          <Link href="/admin/properties" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
             </svg>
@@ -474,7 +474,7 @@ export default function EditProperty() {
           <div className="flex justify-between items-center">
             <div>
               <div className="flex items-center space-x-4 mb-2">
-                <Link href="/admin/properties" className="text-blue-600 hover:text-blue-800 flex items-center space-x-2">
+                <Link href="/admin/properties" className="text-[#7360ee] hover:text-[#7360ee] flex items-center space-x-2">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="15,18 9,12 15,6"/>
                   </svg>
@@ -522,7 +522,7 @@ export default function EditProperty() {
                       value={formData.title}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -535,7 +535,7 @@ export default function EditProperty() {
                       value={formData.category}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="">Selecione uma categoria</option>
                       <option value="apartamento">Apartamento</option>
@@ -558,7 +558,7 @@ export default function EditProperty() {
                     onChange={handleChange}
                     required
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   />
                 </div>
 
@@ -572,7 +572,7 @@ export default function EditProperty() {
                       value={formData.type}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="venda">Venda</option>
                       <option value="aluguel">Aluguel</option>
@@ -588,7 +588,7 @@ export default function EditProperty() {
                       value={formData.status}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     >
                       <option value="disponivel">Disponível</option>
                       <option value="vendido">Vendido</option>
@@ -608,7 +608,7 @@ export default function EditProperty() {
                       required
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -619,7 +619,7 @@ export default function EditProperty() {
                         name="featured"
                         checked={formData.featured}
                         onChange={handleChange}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                       />
                       <span className="text-sm font-medium text-gray-700">Imóvel em destaque</span>
                     </label>
@@ -645,7 +645,7 @@ export default function EditProperty() {
                     value={formData.address}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                   />
                 </div>
 
@@ -660,7 +660,7 @@ export default function EditProperty() {
                       value={formData.city}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -675,7 +675,7 @@ export default function EditProperty() {
                       onChange={handleChange}
                       required
                       maxLength={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -688,7 +688,7 @@ export default function EditProperty() {
                       name="zipcode"
                       value={formData.zipcode}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                 </div>
@@ -714,7 +714,7 @@ export default function EditProperty() {
                       onChange={handleChange}
                       required
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -729,7 +729,7 @@ export default function EditProperty() {
                       onChange={handleChange}
                       required
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -744,7 +744,7 @@ export default function EditProperty() {
                       onChange={handleChange}
                       required
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                   
@@ -760,7 +760,7 @@ export default function EditProperty() {
                       required
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                 </div>
@@ -779,7 +779,7 @@ export default function EditProperty() {
                 <div
                   className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                     dragActive 
-                      ? 'border-blue-500 bg-blue-50' 
+                      ? 'border-[#7360ee] bg-[#7360ee]/10' 
                       : 'border-gray-300 hover:border-gray-400'
                   }`}
                   onDrop={handleDrop}
@@ -804,7 +804,7 @@ export default function EditProperty() {
                         <path d="m21 15-3.086-3.086a2 2 0 00-2.828 0L6 21"/>
                       </svg>
                       {uploading ? (
-                        <p className="text-blue-600 font-medium">Fazendo upload...</p>
+                        <p className="text-[#7360ee] font-medium">Fazendo upload...</p>
                       ) : (
                         <>
                           <p className="text-gray-600 font-medium mb-2">
@@ -882,7 +882,7 @@ export default function EditProperty() {
                           
                           {/* Main Image Indicator */}
                           {index === 0 && (
-                            <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                            <div className="absolute top-2 left-2 bg-[#7360ee] text-white text-xs px-2 py-1 rounded">
                               Principal
                             </div>
                           )}
@@ -910,7 +910,7 @@ export default function EditProperty() {
                     <div key={index} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
                         <label className="block text-sm font-medium text-gray-700">
-                          Vídeo {index + 1} {index === 0 && <span className="text-blue-600">(Principal)</span>}
+                          Vídeo {index + 1} {index === 0 && <span className="text-[#7360ee]">(Principal)</span>}
                         </label>
                         <div className="flex items-center space-x-2">
                           {index > 0 && (
@@ -957,7 +957,7 @@ export default function EditProperty() {
                           value={video}
                           onChange={(e) => updateVideo(index, e.target.value)}
                           placeholder="Cole a URL do vídeo aqui (YouTube, MP4, etc.)"
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                         />
                         <div className="relative">
                           <input
@@ -970,7 +970,7 @@ export default function EditProperty() {
                           />
                           <label
                             htmlFor={`video-upload-${index}`}
-                            className={`cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                            className={`cursor-pointer inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7360ee] ${
                               uploadingVideo === index ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                             title="Upload de arquivo de vídeo"
@@ -1042,7 +1042,7 @@ export default function EditProperty() {
                   <button
                     type="button"
                     onClick={addVideo}
-                    className="w-full border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-lg p-4 text-center text-gray-600 hover:text-blue-600 transition-colors"
+                    className="w-full border-2 border-dashed border-gray-300 hover:border-blue-400 rounded-lg p-4 text-center text-gray-600 hover:text-[#7360ee] transition-colors"
                   >
                     <div className="flex items-center justify-center space-x-2">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1081,7 +1081,7 @@ export default function EditProperty() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {saving ? (
                   <>

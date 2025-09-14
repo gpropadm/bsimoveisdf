@@ -84,7 +84,7 @@ export default function AdminProperties() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4 animate-pulse">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#7360ee] rounded-xl mb-4 animate-pulse">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
             </svg>
@@ -104,7 +104,7 @@ export default function AdminProperties() {
         {/* Logo/Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="flex-shrink-0 w-10 h-10 bg-[#7360ee] rounded-lg flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
               </svg>
@@ -130,7 +130,7 @@ export default function AdminProperties() {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
           
-          <Link href="/admin/properties" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+          <Link href="/admin/properties" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
             </svg>
@@ -186,7 +186,7 @@ export default function AdminProperties() {
               <h1 className="text-2xl font-bold text-gray-900">Gerenciar Imóveis</h1>
               <p className="text-gray-600">Visualize e edite todos os imóveis cadastrados</p>
             </div>
-            <Link href="/admin/properties/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+            <Link href="/admin/properties/new" className="bg-[#7360ee] hover:bg-[#7360ee]/90 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
@@ -290,7 +290,7 @@ export default function AdminProperties() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <Link 
                         href={`/imovel/${property.slug}`} 
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-[#7360ee] hover:text-[#7360ee]/80"
                         target="_blank"
                       >
                         Ver

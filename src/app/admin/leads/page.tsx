@@ -66,7 +66,7 @@ export default function AdminLeadsPage() {
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      novo: 'bg-blue-100 text-blue-800',
+      novo: 'bg-blue-100 text-[#7360ee]',
       contatado: 'bg-yellow-100 text-yellow-800',
       interessado: 'bg-green-100 text-green-800',
       convertido: 'bg-purple-100 text-purple-800',
@@ -196,7 +196,7 @@ export default function AdminLeadsPage() {
             <div className="text-sm text-gray-600">Total de Leads</div>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-[#7360ee]">
               {leads.filter(l => l.status === 'novo').length}
             </div>
             <div className="text-sm text-gray-600">Novos</div>
@@ -315,7 +315,7 @@ export default function AdminLeadsPage() {
                           {lead.email && (
                             <a
                               href={`mailto:${lead.email}`}
-                              className="text-blue-600 hover:text-blue-900"
+                              className="text-[#7360ee] hover:text-[#7360ee]/80"
                             >
                               Email
                             </a>

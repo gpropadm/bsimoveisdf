@@ -72,7 +72,7 @@ export default function AdminSubmissionsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pendente': return 'bg-yellow-100 text-yellow-800'
-      case 'em_analise': return 'bg-blue-100 text-blue-800'
+      case 'em_analise': return 'bg-blue-100 text-[#7360ee]'
       case 'aprovado': return 'bg-green-100 text-green-800'
       case 'rejeitado': return 'bg-red-100 text-red-800'
       case 'publicado': return 'bg-purple-100 text-purple-800'
@@ -83,7 +83,7 @@ export default function AdminSubmissionsPage() {
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
       case 'alta': return 'bg-red-100 text-red-800'
-      case 'normal': return 'bg-blue-100 text-blue-800'
+      case 'normal': return 'bg-blue-100 text-[#7360ee]'
       case 'baixa': return 'bg-gray-100 text-gray-800'
       default: return 'bg-gray-100 text-gray-800'
     }
@@ -92,7 +92,7 @@ export default function AdminSubmissionsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7360ee]"></div>
       </div>
     )
   }
@@ -131,7 +131,7 @@ export default function AdminSubmissionsPage() {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-blue-600">{submissions.filter(s => s.status === 'pendente').length}</div>
+            <div className="text-2xl font-bold text-[#7360ee]">{submissions.filter(s => s.status === 'pendente').length}</div>
             <div className="text-sm text-gray-600">Pendentes</div>
           </div>
           <div className="bg-white rounded-lg shadow p-6">

@@ -73,7 +73,7 @@ export default function AppointmentsPage() {
     switch (status) {
       case 'agendado':
       case 'pending':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-[#7360ee]';
       case 'confirmado':
         return 'bg-green-100 text-green-800';
       case 'concluído':
@@ -117,11 +117,11 @@ export default function AppointmentsPage() {
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <div className="flex items-center">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <Calendar className="h-6 w-6 text-blue-600" />
+              <Calendar className="h-6 w-6 text-[#7360ee]" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Agendados</p>
-              <p className="text-2xl font-bold text-blue-600">{getStatusCount('agendado')}</p>
+              <p className="text-2xl font-bold text-[#7360ee]">{getStatusCount('agendado')}</p>
             </div>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function AppointmentsPage() {
           onClick={() => setFilter('all')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === 'all' 
-              ? 'bg-blue-600 text-white' 
+              ? 'bg-[#7360ee] text-white' 
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
@@ -179,7 +179,7 @@ export default function AppointmentsPage() {
           onClick={() => setFilter('agendado')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === 'agendado' 
-              ? 'bg-blue-600 text-white' 
+              ? 'bg-[#7360ee] text-white' 
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
@@ -189,7 +189,7 @@ export default function AppointmentsPage() {
           onClick={() => setFilter('confirmado')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === 'confirmado' 
-              ? 'bg-blue-600 text-white' 
+              ? 'bg-[#7360ee] text-white' 
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
@@ -199,7 +199,7 @@ export default function AppointmentsPage() {
           onClick={() => setFilter('concluído')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             filter === 'concluído' 
-              ? 'bg-blue-600 text-white' 
+              ? 'bg-[#7360ee] text-white' 
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
@@ -242,7 +242,7 @@ export default function AppointmentsPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="p-2 bg-blue-100 rounded-full">
-                          <User className="h-4 w-4 text-blue-600" />
+                          <User className="h-4 w-4 text-[#7360ee]" />
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
@@ -298,7 +298,7 @@ export default function AppointmentsPage() {
                         {appointment.status === 'confirmado' && (
                           <button
                             onClick={() => updateAppointmentStatus(appointment.id, 'concluído')}
-                            className="text-blue-600 hover:text-blue-800 font-medium"
+                            className="text-[#7360ee] hover:text-[#7360ee] font-medium"
                           >
                             Concluir
                           </button>

@@ -131,7 +131,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                 </svg>
               </button>
               <a href="#" className="flex ml-2 md:mr-24">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                   </svg>
@@ -169,7 +169,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                       onClick={() => signOut({ callbackUrl: '/admin/login' })}
                       className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                     >
-                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
                         {session.user?.name?.charAt(0)?.toUpperCase()}
                       </div>
                     </button>
@@ -222,8 +222,8 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
             {/* Total Imóveis */}
             <div className={`p-4 rounded-lg shadow ${isDarkMode ? 'bg-gray-700' : 'bg-white border border-gray-200'}`}>
               <div className="flex items-center">
-                <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
-                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                <div className="p-3 rounded-full bg-[#7360ee]/10 dark:bg-blue-900">
+                  <svg className="w-6 h-6 text-[#7360ee] dark:text-[#7360ee]/80" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                   </svg>
                 </div>
@@ -308,7 +308,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                 className={`p-6 rounded-lg border-2 border-dashed transition-colors ${isDarkMode ? 'border-gray-600 hover:bg-gray-600 text-white' : 'border-gray-300 hover:bg-gray-50 text-gray-900'}`}
               >
                 <div className="flex items-center">
-                  <svg className={`w-8 h-8 mr-3 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-8 h-8 mr-3 ${isDarkMode ? 'text-[#7360ee]' : 'text-[#7360ee]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   <div>

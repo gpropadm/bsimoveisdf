@@ -80,7 +80,7 @@ export default function UsersPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4 animate-pulse">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#7360ee] rounded-xl mb-4 animate-pulse">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
             </svg>
@@ -109,7 +109,7 @@ export default function UsersPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start">
               <Link href="/admin" className="flex ml-2 md:mr-24">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                   </svg>
@@ -182,7 +182,7 @@ export default function UsersPage() {
             </div>
             <Link
               href="/admin/users/new"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#7360ee] border border-transparent rounded-lg hover:bg-[#7360ee]/90 focus:ring-4 focus:ring-[#7360ee]/30"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -208,7 +208,7 @@ export default function UsersPage() {
                   <tr key={user.id} className="bg-white border-b hover:bg-gray-50">
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mr-3">
+                        <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center mr-3">
                           {user.name?.charAt(0)?.toUpperCase() || user.email.charAt(0).toUpperCase()}
                         </div>
                         {user.name || 'Sem nome'}
@@ -231,7 +231,7 @@ export default function UsersPage() {
                       <div className="flex space-x-2">
                         <Link
                           href={`/admin/users/edit/${user.id}`}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-[#7360ee] hover:text-[#7360ee]/80"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />

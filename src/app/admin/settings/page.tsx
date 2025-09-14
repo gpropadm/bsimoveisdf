@@ -194,7 +194,7 @@ export default function AdminSettings() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-xl mb-4 animate-pulse">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#7360ee] rounded-xl mb-4 animate-pulse">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -215,7 +215,7 @@ export default function AdminSettings() {
         {/* Logo/Header */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="flex-shrink-0 w-10 h-10 bg-[#7360ee] rounded-lg flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
               </svg>
@@ -266,7 +266,7 @@ export default function AdminSettings() {
             {isSidebarOpen && <span>Analytics</span>}
           </Link>
           
-          <Link href="/admin/settings" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+          <Link href="/admin/settings" className="flex items-center space-x-3 px-3 py-2 rounded-lg bg-[#7360ee]/10 text-[#7360ee] border border-[#7360ee]/20">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="3"/>
               <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -310,7 +310,7 @@ export default function AdminSettings() {
                   onClick={() => setActiveTab('site')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'site'
-                      ? 'border-blue-500 text-blue-600'
+                      ? 'border-[#7360ee] text-[#7360ee]'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -327,7 +327,7 @@ export default function AdminSettings() {
                   onClick={() => setActiveTab('account')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'account'
-                      ? 'border-blue-500 text-blue-600'
+                      ? 'border-[#7360ee] text-[#7360ee]'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -343,7 +343,7 @@ export default function AdminSettings() {
                   onClick={() => setActiveTab('notifications')}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === 'notifications'
-                      ? 'border-blue-500 text-blue-600'
+                      ? 'border-[#7360ee] text-[#7360ee]'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -381,7 +381,7 @@ export default function AdminSettings() {
                         value={siteSettings.contactPhone}
                         onChange={handleSiteSettingsChange}
                         placeholder="(48) 99864-5864"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -395,7 +395,7 @@ export default function AdminSettings() {
                         value={siteSettings.contactEmail}
                         onChange={handleSiteSettingsChange}
                         placeholder="contato@imobinext.com"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
 
@@ -409,7 +409,7 @@ export default function AdminSettings() {
                         value={siteSettings.contactWhatsapp}
                         onChange={handleSiteSettingsChange}
                         placeholder="5548998645864"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -425,7 +425,7 @@ export default function AdminSettings() {
                         value={siteSettings.city}
                         onChange={handleSiteSettingsChange}
                         placeholder="Florianópolis"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -440,7 +440,7 @@ export default function AdminSettings() {
                         onChange={handleSiteSettingsChange}
                         maxLength={2}
                         placeholder="SC"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -465,7 +465,7 @@ export default function AdminSettings() {
                         name="siteName"
                         value={siteSettings.siteName}
                         onChange={handleSiteSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -478,7 +478,7 @@ export default function AdminSettings() {
                         name="address"
                         value={siteSettings.address}
                         onChange={handleSiteSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -492,7 +492,7 @@ export default function AdminSettings() {
                       value={siteSettings.siteDescription}
                       onChange={handleSiteSettingsChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
                 </div>
@@ -517,7 +517,7 @@ export default function AdminSettings() {
                         value={siteSettings.socialFacebook}
                         onChange={handleSiteSettingsChange}
                         placeholder="https://facebook.com/..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -531,7 +531,7 @@ export default function AdminSettings() {
                         value={siteSettings.socialInstagram}
                         onChange={handleSiteSettingsChange}
                         placeholder="https://instagram.com/..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -556,7 +556,7 @@ export default function AdminSettings() {
                       onChange={handleSiteSettingsChange}
                       min="1"
                       max="20"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -567,7 +567,7 @@ export default function AdminSettings() {
                         name="enableRegistrations"
                         checked={siteSettings.enableRegistrations}
                         onChange={handleSiteSettingsChange}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                       />
                       <span className="text-sm font-medium text-gray-700">Permitir registro de novos usuários</span>
                     </label>
@@ -578,7 +578,7 @@ export default function AdminSettings() {
                         name="enableComments"
                         checked={siteSettings.enableComments}
                         onChange={handleSiteSettingsChange}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                       />
                       <span className="text-sm font-medium text-gray-700">Permitir comentários nos imóveis</span>
                     </label>
@@ -590,7 +590,7 @@ export default function AdminSettings() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {saving ? (
                     <>
@@ -631,7 +631,7 @@ export default function AdminSettings() {
                         name="name"
                         value={userSettings.name}
                         onChange={handleUserSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -644,7 +644,7 @@ export default function AdminSettings() {
                         name="email"
                         value={userSettings.email}
                         onChange={handleUserSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -668,7 +668,7 @@ export default function AdminSettings() {
                       name="currentPassword"
                       value={userSettings.currentPassword}
                       onChange={handleUserSettingsChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
 
@@ -682,7 +682,7 @@ export default function AdminSettings() {
                         name="newPassword"
                         value={userSettings.newPassword}
                         onChange={handleUserSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                     
@@ -695,7 +695,7 @@ export default function AdminSettings() {
                         name="confirmPassword"
                         value={userSettings.confirmPassword}
                         onChange={handleUserSettingsChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
                   </div>
@@ -706,7 +706,7 @@ export default function AdminSettings() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {saving ? (
                     <>
@@ -745,7 +745,7 @@ export default function AdminSettings() {
                     <input
                       type="checkbox"
                       defaultChecked
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                     />
                   </label>
                   
@@ -757,7 +757,7 @@ export default function AdminSettings() {
                     <input
                       type="checkbox"
                       defaultChecked
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                     />
                   </label>
                   
@@ -769,7 +769,7 @@ export default function AdminSettings() {
                     <input
                       type="checkbox"
                       defaultChecked
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                     />
                   </label>
                   
@@ -780,7 +780,7 @@ export default function AdminSettings() {
                     </div>
                     <input
                       type="checkbox"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
                     />
                   </label>
                 </div>
@@ -788,7 +788,7 @@ export default function AdminSettings() {
                 <div className="pt-4">
                   <button
                     type="button"
-                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                    className="px-6 py-2 bg-[#7360ee] hover:bg-[#7360ee]/90 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
