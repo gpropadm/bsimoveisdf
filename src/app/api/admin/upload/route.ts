@@ -15,6 +15,22 @@ export async function POST(request: NextRequest) {
   console.log(`🚀 [${requestId}] Iniciando upload request...`)
 
   try {
+    // Verificar configuração do Cloudinary
+    const cloudinaryConfig = {
+      cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: !!process.env.CLOUDINARY_API_KEY,
+      api_secret: !!process.env.CLOUDINARY_API_SECRET
+    }
+    console.log(`☁️ [${requestId}] Cloudinary config:`, cloudinaryConfig)
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.log(`❌ [${requestId}] Configuração do Cloudinary incompleta`)
+      return NextResponse.json({
+        error: 'Configuração do Cloudinary incompleta',
+        details: 'Verifique as variáveis CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET'
+      }, { status: 500 })
+    }
+
     console.log(`🔐 [${requestId}] Verificando sessão para upload...`)
     const session = await getServerSession(authOptions)
     console.log(`👤 [${requestId}] Sessão encontrada:`, session ? 'SIM' : 'NÃO')
@@ -103,6 +119,15 @@ export async function POST(request: NextRequest) {
             console.log(`❌ [${requestId}] ${error}`)
             return { error }
           }
+
+          // Validar se o arquivo tem conteúdo
+          if (file.size === 0) {
+            const error = `Arquivo "${file.name}" está vazio (0 bytes)`
+            console.log(`❌ [${requestId}] ${error}`)
+            return { error }
+          }
+
+          console.log(`✅ [${requestId}] Arquivo validado: "${file.name}" - ${file.type} - ${(file.size / 1024 / 1024).toFixed(2)}MB`)
 
           // Converter File para Buffer
           console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)

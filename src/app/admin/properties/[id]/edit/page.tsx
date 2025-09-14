@@ -296,13 +296,23 @@ export default function EditProperty() {
       }
 
       console.log('📤 Enviando FormData para /api/admin/upload...')
+      console.log('📊 Dados sendo enviados:', {
+        totalFiles: formData.getAll('image-0').length + formData.getAll('image-1').length + formData.getAll('image-2').length,
+        formDataKeys: Array.from(formData.keys())
+      })
 
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: 'include'
       })
 
       console.log('📥 Resposta do servidor:', response.status, response.statusText)
+
+      // Log mais detalhado se houver erro
+      if (!response.ok) {
+        console.error('❌ Headers da resposta:', Object.fromEntries(response.headers.entries()))
+      }
 
       if (!response.ok) {
         const errorText = await response.text()
