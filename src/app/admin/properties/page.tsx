@@ -151,11 +151,32 @@ export default function AdminProperties() {
   if (!session) return null
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* Sidebar */}
-      <aside className={`${isSidebarOpen ? 'w-64' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}>
-        {/* Logo/Header */}
-        <div className="p-4 border-b border-gray-200">
+      {/* Mobile Header */}
+      <div className="lg:hidden bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <h1 className="text-lg font-bold text-gray-900">ImobiNext</h1>
+        </div>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-lg text-gray-500 hover:bg-gray-100"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+
+      {/* Sidebar */}
+      <aside className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-50 lg:z-auto w-64 lg:w-${isSidebarOpen ? '64' : '16'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col h-full lg:h-auto inset-y-0 left-0`}>
+        {/* Logo/Header - Hidden on mobile */}
+        <div className="hidden lg:block p-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0 w-10 h-10 bg-[#7360ee] rounded-lg flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -217,8 +238,8 @@ export default function AdminProperties() {
           </Link>
         </nav>
 
-        {/* Toggle Button */}
-        <div className="p-4 border-t border-gray-200">
+        {/* Toggle Button - Desktop only */}
+        <div className="hidden lg:block p-4 border-t border-gray-200">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="w-full flex items-center justify-center p-2 rounded-lg text-gray-500 hover:bg-gray-100"
@@ -230,16 +251,24 @@ export default function AdminProperties() {
         </div>
       </aside>
 
+      {/* Mobile Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center">
+        <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Gerenciar Imóveis</h1>
-              <p className="text-gray-600">Visualize e edite todos os imóveis cadastrados</p>
+              <h1 className="text-xl lg:text-2xl font-bold text-gray-900">Gerenciar Imóveis</h1>
+              <p className="text-gray-600 text-sm lg:text-base">Visualize e edite todos os imóveis cadastrados</p>
             </div>
-            <Link href="/admin/properties/new" className="bg-[#7360ee] hover:bg-[#7360ee]/90 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+            <Link href="/admin/properties/new" className="bg-[#7360ee] hover:bg-[#7360ee]/90 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2 text-sm lg:text-base">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
@@ -250,10 +279,10 @@ export default function AdminProperties() {
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
+            <div className="px-4 lg:px-6 py-4 border-b border-gray-200">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <h2 className="text-lg font-semibold text-gray-900">
                   Todos os Imóveis ({properties.length})
                 </h2>
@@ -268,7 +297,8 @@ export default function AdminProperties() {
               </div>
             </div>
           
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -372,6 +402,77 @@ export default function AdminProperties() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4 p-4">
+            {properties.map((property) => (
+              <div key={property.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                <div className="flex space-x-4">
+                  <PropertyImage images={property.images} title={property.title} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col space-y-2">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-900 truncate">{property.title}</h3>
+                        <p className="text-xs text-gray-500 truncate">
+                          {property.address}, {property.city} - {property.state}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {property.bedrooms}q • {property.bathrooms}b • {property.area}m²
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
+                          {property.category}
+                        </span>
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full capitalize ${
+                          property.type === 'venda' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {property.type}
+                        </span>
+                        {property.featured && (
+                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            ⭐ Destaque
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-bold text-gray-900">
+                          R$ {property.price.toLocaleString('pt-BR')}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {property.createdAt ? new Date(property.createdAt).toLocaleDateString('pt-BR') : '-'}
+                        </span>
+                      </div>
+                      <div className="flex space-x-2 pt-2 border-t border-gray-100">
+                        <Link 
+                          href={`/imovel/${property.slug}`} 
+                          className="flex-1 text-center px-3 py-2 text-xs font-medium text-[#7360ee] bg-[#7360ee]/10 rounded-lg hover:bg-[#7360ee]/20"
+                          target="_blank"
+                        >
+                          Ver
+                        </Link>
+                        <Link 
+                          href={`/admin/properties/${property.id}/edit`} 
+                          className="flex-1 text-center px-3 py-2 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100"
+                        >
+                          Editar
+                        </Link>
+                        <button 
+                          onClick={() => handleDelete(property.id)}
+                          disabled={deleting === property.id}
+                          className="flex-1 px-3 py-2 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {deleting === property.id ? 'Excluindo...' : 'Excluir'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
           </div>
         </main>
