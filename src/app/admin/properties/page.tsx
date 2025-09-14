@@ -254,15 +254,50 @@ export default function AdminProperties() {
                   <tr key={property.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                        {property.images ? (
-                          <img 
-                            src={JSON.parse(property.images)[0] || '/placeholder-image.jpg'} 
-                            alt={property.title}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.src = '/placeholder-image.jpg'
-                            }}
-                          />
+                        {property.images && property.images !== '[]' && property.images !== '' ? (
+                          (() => {
+                            try {
+                              const images = JSON.parse(property.images);
+                              const firstImage = Array.isArray(images) && images.length > 0 ? images[0] : null;
+                              return firstImage ? (
+                                <img 
+                                  src={firstImage} 
+                                  alt={property.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.parentElement!.innerHTML = `
+                                      <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                          <circle cx="8.5" cy="8.5" r="1.5"/>
+                                          <polyline points="21,15 16,10 5,21"/>
+                                        </svg>
+                                      </div>
+                                    `;
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21,15 16,10 5,21"/>
+                                  </svg>
+                                </div>
+                              );
+                            } catch (e) {
+                              return (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21,15 16,10 5,21"/>
+                                  </svg>
+                                </div>
+                              );
+                            }
+                          })()
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-400">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
