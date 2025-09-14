@@ -16,21 +16,32 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title, subtitle, currentPage, actions }: AdminLayoutProps) {
   const { settings } = useSettings()
   const { data: session } = useSession()
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState(true) // Start with mobile to prevent flash
+  const [isInitialized, setIsInitialized] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Detect screen size and set mobile state
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
-      setIsSidebarOpen(!mobile) // Desktop: sidebar always open, Mobile: closed by default
+      if (typeof window !== 'undefined') {
+        const mobile = window.innerWidth < 1024
+        setIsMobile(mobile)
+        setIsSidebarOpen(!mobile) // Desktop: sidebar always open, Mobile: closed by default
+        setIsInitialized(true)
+      }
     }
 
-    handleResize() // Set initial state
+    // Add a small delay to ensure window is fully loaded
+    const timer = setTimeout(() => {
+      handleResize() // Set initial state
+    }, 100)
+
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   const navigationItems = [
@@ -66,6 +77,15 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       )
     }
     return icons[iconName as keyof typeof icons] || icons.dashboard
+  }
+
+  // Don't render until initialized to prevent layout flash
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    )
   }
 
   // Render completely different layouts for mobile vs desktop
