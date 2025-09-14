@@ -85,7 +85,7 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       <nav className={`hidden lg:fixed lg:top-0 lg:z-50 lg:w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} lg:border-b lg:pl-64`}>
         <div className="px-5 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center justify-center flex-1">
+            <div className="flex items-center">
               <a href="#" className="flex">
                 <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
                   <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
