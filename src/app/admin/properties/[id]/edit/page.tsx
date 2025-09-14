@@ -346,48 +346,90 @@ export default function EditProperty() {
   const handleVideoUpload = async (file: File, index: number) => {
     if (!file) return
 
-    console.log('🎥 Iniciando upload do arquivo:', {
+    console.log('🚀 Upload direto para Cloudinary:', {
       name: file.name,
       type: file.type,
       size: `${(file.size / 1024 / 1024).toFixed(2)}MB`
     })
 
+    // Validar arquivo antes do upload
+    const validVideoTypes = [
+      'video/mp4',
+      'video/mov',
+      'video/quicktime',
+      'video/x-quicktime',
+      'video/webm',
+      'video/avi'
+    ]
+
+    const isValidVideo = validVideoTypes.includes(file.type.toLowerCase()) ||
+                        file.name.toLowerCase().match(/\.(mov|mp4|webm|avi)$/)
+
+    if (!isValidVideo) {
+      alert(`Tipo de arquivo não suportado: ${file.type}\nTipos aceitos: MP4, MOV, WebM, AVI`)
+      return
+    }
+
+    // Limite de 100MB (bem maior que os 50MB anteriores)
+    if (file.size > 100 * 1024 * 1024) {
+      alert(`Arquivo muito grande: ${(file.size / 1024 / 1024).toFixed(2)}MB\nLimite máximo: 100MB`)
+      return
+    }
+
     setUploadingVideo(index)
     try {
-      const formData = new FormData()
-      formData.append('video', file)
+      console.log('🔐 Obtendo assinatura do Cloudinary...')
 
-      console.log('📤 Enviando arquivo para API...')
-      const response = await fetch('/api/admin/upload-video', {
+      // Obter assinatura segura
+      const signatureResponse = await fetch('/api/admin/cloudinary-signature', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resource_type: 'video' })
+      })
+
+      if (!signatureResponse.ok) {
+        throw new Error('Falha ao obter assinatura de upload')
+      }
+
+      const { signature, timestamp, api_key, cloud_name, params } = await signatureResponse.json()
+
+      console.log('☁️ Upload direto para Cloudinary...', cloud_name)
+
+      // Preparar dados para Cloudinary
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('signature', signature)
+      formData.append('timestamp', timestamp.toString())
+      formData.append('api_key', api_key)
+      formData.append('folder', params.folder)
+      formData.append('resource_type', 'video')
+
+      // Adicionar transformações se existirem
+      if (params.transformation) {
+        formData.append('transformation', params.transformation)
+      }
+      if (params.eager) {
+        formData.append('eager', params.eager)
+      }
+
+      // Upload direto para Cloudinary
+      const uploadResponse = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
         method: 'POST',
         body: formData
       })
 
-      console.log('📥 Resposta da API:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      })
-
-      if (!response.ok) {
-        // Tentar extrair detalhes do erro
-        let errorMessage = 'Erro no upload'
-        try {
-          const errorData = await response.json()
-          console.error('❌ Detalhes do erro:', errorData)
-          errorMessage = errorData.details || errorData.error || errorMessage
-        } catch (parseError) {
-          console.error('❌ Erro ao parsear resposta:', parseError)
-          errorMessage = `Erro ${response.status}: ${response.statusText}`
-        }
-        throw new Error(errorMessage)
+      if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text()
+        console.error('❌ Erro do Cloudinary:', errorText)
+        throw new Error(`Upload falhou: ${uploadResponse.status}`)
       }
 
-      const data = await response.json()
-      console.log('✅ Upload concluído:', data.url)
-      updateVideo(index, data.url)
+      const uploadResult = await uploadResponse.json()
+      console.log('✅ Upload concluído:', uploadResult.secure_url)
+
+      updateVideo(index, uploadResult.secure_url)
     } catch (error) {
-      console.error('❌ Erro no upload:', error)
+      console.error('❌ Erro no upload direto:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
       alert(`Erro ao fazer upload do vídeo: ${errorMessage}`)
     } finally {
@@ -1016,7 +1058,7 @@ export default function EditProperty() {
                         </div>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        Cole uma URL ou faça upload de um arquivo de vídeo (MP4, MOV, WebM - máx. 50MB)
+                        Cole uma URL ou faça upload de um arquivo de vídeo (MP4, MOV, WebM - máx. 100MB)
                       </p>
                       
                       {/* Preview do vídeo */}
@@ -1087,8 +1129,9 @@ export default function EditProperty() {
                   
                   <div className="text-xs text-gray-500 space-y-1">
                     <p>• <strong>URLs:</strong> Suporte a YouTube, links diretos MP4/MOV/WebM</p>
-                    <p>• <strong>Upload:</strong> Arquivos MOV, MP4, WebM, AVI até 50MB</p>
-                    <p>• <strong>iPhone:</strong> Arquivos .MOV do iPhone são totalmente suportados</p>
+                    <p>• <strong>Upload Direto:</strong> Arquivos MOV, MP4, WebM, AVI até 100MB</p>
+                    <p>• <strong>iPhone/Android:</strong> Vídeos do celular são totalmente suportados</p>
+                    <p>• <strong>Performance:</strong> Upload direto - sem limites do servidor</p>
                     <p>• <strong>Stories:</strong> O primeiro vídeo será o principal no modal</p>
                     <p>• <strong>Organização:</strong> Use as setas para reordenar os vídeos</p>
                   </div>
