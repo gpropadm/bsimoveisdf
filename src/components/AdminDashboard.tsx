@@ -30,7 +30,7 @@ interface DashboardStats {
 
 export default function AdminDashboard({ session }: AdminDashboardProps) {
   const { settings } = useSettings()
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [stats, setStats] = useState<DashboardStats>({
     totalProperties: 0,
@@ -121,10 +121,34 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
       <nav className={`fixed top-0 z-50 w-full ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center justify-start">
+            {/* Mobile: Just hamburger and logout */}
+            <div className="flex items-center justify-between w-full lg:w-auto">
+              {/* Mobile hamburger */}
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className={`inline-flex items-center p-2 text-sm rounded-lg sm:hidden focus:outline-none focus:ring-2 ${isDarkMode ? 'text-gray-400 hover:bg-gray-700 focus:ring-gray-600' : 'text-gray-500 hover:bg-gray-100 focus:ring-gray-200'}`}
+                className={`lg:hidden p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
+                </svg>
+              </button>
+              
+              {/* Mobile logout */}
+              <button
+                onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                className="lg:hidden flex text-sm bg-gray-800 rounded-full"
+              >
+                <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
+                  {session.user?.name?.charAt(0)?.toUpperCase()}
+                </div>
+              </button>
+            </div>
+
+            {/* Desktop: Full header */}
+            <div className="hidden lg:flex items-center justify-start">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className={`inline-flex items-center p-2 text-sm rounded-lg focus:outline-none focus:ring-2 ${isDarkMode ? 'text-gray-400 hover:bg-gray-700 focus:ring-gray-600' : 'text-gray-500 hover:bg-gray-100 focus:ring-gray-200'}`}
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
@@ -141,7 +165,8 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                 </span>
               </a>
             </div>
-            <div className="flex items-center">
+            
+            <div className="hidden lg:flex items-center">
               <div className="flex items-center ml-3">
                 <div className="flex items-center space-x-3">
                   <button
@@ -160,7 +185,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                   </button>
                   <Link
                     href="/"
-                    className={`hidden lg:block px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
+                    className={`px-3 py-2 text-sm font-medium rounded-lg ${isDarkMode ? 'text-white bg-gray-800 hover:bg-gray-700' : 'text-gray-900 bg-white border border-gray-200 hover:bg-gray-100'}`}
                   >
                     Ver Site
                   </Link>
@@ -181,8 +206,16 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
         </div>
       </nav>
 
+      {/* Mobile Backdrop */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r sm:translate-x-0`}>
+      <aside className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r ${isSidebarOpen ? 'lg:translate-x-0' : ''}`}>
         <div className="h-full px-3 pb-4 overflow-y-auto">
           <ul className="space-y-2 font-medium">
             {navigationItems.map((item) => (
