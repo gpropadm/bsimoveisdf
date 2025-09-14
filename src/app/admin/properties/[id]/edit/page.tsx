@@ -249,29 +249,83 @@ export default function EditProperty() {
 
   const handleImageUpload = async (files: FileList) => {
     if (!files || files.length === 0) return
-    
+
+    console.log('📸 Iniciando upload de', files.length, 'arquivo(s)')
+
+    // Log detalhado dos arquivos
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      console.log(`📸 Arquivo ${i + 1}:`, {
+        name: file.name,
+        type: file.type,
+        size: `${(file.size / 1024 / 1024).toFixed(2)}MB`,
+        lastModified: new Date(file.lastModified).toISOString()
+      })
+    }
+
     setUploading(true)
     try {
       const formData = new FormData()
-      
+
       for (let i = 0; i < files.length; i++) {
-        formData.append(`image-${i}`, files[i])
+        const file = files[i]
+
+        // Validação local antes do upload
+        if (!file.type.startsWith('image/')) {
+          console.error('❌ Tipo de arquivo inválido:', file.name, file.type)
+          alert(`Arquivo ${file.name} não é uma imagem válida. Tipos aceitos: JPG, PNG, GIF, WebP`)
+          continue
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          console.error('❌ Arquivo muito grande:', file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`)
+          alert(`Arquivo ${file.name} é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Limite: 5MB`)
+          continue
+        }
+
+        formData.append(`image-${i}`, file)
+        console.log('✅ Arquivo adicionado ao FormData:', file.name)
       }
-      
+
+      console.log('📤 Enviando FormData para /api/admin/upload...')
+
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
         body: formData
       })
-      
+
+      console.log('📥 Resposta do servidor:', response.status, response.statusText)
+
       if (!response.ok) {
-        throw new Error('Erro no upload')
+        const errorText = await response.text()
+        console.error('❌ Erro no upload:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText
+        })
+
+        try {
+          const errorData = JSON.parse(errorText)
+          throw new Error(errorData.error || errorData.details || 'Erro no upload')
+        } catch {
+          throw new Error(`Erro ${response.status}: ${errorText || response.statusText}`)
+        }
       }
-      
+
       const data = await response.json()
-      setImages(prev => [...prev, ...data.urls])
+      console.log('✅ Upload concluído com sucesso:', data)
+
+      if (data.urls && Array.isArray(data.urls)) {
+        setImages(prev => [...prev, ...data.urls])
+        alert(`✅ ${data.urls.length} imagem(ns) enviada(s) com sucesso!`)
+      } else {
+        console.error('❌ Resposta inválida do servidor:', data)
+        throw new Error('Resposta inválida do servidor')
+      }
     } catch (error) {
-      console.error('Erro no upload:', error)
-      alert('Erro ao fazer upload das imagens. Tente novamente.')
+      console.error('❌ Erro detalhado no upload:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      alert(`❌ Erro ao fazer upload das imagens: ${errorMessage}`)
     } finally {
       setUploading(false)
     }

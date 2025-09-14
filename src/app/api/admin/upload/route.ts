@@ -23,31 +23,47 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData()
     const files = []
-    
+
+    console.log('📦 Processando FormData...')
+
     // Extrair todos os arquivos do FormData
     for (const [key, value] of formData.entries()) {
+      console.log('🔍 FormData entry:', key, typeof value, value instanceof File ? value.name : value)
       if (key.startsWith('image-') && value instanceof File) {
+        console.log('✅ Arquivo válido encontrado:', {
+          key,
+          name: value.name,
+          type: value.type,
+          size: `${(value.size / 1024 / 1024).toFixed(2)}MB`,
+          lastModified: new Date(value.lastModified).toISOString()
+        })
         files.push(value)
       }
     }
 
+    console.log('📊 Total de arquivos extraídos:', files.length)
+
     if (files.length === 0) {
+      console.log('❌ Nenhum arquivo válido encontrado no FormData')
       return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
     }
 
     const uploadedUrls: string[] = []
 
     for (const file of files) {
+      console.log(`🔄 Processando arquivo: "${file.name}"`)
+
       // Validar tipo de arquivo
       if (!file.type.startsWith('image/')) {
+        console.log(`❌ Tipo de arquivo inválido: "${file.name}" (${file.type})`)
         continue
       }
 
       // Validar tamanho (5MB máximo)
       if (file.size > 5 * 1024 * 1024) {
-        return NextResponse.json({ 
-          error: `Arquivo ${file.name} é muito grande. Máximo 5MB.` 
-        }, { status: 400 })
+        const errorMsg = `Arquivo "${file.name}" é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo 5MB.`
+        console.log('❌', errorMsg)
+        return NextResponse.json({ error: errorMsg }, { status: 400 })
       }
 
       // Converter File para Buffer
