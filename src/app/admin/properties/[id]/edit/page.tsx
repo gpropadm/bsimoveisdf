@@ -301,11 +301,19 @@ export default function EditProperty() {
         formDataKeys: Array.from(formData.keys())
       })
 
-      const response = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-      })
+      let response
+      try {
+        console.log('🌐 Iniciando fetch request...')
+        response = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        })
+        console.log('✅ Fetch concluído')
+      } catch (fetchError) {
+        console.error('❌ Erro no fetch:', fetchError)
+        throw new Error(`Erro de rede: ${fetchError instanceof Error ? fetchError.message : 'Erro desconhecido na requisição'}`)
+      }
 
       console.log('📥 Resposta do servidor:', response.status, response.statusText)
 
@@ -329,7 +337,17 @@ export default function EditProperty() {
           throw new Error(errorMsg)
         } catch (parseError) {
           console.error('❌ Erro ao fazer parse da resposta:', parseError)
-          throw new Error(`Erro ${response.status}: ${errorText || response.statusText}`)
+          console.error('❌ Texto bruto da resposta:', errorText)
+
+          // Se não conseguiu fazer parse, criar mensagem detalhada
+          let detailedError = `HTTP ${response.status}: ${response.statusText}`
+          if (errorText && errorText.trim()) {
+            detailedError += ` - ${errorText}`
+          } else {
+            detailedError += ' (Resposta vazia do servidor)'
+          }
+
+          throw new Error(detailedError)
         }
       }
 
@@ -351,7 +369,23 @@ export default function EditProperty() {
       }
     } catch (error) {
       console.error('❌ Erro detalhado no upload:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      console.error('❌ Stack trace:', error instanceof Error ? error.stack : 'N/A')
+      console.error('❌ Tipo do erro:', typeof error)
+      console.error('❌ Constructor:', error?.constructor?.name)
+
+      let errorMessage = 'Erro desconhecido no upload'
+
+      if (error instanceof Error) {
+        errorMessage = error.message
+        if (error.message.trim() === '') {
+          errorMessage = `Erro vazio capturado. Tipo: ${error.constructor.name}`
+        }
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      } else {
+        errorMessage = `Erro não identificado: ${JSON.stringify(error)}`
+      }
+
       alert(`❌ Erro ao fazer upload das imagens: ${errorMessage}`)
     } finally {
       setUploading(false)
