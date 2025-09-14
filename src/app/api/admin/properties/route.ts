@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         area: true,
         video: false, // Não carregar vídeo na listagem para performance
         featured: true,
-        images: false, // Não carregar imagens na listagem para performance
+        images: true, // Carregar imagens para mostrar thumbnail na listagem
         // Campos específicos para apartamentos
         floor: true,
         condoFee: true,
