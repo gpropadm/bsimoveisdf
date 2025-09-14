@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import AdminLayout from '@/components/AdminLayout'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -103,49 +103,44 @@ export default function CloudinaryUsagePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex">
-              <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Erro ao carregar estatísticas</h3>
-                <p className="mt-2 text-sm text-red-700">{error}</p>
-                <button
-                  onClick={fetchStats}
-                  className="mt-3 bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded text-sm"
-                >
-                  Tentar novamente
-                </button>
-              </div>
+      <AdminLayout title="Central de Mídia" subtitle="Erro ao carregar dados" currentPage="media">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex">
+            <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Erro ao carregar estatísticas</h3>
+              <p className="mt-2 text-sm text-red-700">{error}</p>
+              <button
+                onClick={fetchStats}
+                className="mt-3 bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded text-sm"
+              >
+                Tentar novamente
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </AdminLayout>
     )
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center space-x-4">
-            <Link href="/admin" className="text-[#7360ee] hover:text-[#7360ee]/80 flex items-center space-x-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="15,18 9,12 15,6"/>
-              </svg>
-              <span>Voltar ao Admin</span>
-            </Link>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 mt-2">Central de Mídia</h1>
-          <p className="text-gray-600">Monitore o uso de armazenamento, largura de banda e processamento de mídia</p>
-        </div>
-      </div>
+  const refreshButton = (
+    <button
+      onClick={fetchStats}
+      className="bg-[#7360ee] hover:bg-[#7360ee]/90 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Atualizar
+    </button>
+  )
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+  return (
+    <AdminLayout
+      title="Central de Mídia"
+      subtitle="Monitore o uso de armazenamento, largura de banda e processamento de mídia"
+      currentPage="media"
+      actions={refreshButton}
+    >
         {/* Plan Info */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between">
@@ -268,7 +263,7 @@ export default function CloudinaryUsagePage() {
         </div>
 
         {/* Alerts */}
-        {(stats?.bandwidth.percentage >= 80 || stats?.storage.percentage >= 80 || stats?.transformations.percentage >= 80) && (
+        {((stats?.bandwidth.percentage || 0) >= 80 || (stats?.storage.percentage || 0) >= 80 || (stats?.transformations.percentage || 0) >= 80) && (
           <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex">
               <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,7 +278,6 @@ export default function CloudinaryUsagePage() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+    </AdminLayout>
   )
 }
