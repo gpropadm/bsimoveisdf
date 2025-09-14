@@ -250,6 +250,12 @@ export default function EditProperty() {
   const handleImageUpload = async (files: FileList) => {
     if (!files || files.length === 0) return
 
+    // Verificar limite de arquivos
+    if (files.length > 10) {
+      alert(`❌ Muitos arquivos selecionados (${files.length}). Limite máximo: 10 arquivos por vez.`)
+      return
+    }
+
     console.log('📸 Iniciando upload de', files.length, 'arquivo(s)')
 
     // Log detalhado dos arquivos
@@ -851,14 +857,18 @@ export default function EditProperty() {
                         <path d="m21 15-3.086-3.086a2 2 0 00-2.828 0L6 21"/>
                       </svg>
                       {uploading ? (
-                        <p className="text-[#7360ee] font-medium">Fazendo upload...</p>
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7360ee] mx-auto mb-2"></div>
+                          <p className="text-[#7360ee] font-medium">Fazendo upload...</p>
+                          <p className="text-xs text-gray-500">Processando em lotes para melhor performance</p>
+                        </div>
                       ) : (
                         <>
                           <p className="text-gray-600 font-medium mb-2">
                             Clique para selecionar imagens ou arraste aqui
                           </p>
                           <p className="text-sm text-gray-500">
-                            PNG, JPG até 5MB cada (múltiplas imagens permitidas)
+                            PNG, JPG até 5MB cada (máximo 10 imagens por vez)
                           </p>
                         </>
                       )}

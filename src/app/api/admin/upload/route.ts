@@ -59,74 +59,110 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nenhuma imagem enviada' }, { status: 400 })
     }
 
+    // Limite de 10 arquivos por vez para evitar timeout
+    if (files.length > 10) {
+      console.log(`❌ [${requestId}] Muitos arquivos (${files.length}). Limite: 10`)
+      return NextResponse.json({
+        error: `Muitos arquivos selecionados (${files.length}). Limite máximo: 10 arquivos por vez.`
+      }, { status: 400 })
+    }
+
     const uploadedUrls: string[] = []
     const errors: string[] = []
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      console.log(`🔄 [${requestId}] Processando arquivo ${i + 1}/${files.length}: "${file.name}"`)
+    // Processar arquivos em lotes para evitar sobrecarga
+    const BATCH_SIZE = 3 // Máximo 3 uploads simultâneos
+    const batches = []
 
-      try {
-        // Validar tipo de arquivo
-        if (!file.type.startsWith('image/')) {
-          const error = `Tipo de arquivo inválido: "${file.name}" (${file.type})`
-          console.log(`❌ [${requestId}] ${error}`)
-          errors.push(error)
-          continue
-        }
+    for (let i = 0; i < files.length; i += BATCH_SIZE) {
+      batches.push(files.slice(i, i + BATCH_SIZE))
+    }
 
-        // Validar tamanho (5MB máximo)
-        if (file.size > 5 * 1024 * 1024) {
-          const error = `Arquivo "${file.name}" é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo 5MB.`
-          console.log(`❌ [${requestId}] ${error}`)
-          errors.push(error)
-          continue
-        }
+    console.log(`📦 [${requestId}] Processando ${files.length} arquivos em ${batches.length} lote(s) de até ${BATCH_SIZE}`)
 
-        // Converter File para Buffer
-        console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)
-        const bytes = await file.arrayBuffer()
-        const buffer = Buffer.from(bytes)
+    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+      const batch = batches[batchIndex]
+      console.log(`🔄 [${requestId}] Processando lote ${batchIndex + 1}/${batches.length} com ${batch.length} arquivo(s)`)
 
-        console.log(`☁️ [${requestId}] Fazendo upload para Cloudinary: "${file.name}" - Tamanho: ${(buffer.length/1024/1024).toFixed(2)}MB`)
+      // Processar arquivos do lote simultaneamente
+      const batchPromises = batch.map(async (file, fileIndex) => {
+        const globalIndex = batchIndex * BATCH_SIZE + fileIndex
+        console.log(`🔄 [${requestId}] Processando arquivo ${globalIndex + 1}/${files.length}: "${file.name}"`)
 
-        // Upload para Cloudinary com timeout
-        const uploadResult = await Promise.race([
-          new Promise((resolve, reject) => {
-            console.log(`⬆️ [${requestId}] Iniciando upload para Cloudinary: "${file.name}"`)
-            cloudinary.uploader.upload_stream(
-              {
-                resource_type: 'image',
-                folder: 'imoveis',
-                transformation: [
-                  { width: 1200, height: 800, crop: 'limit' },
-                  { quality: 'auto', fetch_format: 'auto' }
-                ]
-              },
-              (error, result) => {
-                if (error) {
-                  console.error(`❌ [${requestId}] Erro do Cloudinary para "${file.name}":`, error)
-                  reject(error)
-                } else {
-                  console.log(`✅ [${requestId}] Upload Cloudinary sucesso para "${file.name}":`, result?.public_id)
-                  resolve(result)
+        try {
+          // Validar tipo de arquivo
+          if (!file.type.startsWith('image/')) {
+            const error = `Tipo de arquivo inválido: "${file.name}" (${file.type})`
+            console.log(`❌ [${requestId}] ${error}`)
+            return { error }
+          }
+
+          // Validar tamanho (5MB máximo)
+          if (file.size > 5 * 1024 * 1024) {
+            const error = `Arquivo "${file.name}" é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Máximo 5MB.`
+            console.log(`❌ [${requestId}] ${error}`)
+            return { error }
+          }
+
+          // Converter File para Buffer
+          console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)
+          const bytes = await file.arrayBuffer()
+          const buffer = Buffer.from(bytes)
+
+          console.log(`☁️ [${requestId}] Fazendo upload para Cloudinary: "${file.name}" - Tamanho: ${(buffer.length/1024/1024).toFixed(2)}MB`)
+
+          // Upload para Cloudinary com timeout
+          const uploadResult = await Promise.race([
+            new Promise((resolve, reject) => {
+              console.log(`⬆️ [${requestId}] Iniciando upload para Cloudinary: "${file.name}"`)
+              cloudinary.uploader.upload_stream(
+                {
+                  resource_type: 'image',
+                  folder: 'imoveis',
+                  transformation: [
+                    { width: 1200, height: 800, crop: 'limit' },
+                    { quality: 'auto', fetch_format: 'auto' }
+                  ]
+                },
+                (error, result) => {
+                  if (error) {
+                    console.error(`❌ [${requestId}] Erro do Cloudinary para "${file.name}":`, error)
+                    reject(error)
+                  } else {
+                    console.log(`✅ [${requestId}] Upload Cloudinary sucesso para "${file.name}":`, result?.public_id)
+                    resolve(result)
+                  }
                 }
-              }
-            ).end(buffer)
-          }),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error(`Upload timeout após 30s para "${file.name}"`)), 30000)
-          )
-        ]) as any
+              ).end(buffer)
+            }),
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error(`Upload timeout após 30s para "${file.name}"`)), 30000)
+            )
+          ]) as any
 
-        console.log(`✅ [${requestId}] Upload concluído: "${file.name}" -> ${uploadResult.secure_url}`)
-        uploadedUrls.push(uploadResult.secure_url)
+          console.log(`✅ [${requestId}] Upload concluído: "${file.name}" -> ${uploadResult.secure_url}`)
+          return { url: uploadResult.secure_url }
 
-      } catch (fileError) {
-        const error = `Erro no upload de "${file.name}": ${fileError instanceof Error ? fileError.message : 'Erro desconhecido'}`
-        console.error(`❌ [${requestId}] ${error}`)
-        errors.push(error)
+        } catch (fileError) {
+          const error = `Erro no upload de "${file.name}": ${fileError instanceof Error ? fileError.message : 'Erro desconhecido'}`
+          console.error(`❌ [${requestId}] ${error}`)
+          return { error }
+        }
+      })
+
+      // Aguardar conclusão do lote
+      const batchResults = await Promise.all(batchPromises)
+
+      // Processar resultados do lote
+      for (const result of batchResults) {
+        if (result.url) {
+          uploadedUrls.push(result.url)
+        } else if (result.error) {
+          errors.push(result.error)
+        }
       }
+
+      console.log(`✅ [${requestId}] Lote ${batchIndex + 1} concluído: ${batchResults.filter(r => r.url).length} sucessos, ${batchResults.filter(r => r.error).length} erros`)
     }
 
     console.log(`📊 [${requestId}] Resumo do upload:`, {
