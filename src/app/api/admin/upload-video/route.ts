@@ -28,13 +28,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nenhum vídeo enviado' }, { status: 400 })
     }
 
-    // Verificar se é um arquivo de vídeo
-    if (!video.type.startsWith('video/')) {
-      return NextResponse.json({ error: 'Arquivo deve ser um vídeo' }, { status: 400 })
+    console.log('🎥 Detalhes do arquivo:', {
+      name: video.name,
+      type: video.type,
+      size: `${(video.size / 1024 / 1024).toFixed(2)}MB`
+    })
+
+    // Verificar se é um arquivo de vídeo - incluir tipos específicos do MOV
+    const validVideoTypes = [
+      'video/mp4',
+      'video/mov',
+      'video/quicktime',
+      'video/x-quicktime',
+      'video/webm',
+      'video/avi',
+      'video/x-msvideo'
+    ]
+
+    const isValidVideo = video.type.startsWith('video/') ||
+                        validVideoTypes.includes(video.type.toLowerCase()) ||
+                        video.name.toLowerCase().endsWith('.mov') ||
+                        video.name.toLowerCase().endsWith('.mp4') ||
+                        video.name.toLowerCase().endsWith('.webm')
+
+    if (!isValidVideo) {
+      console.log('❌ Tipo de arquivo inválido:', video.type)
+      return NextResponse.json({
+        error: `Tipo de arquivo não suportado: ${video.type}. Tipos aceitos: MP4, MOV, WebM`
+      }, { status: 400 })
     }
 
     // Verificar tamanho (máximo 50MB)
     if (video.size > 50 * 1024 * 1024) {
+      console.log('❌ Arquivo muito grande:', `${(video.size / 1024 / 1024).toFixed(2)}MB`)
       return NextResponse.json({ error: 'Vídeo muito grande. Máximo 50MB' }, { status: 400 })
     }
 

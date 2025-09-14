@@ -962,7 +962,7 @@ export default function EditProperty() {
                         <div className="relative">
                           <input
                             type="file"
-                            accept="video/*"
+                            accept="video/*,.mov,.mp4,.webm,.avi"
                             onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0], index)}
                             className="hidden"
                             id={`video-upload-${index}`}
@@ -991,7 +991,7 @@ export default function EditProperty() {
                         </div>
                       </div>
                       <p className="text-xs text-gray-500 mt-1">
-                        Cole uma URL ou faça upload de um arquivo de vídeo (máx. 50MB)
+                        Cole uma URL ou faça upload de um arquivo de vídeo (MP4, MOV, WebM - máx. 50MB)
                       </p>
                       
                       {/* Preview do vídeo */}
@@ -1062,7 +1062,8 @@ export default function EditProperty() {
                   
                   <div className="text-xs text-gray-500 space-y-1">
                     <p>• <strong>URLs:</strong> Suporte a YouTube, links diretos MP4/MOV/WebM</p>
-                    <p>• <strong>Upload:</strong> Faça upload de arquivos até 50MB</p>
+                    <p>• <strong>Upload:</strong> Arquivos MOV, MP4, WebM, AVI até 50MB</p>
+                    <p>• <strong>iPhone:</strong> Arquivos .MOV do iPhone são totalmente suportados</p>
                     <p>• <strong>Stories:</strong> O primeiro vídeo será o principal no modal</p>
                     <p>• <strong>Organização:</strong> Use as setas para reordenar os vídeos</p>
                   </div>
