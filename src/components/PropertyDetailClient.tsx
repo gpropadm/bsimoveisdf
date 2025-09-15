@@ -160,6 +160,9 @@ ${formData.message}
 
       // Enviar via API do WhatsApp (sem abrir aba)
       try {
+        console.log('🚀 Iniciando envio WhatsApp para:', whatsappNumber)
+        console.log('📝 Mensagem:', message.substring(0, 100) + '...')
+
         const whatsappResponse = await fetch('/api/whatsapp/send', {
           method: 'POST',
           headers: {
@@ -172,10 +175,17 @@ ${formData.message}
           }),
         })
 
+        console.log('📡 Response status:', whatsappResponse.status)
         const whatsappResult = await whatsappResponse.json()
-        console.log('WhatsApp enviado:', whatsappResult)
+        console.log('📱 WhatsApp result:', whatsappResult)
+
+        if (whatsappResult.success) {
+          console.log('✅ WhatsApp enviado com sucesso!')
+        } else {
+          console.error('❌ Falha no WhatsApp:', whatsappResult.error)
+        }
       } catch (whatsappError) {
-        console.error('Erro ao enviar WhatsApp:', whatsappError)
+        console.error('💥 Erro crítico ao enviar WhatsApp:', whatsappError)
       }
 
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')
