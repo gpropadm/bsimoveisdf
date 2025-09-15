@@ -119,7 +119,7 @@ class WhatsAppBaileys {
     try {
       // Formatar número (adicionar @s.whatsapp.net se necessário)
       const formattedNumber = to.includes('@') ? to : `${to}@s.whatsapp.net`;
-      
+
       await this.sock.sendMessage(formattedNumber, { text: message });
       console.log(`✅ Mensagem enviada para ${to}`);
       return true;
@@ -127,6 +127,77 @@ class WhatsAppBaileys {
       console.error('Erro ao enviar mensagem:', error);
       return false;
     }
+  }
+
+  // Enviar localização do imóvel via WhatsApp
+  async sendPropertyLocation(to: string, propertyData: {
+    title: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+    price?: string;
+    url?: string;
+  }): Promise<boolean> {
+    if (!this.sock || !this.connected) {
+      console.log('❌ WhatsApp não conectado');
+      return false;
+    }
+
+    try {
+      const formattedNumber = to.includes('@') ? to : `${to}@s.whatsapp.net`;
+
+      // Enviar localização
+      await this.sock.sendMessage(formattedNumber, {
+        location: {
+          degreesLatitude: propertyData.latitude,
+          degreesLongitude: propertyData.longitude,
+          name: propertyData.title,
+          address: propertyData.address,
+        }
+      });
+
+      // Enviar informações complementares
+      let infoMessage = `📍 *${propertyData.title}*\n\n`;
+      infoMessage += `🏠 *Endereço:* ${propertyData.address}\n`;
+
+      if (propertyData.price) {
+        infoMessage += `💰 *Valor:* R$ ${propertyData.price}\n`;
+      }
+
+      if (propertyData.url) {
+        infoMessage += `🔗 *Ver mais:* ${propertyData.url}\n`;
+      }
+
+      infoMessage += `\n_Localização compartilhada via ImobiNext_`;
+
+      await this.sock.sendMessage(formattedNumber, { text: infoMessage });
+
+      console.log(`✅ Localização do imóvel enviada para ${to}`);
+      return true;
+    } catch (error) {
+      console.error('Erro ao enviar localização:', error);
+      return false;
+    }
+  }
+
+  // Solicitar localização atual via WhatsApp
+  async requestCurrentLocation(to: string, propertyTitle?: string): Promise<boolean> {
+    const message = `📍 *Solicitação de Localização*
+
+${propertyTitle ? `Para o imóvel: *${propertyTitle}*\n\n` : ''}Por favor, compartilhe sua localização atual para que possamos:
+
+✅ Preencher automaticamente o endereço
+✅ Calcular distâncias para pontos de interesse
+✅ Melhorar a precisão dos dados do imóvel
+
+👇 *Para compartilhar:*
+1. Clique no ícone de anexo (📎)
+2. Selecione "Localização"
+3. Escolha "Localização ao vivo" ou "Localização atual"
+
+_Esta localização será usada apenas para cadastro do imóvel_`;
+
+    return await this.sendMessage(to, message);
   }
 
   // Notificar cliente sobre agendamento confirmado

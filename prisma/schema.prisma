@@ -86,6 +86,11 @@ model Property {
   images      String?  // JSON string of image URLs
   video       String?  // URL do vídeo (YouTube, Vimeo, etc.)
   featured    Boolean  @default(false)
+
+  // Coordenadas GPS para localização exata
+  latitude    Float?   // Latitude GPS
+  longitude   Float?   // Longitude GPS
+  gpsAccuracy Float?   // Precisão do GPS em metros
   
   // Campos específicos para apartamentos/coberturas
   floor       Int?     // andar do apartamento

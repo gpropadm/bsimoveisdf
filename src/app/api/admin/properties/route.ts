@@ -35,6 +35,10 @@ export async function GET(request: NextRequest) {
         video: false, // Não carregar vídeo na listagem para performance
         featured: true,
         images: true, // Carregar imagens para mostrar thumbnail na listagem
+        // Coordenadas GPS
+        latitude: true,
+        longitude: true,
+        gpsAccuracy: true,
         // Campos específicos para apartamentos
         floor: true,
         condoFee: true,
@@ -95,6 +99,10 @@ export async function POST(request: NextRequest) {
       video,
       featured,
       images,
+      // Coordenadas GPS
+      latitude,
+      longitude,
+      gpsAccuracy,
       // Campos específicos para apartamentos
       floor,
       condoFee,
@@ -157,6 +165,10 @@ export async function POST(request: NextRequest) {
         video: video || null,
         featured: featured || false,
         images: images || null,
+        // Coordenadas GPS
+        latitude: latitude || null,
+        longitude: longitude || null,
+        gpsAccuracy: gpsAccuracy || null,
         // Campos específicos para apartamentos
         floor: floor || null,
         condoFee: condoFee || null,

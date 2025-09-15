@@ -136,30 +136,47 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         throw new Error(data.error || 'Erro ao enviar dados')
       }
 
-      // WhatsApp message
-      const message = `*INTERESSE EM IMÓVEL*
+      // Enviar WhatsApp automático via API
+      const message = `*🏠 INTERESSE EM IMÓVEL*
 
 *Imóvel:* ${property.title}
 *Preço:* ${formatPrice(property.price)}
 *Link:* ${window.location.href}
 
-*Dados do Cliente:*
+*👤 Dados do Cliente:*
 *Nome:* ${formData.name}
 *Telefone:* ${formData.phone}
 *Email:* ${formData.email}
 
-*Mensagem:*
+*💬 Mensagem:*
 ${formData.message}
 
-*Data:* ${new Date().toLocaleString('pt-BR')}`
+*📅 Data:* ${new Date().toLocaleString('pt-BR')}`
 
       // Buscar configurações para pegar o WhatsApp
       const settingsResponse = await fetch('/api/admin/settings')
       const settingsData = await settingsResponse.json()
       const whatsappNumber = settingsData.site?.contactWhatsapp || '5548998645864'
-      
-      const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
-      window.open(whatsappURL, '_blank')
+
+      // Enviar via API do WhatsApp (sem abrir aba)
+      try {
+        const whatsappResponse = await fetch('/api/whatsapp/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            recipients: whatsappNumber,
+            message: message,
+            provider: 'auto'
+          }),
+        })
+
+        const whatsappResult = await whatsappResponse.json()
+        console.log('WhatsApp enviado:', whatsappResult)
+      } catch (whatsappError) {
+        console.error('Erro ao enviar WhatsApp:', whatsappError)
+      }
 
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')
       

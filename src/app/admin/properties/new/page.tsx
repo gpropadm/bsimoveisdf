@@ -102,6 +102,7 @@ export default function NewProperty() {
     }
   }
 
+
   // Função para buscar endereço pelo CEP
   const fetchAddressByCep = async (cep: string) => {
     // Remove formatação do CEP
@@ -657,6 +658,7 @@ export default function NewProperty() {
               <h3 className="text-lg font-medium text-gray-900">Localização</h3>
             </div>
             <div className="p-6 space-y-6">
+
               {/* Campo CEP */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -720,6 +722,7 @@ export default function NewProperty() {
                   />
                 </div>
               </div>
+
             </div>
           </div>
 

@@ -142,6 +142,7 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
           time: selectedTime,
           clientName: clientData.name,
           clientPhone: clientData.phone,
+          clientEmail: clientData.email,
           propertyTitle: property.title,
           propertyAddress: property.address,
           propertyId: property.id
@@ -152,6 +153,12 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
 
       if (result.success) {
         const detalhes = result.details || {};
+
+        // Abrir WhatsApp automaticamente
+        if (result.whatsappUrl) {
+          window.open(result.whatsappUrl, '_blank');
+        }
+
         alert(`✅ Visita agendada com sucesso!
 
 📅 Data: ${detalhes.data || selectedDate}
@@ -161,7 +168,8 @@ export default function AppointmentModal({ isOpen, onClose, property }: Appointm
 🏠 Imóvel: ${detalhes.imovel || property.title}
 👨‍💼 Corretor: ${result.corretor || 'João Silva'}
 
-${result.notifications?.client ? '📱 Notificação enviada via WhatsApp' : '💾 Agendamento salvo no sistema'}
+📱 WhatsApp aberto para confirmação!
+💾 Agendamento salvo no sistema
 
 Entraremos em contato para confirmar!`);
         onClose();
