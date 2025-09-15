@@ -52,16 +52,16 @@ export class WhatsAppService {
    */
   async sendMessage(data: SendMessageData): Promise<WhatsAppResponse> {
     try {
-      // Sempre usar simulação realista para demo (como no brpolis)
-      return this.simulateRealisticMessage(data);
+      // Usar Evolution API real
+      const provider = await this.chooseProvider(data.provider);
+      if (provider === 'evolution') {
+        return await this.sendViaEvolution(data);
+      } else {
+        return await this.sendViaMeta(data);
+      }
 
-      // Em produção, descomentar:
-      // const provider = await this.chooseProvider(data.provider);
-      // if (provider === 'evolution') {
-      //   return await this.sendViaEvolution(data);
-      // } else {
-      //   return await this.sendViaMeta(data);
-      // }
+      // Fallback para simulação se der erro
+      // return this.simulateRealisticMessage(data);
 
     } catch (error) {
       console.error('Erro ao enviar mensagem WhatsApp:', error);
