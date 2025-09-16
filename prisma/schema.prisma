@@ -142,6 +142,12 @@ model Lead {
   source       String   @default("site") // "site", "whatsapp", "telefone", etc.
   status       String   @default("novo") // "novo", "contatado", "interessado", "convertido", "perdido"
   notes        String?  // observações do corretor
+
+  // Campos para agentes IA
+  agentProcessed    Boolean?   @default(false)
+  agentStatus       String?    // 'sent', 'error', 'processed', 'whatsapp_sent', 'whatsapp_error'
+  agentProcessedAt  DateTime?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
