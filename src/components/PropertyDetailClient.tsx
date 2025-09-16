@@ -158,34 +158,31 @@ ${formData.message}
       const settingsData = await settingsResponse.json()
       const whatsappNumber = settingsData.site?.contactWhatsapp || '5548998645864'
 
-      // Enviar via API do WhatsApp (sem abrir aba)
+      // Salvar mensagem no banco para painel admin
       try {
-        console.log('🚀 Iniciando envio WhatsApp para:', whatsappNumber)
-        console.log('📝 Mensagem:', message.substring(0, 100) + '...')
+        console.log('🚀 Salvando mensagem WhatsApp no banco para:', whatsappNumber)
 
-        const whatsappResponse = await fetch('/api/whatsapp/send', {
+        const whatsappResponse = await fetch('/api/whatsapp/pending', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            recipients: whatsappNumber,
+            to: whatsappNumber,
             message: message,
-            provider: 'auto'
+            source: 'Interesse em Imóvel'
           }),
         })
 
-        console.log('📡 Response status:', whatsappResponse.status)
-        const whatsappResult = await whatsappResponse.json()
-        console.log('📱 WhatsApp result:', whatsappResult)
+        const result = await whatsappResponse.json()
 
-        if (whatsappResult.success) {
-          console.log('✅ WhatsApp enviado com sucesso!')
+        if (result.success) {
+          console.log('✅ Mensagem salva! Acesse /admin/whatsapp-messages')
         } else {
-          console.error('❌ Falha no WhatsApp:', whatsappResult.error)
+          console.error('❌ Erro ao salvar:', result.error)
         }
-      } catch (whatsappError) {
-        console.error('💥 Erro crítico ao enviar WhatsApp:', whatsappError)
+      } catch (error) {
+        console.error('💥 Erro:', error)
       }
 
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')

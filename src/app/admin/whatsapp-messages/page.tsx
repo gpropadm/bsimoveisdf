@@ -15,12 +15,20 @@ export default function WhatsAppMessagesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simular carregamento de mensagens do localStorage
-    const loadMessages = () => {
+    // Carregar mensagens do banco
+    const loadMessages = async () => {
       try {
-        const stored = localStorage.getItem('whatsapp_messages');
-        if (stored) {
-          setMessages(JSON.parse(stored));
+        const response = await fetch('/api/whatsapp/pending');
+        const data = await response.json();
+
+        if (data.success) {
+          setMessages(data.messages.map((msg: any) => ({
+            id: msg.id,
+            to: msg.to,
+            message: msg.message,
+            timestamp: msg.createdAt,
+            source: msg.source
+          })));
         }
       } catch (error) {
         console.error('Erro ao carregar mensagens:', error);
