@@ -1,0 +1,6 @@
+anthropic==0.28.0
+aiohttp==3.10.10
+asyncio-mqtt==0.16.2
+loguru==0.7.2
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
