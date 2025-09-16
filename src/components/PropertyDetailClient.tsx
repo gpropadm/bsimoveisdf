@@ -158,32 +158,9 @@ ${formData.message}
       const settingsData = await settingsResponse.json()
       const whatsappNumber = settingsData.site?.contactWhatsapp || '5548998645864'
 
-      // Salvar mensagem no banco para painel admin
-      try {
-        console.log('🚀 Salvando mensagem WhatsApp no banco para:', whatsappNumber)
-
-        const whatsappResponse = await fetch('/api/whatsapp/pending', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            to: whatsappNumber,
-            message: message,
-            source: 'Interesse em Imóvel'
-          }),
-        })
-
-        const result = await whatsappResponse.json()
-
-        if (result.success) {
-          console.log('✅ Mensagem salva! Acesse /admin/whatsapp-messages')
-        } else {
-          console.error('❌ Erro ao salvar:', result.error)
-        }
-      } catch (error) {
-        console.error('💥 Erro:', error)
-      }
+      // Abrir WhatsApp (funcionamento original)
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`
+      window.open(whatsappURL, '_blank')
 
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')
       

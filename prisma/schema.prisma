@@ -310,14 +310,3 @@ model Settings {
   @@map("settings")
 }
 
-model PendingWhatsApp {
-  id        String   @id @default(cuid())
-  to        String   // Número do WhatsApp
-  message   String   // Mensagem a ser enviada
-  source    String   // Origem da mensagem (ex: "Interesse em Imóvel")
-  sent      Boolean  @default(false) // Se já foi enviada
-  createdAt DateTime @default(now())
-  sentAt    DateTime? // Quando foi marcada como enviada
-
-  @@map("pending_whatsapp")
-}
