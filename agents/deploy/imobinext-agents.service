@@ -1,0 +1,24 @@
+[Unit]
+Description=ImobiNext AI Agents
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=alex
+Group=alex
+WorkingDirectory=/home/alex/site-imobiliaria-v2/agents
+Environment=PATH=/home/alex/site-imobiliaria-v2/agents/production_env/bin
+ExecStart=/home/alex/site-imobiliaria-v2/agents/production_env/bin/python production_main.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=imobinext-agents
+
+# Limits de segurança
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
