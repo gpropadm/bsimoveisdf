@@ -90,7 +90,18 @@ export default function EditProperty() {
       }
       const data = await response.json()
       setProperty(data)
-      const parsedImages = data.images ? JSON.parse(data.images) : []
+      const parsedImages = (() => {
+        if (!data.images) return []
+        try {
+          if (data.images.startsWith('[')) {
+            return JSON.parse(data.images)
+          } else {
+            return [data.images]
+          }
+        } catch {
+          return [data.images]
+        }
+      })()
       const parsedVideos = (() => {
         console.log('🎬 Dados de vídeo do banco:', data.video)
         if (!data.video) return [''] // Start with one empty video
