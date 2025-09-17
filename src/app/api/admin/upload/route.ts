@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { v2 as cloudinary } from 'cloudinary'
+import { addWatermark } from '@/lib/watermark'
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -132,7 +133,26 @@ export async function POST(request: NextRequest) {
           // Converter File para Buffer
           console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)
           const bytes = await file.arrayBuffer()
-          const buffer = Buffer.from(bytes)
+          let buffer = Buffer.from(new Uint8Array(bytes))
+
+          // Adicionar marca d'água
+          console.log(`🎨 [${requestId}] Adicionando marca d'água: "${file.name}"`)
+          try {
+            const watermarkText = process.env.WATERMARK_TEXT || 'FAIMOVEIS'
+            const watermarkOpacity = parseFloat(process.env.WATERMARK_OPACITY || '0.4')
+
+            buffer = await addWatermark(buffer, {
+              text: watermarkText,
+              fontSize: 60,
+              opacity: watermarkOpacity,
+              color: 'white',
+              position: 'center'
+            })
+            console.log(`✅ [${requestId}] Marca d'água "${watermarkText}" adicionada: "${file.name}"`)
+          } catch (watermarkError) {
+            console.warn(`⚠️ [${requestId}] Erro ao adicionar marca d'água em "${file.name}":`, watermarkError)
+            // Continua com imagem original se houver erro na marca d'água
+          }
 
           console.log(`☁️ [${requestId}] Fazendo upload para Cloudinary: "${file.name}" - Tamanho: ${(buffer.length/1024/1024).toFixed(2)}MB`)
 
