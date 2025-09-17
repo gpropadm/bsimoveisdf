@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import AdminLayout from '@/components/AdminLayout'
 
 export default function NewProperty() {
   const router = useRouter()
@@ -517,28 +518,27 @@ export default function NewProperty() {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Novo Imóvel</h1>
-              <p className="mt-1 text-sm text-gray-600">
-                Adicione um novo imóvel ao catálogo
-              </p>
-            </div>
-            <Link
-              href="/admin/properties"
-              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Voltar
-            </Link>
-          </div>
-        </div>
-      </div>
+  const actions = (
+    <Link
+      href="/admin/properties"
+      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M19 12H5"/>
+        <polyline points="12,19 5,12 12,5"/>
+      </svg>
+      <span>Voltar</span>
+    </Link>
+  )
 
-      <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  return (
+    <AdminLayout
+      title="Novo Imóvel"
+      subtitle="Adicione um novo imóvel ao catálogo"
+      currentPage="properties"
+      actions={actions}
+    >
+      <div className="max-w-4xl mx-auto p-4 lg:p-6">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Informações Básicas */}
           <div className="bg-white shadow rounded-lg">
@@ -1510,6 +1510,6 @@ export default function NewProperty() {
           </div>
         </form>
       </div>
-    </div>
+    </AdminLayout>
   )
 }
