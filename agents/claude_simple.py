@@ -70,7 +70,7 @@ Considere urgência, completude dos dados, valor do imóvel e intenção de comp
 
             # Payload para Claude API
             payload = {
-                "model": "claude-3-haiku-20240307",
+                "model": "claude-3-5-sonnet-20241022",
                 "max_tokens": 500,
                 "temperature": 0.1,
                 "messages": [
@@ -233,29 +233,55 @@ Considere urgência, completude dos dados, valor do imóvel e intenção de comp
             return await self.send_via_webhook(whatsapp_number, message)
 
     async def send_via_webhook(self, whatsapp_number: str, message: str) -> bool:
-        """Fallback via webhook simples"""
+        """ENVIO REAL VIA TWILIO WHATSAPP"""
         try:
-            # Simular envio bem sucedido e logar
-            logger.info(f"📱 SIMULAÇÃO: WhatsApp para {whatsapp_number}")
-            logger.info(f"💬 Mensagem: {message[:100]}...")
+            import base64
+            import requests
 
-            # Você pode integrar aqui com qualquer serviço de WhatsApp
-            # Por enquanto vamos apenas logar a mensagem completa
+            # Configurações Twilio
+            account_sid = os.getenv('TWILIO_ACCOUNT_SID', 'YOUR_TWILIO_ACCOUNT_SID')
+            auth_token = os.getenv('TWILIO_AUTH_TOKEN', 'YOUR_TWILIO_AUTH_TOKEN')
 
-            # Salvar no arquivo para você ver
-            with open('logs/whatsapp_messages.log', 'a', encoding='utf-8') as f:
-                import datetime
-                timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                f.write(f"\n=== {timestamp} ===\n")
-                f.write(f"Para: {whatsapp_number}\n")
-                f.write(f"Mensagem:\n{message}\n")
-                f.write("="*50 + "\n")
+            url = f"https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json"
+            credentials = base64.b64encode(f"{account_sid}:{auth_token}".encode()).decode()
 
-            logger.info(f"✅ Mensagem salva em logs/whatsapp_messages.log")
-            return True
+            payload = {
+                "From": "whatsapp:+14155238886",
+                "To": f"whatsapp:+{whatsapp_number}",
+                "Body": message
+            }
+
+            headers = {
+                "Authorization": f"Basic {credentials}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+
+            logger.info(f"📱 ENVIANDO VIA TWILIO PARA: {whatsapp_number}")
+
+            response = requests.post(url, data=payload, headers=headers)
+
+            if response.status_code == 201:
+                response_data = response.json()
+                logger.info(f"✅ WHATSAPP ENVIADO! SID: {response_data.get('sid')}")
+
+                # Backup: salvar também no arquivo
+                with open('logs/whatsapp_sent.txt', 'a', encoding='utf-8') as f:
+                    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    f.write(f"\n{'='*80}\n")
+                    f.write(f"✅ ENVIADO VIA TWILIO - {timestamp}\n")
+                    f.write(f"📱 PARA: {whatsapp_number}\n")
+                    f.write(f"🆔 SID: {response_data.get('sid')}\n")
+                    f.write(f"{'='*80}\n")
+                    f.write(f"{message}\n")
+                    f.write(f"{'='*80}\n\n")
+
+                return True
+            else:
+                logger.error(f"❌ Twilio erro: {response.status_code} - {response.text}")
+                return False
 
         except Exception as e:
-            logger.error(f"❌ Webhook erro: {e}")
+            logger.error(f"❌ Erro: {e}")
             return False
 
     async def process_leads_cycle(self):

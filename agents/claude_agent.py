@@ -75,7 +75,7 @@ class ClaudeAgentOrchestrator:
 
             # Chamar Claude
             message = self.claude.messages.create(
-                model="claude-3-sonnet-20240229",
+                model="claude-3-5-sonnet-20241022",
                 max_tokens=500,
                 temperature=0.1,
                 messages=[{
@@ -241,7 +241,7 @@ class ClaudeAgentOrchestrator:
             claude_status = "connected"
             try:
                 test_message = self.claude.messages.create(
-                    model="claude-3-sonnet-20240229",
+                    model="claude-3-5-sonnet-20241022",
                     max_tokens=10,
                     messages=[{"role": "user", "content": "Test"}]
                 )
