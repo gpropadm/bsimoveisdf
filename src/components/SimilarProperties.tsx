@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import FavoriteButton from './FavoriteButton'
+import { formatAreaDisplay } from '@/lib/maskUtils'
 
 interface Property {
   id: string
@@ -23,18 +24,24 @@ interface Property {
 interface SimilarPropertiesProps {
   currentPropertyId: string
   city: string
+  address?: string
   price: number
   type: string
+  category?: string
+  bedrooms?: number
   showAsSlider?: boolean
   limit?: number
   showTitle?: boolean
 }
 
-export default function SimilarProperties({ 
-  currentPropertyId, 
-  city, 
-  price, 
+export default function SimilarProperties({
+  currentPropertyId,
+  city,
+  address,
+  price,
   type,
+  category,
+  bedrooms,
   showAsSlider = false,
   limit = 4,
   showTitle = false
@@ -45,13 +52,20 @@ export default function SimilarProperties({
   useEffect(() => {
     const fetchSimilarProperties = async () => {
       try {
-        // Calcular faixa de preço (±30% do preço atual)
-        const minPrice = price * 0.7
-        const maxPrice = price * 1.3
+        // Construir URL com novos parâmetros para algoritmo inteligente
+        const params = new URLSearchParams({
+          city: city,
+          price: price.toString(),
+          type: type,
+          exclude: currentPropertyId
+        })
 
-        const response = await fetch(
-          `/api/properties/similar?city=${encodeURIComponent(city)}&minPrice=${minPrice}&maxPrice=${maxPrice}&type=${type}&exclude=${currentPropertyId}`
-        )
+        // Adicionar parâmetros opcionais se disponíveis
+        if (address) params.append('address', address)
+        if (category) params.append('category', category)
+        if (bedrooms !== undefined && bedrooms > 0) params.append('bedrooms', bedrooms.toString())
+
+        const response = await fetch(`/api/properties/similar?${params.toString()}`)
         
         if (response.ok) {
           const data = await response.json()
@@ -69,7 +83,7 @@ export default function SimilarProperties({
     }
 
     fetchSimilarProperties()
-  }, [currentPropertyId, city, price, type])
+  }, [currentPropertyId, city, address, price, type, category, bedrooms, limit])
 
   if (loading) {
     if (showAsSlider) return null // No loading for slider mode
@@ -190,7 +204,7 @@ export default function SimilarProperties({
                             {property.area && (
                               <span className="flex items-center gap-1">
                                 <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
-                                {property.area}m²
+                                {formatAreaDisplay(property.area)}
                               </span>
                             )}
                           </div>
@@ -288,7 +302,7 @@ export default function SimilarProperties({
                       {property.area && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
-                          {property.area}m²
+                          {formatAreaDisplay(property.area)}
                         </span>
                       )}
                     </div>
@@ -395,7 +409,7 @@ export default function SimilarProperties({
                       {property.area && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-3 h-3" width={12} height={12} />
-                          {property.area}m²
+                          {formatAreaDisplay(property.area)}
                         </span>
                       )}
                     </div>

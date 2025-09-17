@@ -456,10 +456,14 @@ ${formData.message}
         </div>
 
         {/* Similar Properties */}
-        <SimilarProperties 
-          currentProperty={property} 
-          category={property.category} 
-          city={property.city} 
+        <SimilarProperties
+          currentPropertyId={property.id}
+          city={property.city}
+          address={property.address}
+          price={property.price}
+          type={property.type}
+          category={property.category}
+          bedrooms={property.bedrooms || undefined}
         />
       </main>
 
