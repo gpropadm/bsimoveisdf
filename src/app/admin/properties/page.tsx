@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import AdminLayout from '@/components/AdminLayout'
 import { getFirstImage } from '@/lib/imageUtils'
+import { formatAreaDisplay } from '@/lib/maskUtils'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -178,7 +179,7 @@ export default function AdminPropertiesPage() {
                 <div className="flex space-x-4">
                   <span>{property.bedrooms}🛏️</span>
                   <span>{property.bathrooms}🚿</span>
-                  <span>{property.area}m²</span>
+                  <span>{formatAreaDisplay(property.area)}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className={`px-2 py-1 text-xs rounded-full ${
@@ -313,7 +314,7 @@ export default function AdminPropertiesPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div>{property.bedrooms} quartos</div>
                       <div>{property.bathrooms} banheiros</div>
-                      <div>{property.area}m²</div>
+                      <div>{formatAreaDisplay(property.area)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col space-y-1">

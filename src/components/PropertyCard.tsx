@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import FavoriteButton from '@/components/FavoriteButton'
+import { formatAreaDisplay } from '@/lib/maskUtils'
 
 interface Property {
   id: string
@@ -124,7 +125,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
             {property.area && (
               <span className="flex items-center gap-1">
                 <img src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4 opacity-60" />
-                <span>{property.area}m²</span>
+                <span>{formatAreaDisplay(property.area)}</span>
               </span>
             )}
           </div>

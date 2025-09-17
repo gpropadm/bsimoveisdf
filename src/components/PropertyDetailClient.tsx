@@ -10,6 +10,7 @@ import AppointmentScheduler from '@/components/AppointmentScheduler'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
+import { formatAreaDisplay, formatAreaHectares } from '@/lib/maskUtils'
 
 interface Property {
   id: string
@@ -306,8 +307,7 @@ ${formData.message}
                       <svg className="w-6 h-6 mx-auto mb-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
                       </svg>
-                      <div className="text-lg font-semibold text-gray-900">{property.area}</div>
-                      <div className="text-xs text-gray-600">m²</div>
+                      <div className="text-lg font-semibold text-gray-900">{formatAreaDisplay(property.area)}</div>
                     </div>
                   )}
                 </div>
@@ -647,7 +647,7 @@ function FarmInfo({ property }: { property: Property }) {
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-900">{property.totalArea} ha</div>
+                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.totalArea)}</div>
                 <div className="text-sm text-gray-600">Área total</div>
               </div>
             </div>
@@ -663,7 +663,7 @@ function FarmInfo({ property }: { property: Property }) {
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-900">{property.cultivatedArea} ha</div>
+                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.cultivatedArea)}</div>
                 <div className="text-sm text-gray-600">Área cultivada</div>
               </div>
             </div>
@@ -679,7 +679,7 @@ function FarmInfo({ property }: { property: Property }) {
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-semibold text-gray-900">{property.pastures} ha</div>
+                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.pastures)}</div>
                 <div className="text-sm text-gray-600">Pastagens</div>
               </div>
             </div>
@@ -768,7 +768,7 @@ function LandInfo({ property }: { property: Property }) {
               </div>
               <div>
                 <div className="text-sm text-gray-600">Frente</div>
-                <div className="font-semibold text-gray-900">{property.frontage}m</div>
+                <div className="font-semibold text-gray-900">{formatAreaDisplay(property.frontage)}</div>
               </div>
             </div>
           </div>
