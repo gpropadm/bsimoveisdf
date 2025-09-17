@@ -64,7 +64,18 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
     }).format(price)
   }
 
-  const images = property.images ? JSON.parse(property.images) : []
+  let images: string[] = []
+  if (property.images) {
+    try {
+      if (property.images.startsWith('[')) {
+        images = JSON.parse(property.images)
+      } else {
+        images = [property.images]
+      }
+    } catch {
+      images = [property.images]
+    }
+  }
   const firstImage = images[0] || '/placeholder-house.jpg'
   
   const title = `${property.title} - ${formatPrice(property.price)} - ${property.city}`
@@ -119,6 +130,22 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
     notFound()
   }
 
+  // Parse images safely
+  let propertyImages: string[] = []
+  if (property.images) {
+    try {
+      if (property.images.startsWith('[')) {
+        propertyImages = JSON.parse(property.images)
+      } else {
+        propertyImages = [property.images]
+      }
+    } catch {
+      propertyImages = [property.images]
+    }
+  } else {
+    propertyImages = ['/placeholder-house.jpg']
+  }
+
   // Structured Data (JSON-LD)
   const structuredData = {
     '@context': 'https://schema.org',
@@ -126,7 +153,7 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
     name: property.title,
     description: property.description || `${property.category} para ${property.type} em ${property.city}`,
     url: `https://faimoveis.com.br/imovel/${property.slug}`,
-    image: property.images ? JSON.parse(property.images) : ['/placeholder-house.jpg'],
+    image: propertyImages,
     offers: {
       '@type': 'Offer',
       price: property.price,

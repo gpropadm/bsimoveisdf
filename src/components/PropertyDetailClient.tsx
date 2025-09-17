@@ -73,12 +73,16 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   // Parse images safely
   const parseImages = (imageData: string | null): string[] => {
     if (!imageData) return ['/placeholder-house.jpg']
-    
+
     try {
-      const parsed = JSON.parse(imageData)
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : ['/placeholder-house.jpg']
+      if (imageData.startsWith('[')) {
+        const parsed = JSON.parse(imageData)
+        return Array.isArray(parsed) && parsed.length > 0 ? parsed : ['/placeholder-house.jpg']
+      } else {
+        return [imageData]
+      }
     } catch {
-      return ['/placeholder-house.jpg']
+      return [imageData]
     }
   }
 
