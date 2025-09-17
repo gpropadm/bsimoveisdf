@@ -228,24 +228,72 @@ export default function EditProperty() {
 
   const extractYouTubeId = (url: string): string => {
     if (!url) return ''
-    
+
     // Regex para extrair ID do YouTube de várias formas de URL
     const patterns = [
       /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
       /youtube\.com\/watch\?.*v=([^&\n?#]+)/
     ]
-    
+
     for (const pattern of patterns) {
       const match = url.match(pattern)
       if (match) return match[1]
     }
-    
+
     return url // Retorna a URL original se não for YouTube
+  }
+
+  // Função para formatar CEP
+  const formatCep = (value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '')
+
+    // Se não há números, retorna vazio
+    if (!numbers) return ''
+
+    // Aplica a máscara 00000-000
+    if (numbers.length <= 5) {
+      return numbers
+    } else {
+      return numbers.slice(0, 5) + '-' + numbers.slice(5, 8)
+    }
+  }
+
+  // Função para buscar endereço pelo CEP
+  const fetchAddressByCep = async (cep: string) => {
+    // Remove formatação do CEP
+    const cleanCep = cep.replace(/\D/g, '')
+
+    if (cleanCep.length !== 8) return
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
+      if (!response.ok) throw new Error('CEP not found')
+
+      const data = await response.json()
+
+      if (data.erro) {
+        alert('CEP não encontrado!')
+        return
+      }
+
+      // Preenche os campos automaticamente
+      setFormData(prev => ({
+        ...prev,
+        address: data.logradouro || '',
+        city: data.localidade || '',
+        state: data.uf || ''
+      }))
+
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error)
+      alert('Erro ao buscar CEP. Verifique se o CEP está correto.')
+    }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
-    
+
     if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
@@ -256,6 +304,23 @@ export default function EditProperty() {
         ...prev,
         [name]: value
       }))
+    }
+  }
+
+  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    const formattedCep = formatCep(value)
+
+    // Atualiza o campo CEP com formatação
+    setFormData(prev => ({
+      ...prev,
+      zipcode: formattedCep
+    }))
+
+    // Se o CEP tem 8 dígitos, busca o endereço
+    const cleanCep = value.replace(/\D/g, '')
+    if (cleanCep.length === 8) {
+      fetchAddressByCep(formattedCep)
     }
   }
 
@@ -747,6 +812,25 @@ export default function EditProperty() {
               </div>
               
               <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                {/* Campo CEP */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CEP
+                  </label>
+                  <input
+                    type="text"
+                    name="zipcode"
+                    value={formData.zipcode}
+                    onChange={handleCepChange}
+                    maxLength={9}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                    placeholder="00000-000"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Digite o CEP para preencher automaticamente o endereço
+                  </p>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Endereço *
@@ -787,19 +871,6 @@ export default function EditProperty() {
                       onChange={handleChange}
                       required
                       maxLength={2}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      CEP
-                    </label>
-                    <input
-                      type="text"
-                      name="zipcode"
-                      value={formData.zipcode}
-                      onChange={handleChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>
