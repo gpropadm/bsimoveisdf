@@ -496,7 +496,7 @@ function ApartmentInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-blue-50 rounded-2xl p-6 mb-8">
+    <div className="rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Apartamento</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
