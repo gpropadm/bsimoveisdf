@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
+import PropertyDetailClient from '@/components/PropertyDetailClient'
 
 interface PropertyDetailProps {
   params: Promise<{ slug: string }>
@@ -22,22 +23,91 @@ interface Property {
   images: string | null
   video: string | null
   slug: string
+  createdAt: string
+  updatedAt: string
 }
 
 async function getProperty(slug: string): Promise<Property | null> {
   try {
-    const response = await fetch(`https://modelo-site-imob.vercel.app/api/properties/${slug}`, {
-      cache: 'no-store'
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/properties/${slug}`, {
+      cache: 'no-store' // Always fetch fresh data for SEO
     })
-
+    
     if (!response.ok) {
       return null
     }
-
+    
     return response.json()
   } catch (error) {
     console.error('Error fetching property:', error)
     return null
+  }
+}
+
+export async function generateMetadata({ params }: PropertyDetailProps): Promise<Metadata> {
+  const resolvedParams = await params
+  const property = await getProperty(resolvedParams.slug)
+  
+  if (!property) {
+    return {
+      title: 'Imóvel não encontrado - Faimoveis',
+    }
+  }
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(price)
+  }
+
+  const images = property.images ? JSON.parse(property.images) : []
+  const firstImage = images[0] || '/placeholder-house.jpg'
+  
+  const title = `${property.title} - ${formatPrice(property.price)} - ${property.city}`
+  const description = property.description || 
+    `${property.category} para ${property.type} em ${property.city}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area}m²` : ''}.`
+
+  return {
+    title,
+    description,
+    keywords: [
+      property.category,
+      property.type,
+      property.city,
+      property.state,
+      'imóvel',
+      'casa',
+      'apartamento',
+      'faimoveis'
+    ],
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: firstImage.startsWith('http') ? firstImage : `https://faimoveis.com.br${firstImage}`,
+          width: 1200,
+          height: 630,
+          alt: property.title,
+        },
+      ],
+      type: 'website',
+      locale: 'pt_BR',
+      siteName: 'Faimoveis',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [firstImage.startsWith('http') ? firstImage : `https://faimoveis.com.br${firstImage}`],
+    },
+    alternates: {
+      canonical: `https://faimoveis.com.br/imovel/${property.slug}`,
+    },
   }
 }
 
@@ -49,128 +119,45 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
     notFound()
   }
 
+  // Structured Data (JSON-LD)
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateListing',
+    name: property.title,
+    description: property.description || `${property.category} para ${property.type} em ${property.city}`,
+    url: `https://faimoveis.com.br/imovel/${property.slug}`,
+    image: property.images ? JSON.parse(property.images) : ['/placeholder-house.jpg'],
+    offers: {
+      '@type': 'Offer',
+      price: property.price,
+      priceCurrency: 'BRL',
+      availability: 'https://schema.org/InStock',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: property.address,
+      addressLocality: property.city,
+      addressRegion: property.state,
+      addressCountry: 'BR',
+    },
+    floorSize: property.area ? {
+      '@type': 'QuantitativeValue',
+      value: property.area,
+      unitCode: 'MTK'
+    } : undefined,
+    numberOfRooms: property.bedrooms || undefined,
+    numberOfBathroomsTotal: property.bathrooms || undefined,
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Site Imobiliário</h1>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Property Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">{property.title}</h1>
-
-          <div className="flex items-center gap-4 mb-4">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-              {property.type === 'venda' ? 'Venda' : 'Aluguel'}
-            </span>
-            <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
-              {property.category}
-            </span>
-          </div>
-
-          <p className="text-3xl font-bold text-green-600 mb-4">
-            R$ {property.price.toLocaleString('pt-BR')}
-          </p>
-
-          <p className="text-gray-600 mb-4">{property.address}, {property.city} - {property.state}</p>
-
-          {property.description && (
-            <p className="text-gray-700 mb-6">{property.description}</p>
-          )}
-
-          {/* Features */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            {property.bedrooms && (
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.bedrooms}</div>
-                <div className="text-sm text-gray-600">Quartos</div>
-              </div>
-            )}
-            {property.bathrooms && (
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.bathrooms}</div>
-                <div className="text-sm text-gray-600">Banheiros</div>
-              </div>
-            )}
-            {property.parking && (
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.parking}</div>
-                <div className="text-sm text-gray-600">Vagas</div>
-              </div>
-            )}
-            {property.area && (
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.area}</div>
-                <div className="text-sm text-gray-600">m²</div>
-              </div>
-            )}
-          </div>
-
-          {/* Image */}
-          {property.images && (
-            <div className="mb-6">
-              <img
-                src={property.images.split(',')[0]}
-                alt={property.title}
-                className="w-full h-64 object-cover rounded-lg"
-              />
-            </div>
-          )}
-
-          {/* Contact Form */}
-          <div className="bg-blue-50 p-6 rounded-lg">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Interessado neste imóvel?</h3>
-            <form className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Seu nome"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <div>
-                <input
-                  type="email"
-                  placeholder="Seu email"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <div>
-                <input
-                  type="tel"
-                  placeholder="Seu telefone"
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <div>
-                <textarea
-                  placeholder="Sua mensagem"
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                Enviar Interesse
-              </button>
-            </form>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2025 Site Imobiliário. Todos os direitos reservados.</p>
-        </div>
-      </footer>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+      <PropertyDetailClient property={property} />
+    </>
   )
 }
