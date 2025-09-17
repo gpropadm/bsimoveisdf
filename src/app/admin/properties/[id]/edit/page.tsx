@@ -766,41 +766,18 @@ export default function EditProperty() {
               </div>
               
               <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Título *
-                    </label>
-                    <input
-                      type="text"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Categoria *
-                    </label>
-                    <select
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    >
-                      <option value="">Selecione uma categoria</option>
-                      <option value="apartamento">Apartamento</option>
-                      <option value="casa">Casa</option>
-                      <option value="sobrado">Sobrado</option>
-                      <option value="cobertura">Cobertura</option>
-                      <option value="terreno">Terreno</option>
-                      <option value="comercial">Comercial</option>
-                    </select>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Título *
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                  />
                 </div>
 
                 <div>
@@ -956,77 +933,126 @@ export default function EditProperty() {
               </div>
             </div>
 
-            {/* Características */}
-            <div className="bg-white shadow rounded-lg mt-6">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Características</h3>
-              </div>
-              
-              <div className="p-4 sm:p-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quartos *
-                    </label>
-                    <input
-                      type="number"
-                      name="bedrooms"
-                      value={formData.bedrooms}
-                      onChange={handleChange}
-                      required
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Banheiros *
-                    </label>
-                    <input
-                      type="number"
-                      name="bathrooms"
-                      value={formData.bathrooms}
-                      onChange={handleChange}
-                      required
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Vagas de Garagem *
-                    </label>
-                    <input
-                      type="number"
-                      name="parking"
-                      value={formData.parking}
-                      onChange={handleChange}
-                      required
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área (m²) *
-                    </label>
-                    <input
-                      type="number"
-                      name="area"
-                      value={formData.area}
-                      onChange={handleChange}
-                      required
-                      min="0"
-                      step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
+            {/* Características - Condicional por categoria */}
+            {(formData.category === 'apartamento' || formData.category === 'casa' || formData.category === 'sobrado' || formData.category === 'cobertura') && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Características</h3>
+                  <p className="text-sm text-gray-600 mt-1">Características residenciais</p>
+                </div>
+
+                <div className="p-4 sm:p-6">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Quartos *
+                      </label>
+                      <input
+                        type="number"
+                        name="bedrooms"
+                        value={formData.bedrooms}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Banheiros *
+                      </label>
+                      <input
+                        type="number"
+                        name="bathrooms"
+                        value={formData.bathrooms}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Vagas de Garagem *
+                      </label>
+                      <input
+                        type="number"
+                        name="parking"
+                        value={formData.parking}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Área (m²) *
+                      </label>
+                      <input
+                        type="number"
+                        name="area"
+                        value={formData.area}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Área para Terrenos, Comerciais e Fazendas */}
+            {(formData.category === 'terreno' || formData.category === 'comercial' || formData.category === 'fazenda') && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Área</h3>
+                  <p className="text-sm text-gray-600 mt-1">Informações de área do imóvel</p>
+                </div>
+
+                <div className="p-4 sm:p-6">
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {formData.category === 'fazenda' ? 'Área Construída (m²)' : 'Área (m²)'} *
+                      </label>
+                      <input
+                        type="number"
+                        name="area"
+                        value={formData.area}
+                        onChange={handleChange}
+                        required
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      />
+                    </div>
+
+                    {formData.category === 'comercial' && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Vagas de Garagem
+                        </label>
+                        <input
+                          type="number"
+                          name="parking"
+                          value={formData.parking}
+                          onChange={handleChange}
+                          min="0"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Seções dinâmicas por categoria */}
             {/* Casa */}
