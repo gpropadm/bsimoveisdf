@@ -37,8 +37,19 @@ export async function addWatermark(
       30 // Tamanho mínimo
     )
 
-    // Criar SVG da marca d'água
-    const textWidth = text.length * dynamicFontSize * 0.6
+    // Limpar o texto para evitar problemas de encoding
+    const cleanText = text
+      .normalize('NFD') // Normalizar acentos
+      .replace(/[\u0300-\u036f]/g, '') // Remover acentos
+      .replace(/[^\w\s]/g, '') // Remover caracteres especiais
+      .trim()
+      .toUpperCase()
+
+    console.log('Texto original:', text)
+    console.log('Texto limpo:', cleanText)
+
+    // Criar uma abordagem mais simples com Sharp text
+    const textWidth = cleanText.length * dynamicFontSize * 0.6
     const textHeight = dynamicFontSize * 1.2
 
     // Calcular posição
@@ -47,64 +58,68 @@ export async function addWatermark(
 
     switch (position) {
       case 'center':
-        x = (metadata.width - textWidth) / 2
-        y = (metadata.height + textHeight) / 2
+        x = Math.max(0, (metadata.width - textWidth) / 2)
+        y = Math.max(0, (metadata.height - textHeight) / 2)
         break
       case 'bottom-right':
-        x = metadata.width - textWidth - margin
-        y = metadata.height - margin
+        x = Math.max(0, metadata.width - textWidth - margin)
+        y = Math.max(0, metadata.height - textHeight - margin)
         break
       case 'bottom-left':
         x = margin
-        y = metadata.height - margin
+        y = Math.max(0, metadata.height - textHeight - margin)
         break
       case 'top-right':
-        x = metadata.width - textWidth - margin
-        y = textHeight + margin
+        x = Math.max(0, metadata.width - textWidth - margin)
+        y = margin
         break
       case 'top-left':
         x = margin
-        y = textHeight + margin
+        y = margin
         break
       default:
-        x = (metadata.width - textWidth) / 2
-        y = (metadata.height + textHeight) / 2
+        x = Math.max(0, (metadata.width - textWidth) / 2)
+        y = Math.max(0, (metadata.height - textHeight) / 2)
     }
 
-    // Criar SVG com fundo semi-transparente e borda
-    const svgWatermark = `
-      <svg width="${metadata.width}" height="${metadata.height}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="black" flood-opacity="0.8"/>
-          </filter>
-        </defs>
+    // Criar uma imagem de texto simples usando Sharp
+    const textSvg = Buffer.from(`
+      <svg width="${metadata.width}" height="${metadata.height}">
+        <style>
+          .watermark {
+            font-family: Arial, sans-serif;
+            font-size: ${dynamicFontSize}px;
+            font-weight: bold;
+            fill: white;
+            opacity: ${opacity};
+            text-anchor: start;
+            dominant-baseline: central;
+          }
+          .background {
+            fill: black;
+            opacity: 0.4;
+          }
+        </style>
 
-        <!-- Fundo semi-transparente atrás do texto -->
-        <rect x="${x - 15}" y="${y - dynamicFontSize + 5}"
-              width="${textWidth + 30}" height="${textHeight}"
-              fill="black" opacity="0.4" rx="8"/>
+        <!-- Fundo do texto -->
+        <rect x="${x - 10}" y="${y - dynamicFontSize/2}"
+              width="${textWidth + 20}" height="${dynamicFontSize + 10}"
+              class="background" rx="5"/>
 
-        <!-- Texto principal -->
-        <text x="${x}" y="${y}"
-              font-family="${fontFamily}, Arial, sans-serif"
-              font-size="${dynamicFontSize}"
-              font-weight="bold"
-              fill="${color}"
-              opacity="${opacity}"
-              filter="url(#shadow)">${text}</text>
+        <!-- Texto da marca d'água -->
+        <text x="${x}" y="${y}" class="watermark">${cleanText}</text>
       </svg>
-    `
+    `)
 
     // Aplicar marca d'água
     const watermarkedImage = await image
       .composite([
         {
-          input: Buffer.from(svgWatermark),
+          input: textSvg,
           blend: 'over'
         }
       ])
-      .jpeg({ quality: 85 }) // Manter boa qualidade
+      .jpeg({ quality: 85 })
       .toBuffer()
 
     return watermarkedImage
