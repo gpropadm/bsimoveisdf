@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { v2 as cloudinary } from 'cloudinary'
 import { addWatermark } from '@/lib/watermark'
+import prisma from '@/lib/prisma'
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -10,6 +11,19 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
+
+// Função para buscar o nome do site das configurações
+async function getSiteName(): Promise<string> {
+  try {
+    const settings = await prisma.settings.findFirst({
+      orderBy: { createdAt: 'asc' }
+    })
+    return settings?.siteName || 'FAIMOVEIS'
+  } catch (error) {
+    console.error('Erro ao buscar nome do site:', error)
+    return 'FAIMOVEIS' // Fallback padrão
+  }
+}
 
 export async function POST(request: NextRequest) {
   const requestId = Math.random().toString(36).substr(2, 9)
@@ -138,17 +152,18 @@ export async function POST(request: NextRequest) {
           // Adicionar marca d'água
           console.log(`🎨 [${requestId}] Adicionando marca d'água: "${file.name}"`)
           try {
-            const watermarkText = process.env.WATERMARK_TEXT || 'FAIMOVEIS'
+            // Buscar nome do site das configurações
+            const siteName = await getSiteName()
             const watermarkOpacity = parseFloat(process.env.WATERMARK_OPACITY || '0.4')
 
             buffer = await addWatermark(buffer, {
-              text: watermarkText,
+              text: siteName.toUpperCase(),
               fontSize: 60,
               opacity: watermarkOpacity,
               color: 'white',
               position: 'center'
             })
-            console.log(`✅ [${requestId}] Marca d'água "${watermarkText}" adicionada: "${file.name}"`)
+            console.log(`✅ [${requestId}] Marca d'água "${siteName}" adicionada: "${file.name}"`)
           } catch (watermarkError) {
             console.warn(`⚠️ [${requestId}] Erro ao adicionar marca d'água em "${file.name}":`, watermarkError)
             // Continua com imagem original se houver erro na marca d'água

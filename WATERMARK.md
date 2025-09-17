@@ -14,11 +14,17 @@ O sistema aplica automaticamente marca d'água em todas as imagens enviadas atra
 
 ## Configuração
 
+### Nome da Marca d'Água
+
+O texto da marca d'água é **automaticamente obtido** das configurações do site:
+- Acesse: **Admin → Configurações → Informações Gerais**
+- Configure o **"Nome do Site"**
+- A marca d'água usará esse nome automaticamente
+
 ### Variáveis de Ambiente (.env)
 
 ```bash
 # Configurações de Marca d'Água
-WATERMARK_TEXT="FAIMOVEIS"        # Texto da marca d'água
 WATERMARK_OPACITY="0.4"           # Opacidade (0.1 a 1.0)
 ```
 
