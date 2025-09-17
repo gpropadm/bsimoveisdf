@@ -59,7 +59,16 @@ interface PropertyDetailClientProps {
 
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   // const { settings } = useSettings()
-  const settings = null // Simplified for now
+  const settings = {
+    contactPhone: '(48) 99864-5864',
+    contactEmail: 'contato@faimoveis.com.br',
+    contactWhatsapp: '5548998645864',
+    city: 'Florianópolis',
+    state: 'SC',
+    socialFacebook: 'https://facebook.com',
+    socialInstagram: 'https://instagram.com',
+    siteName: 'FA IMÓVEIS'
+  }
   
   // Estados do formulário de interesse
   const [formData, setFormData] = useState({
