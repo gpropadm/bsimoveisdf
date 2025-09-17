@@ -679,15 +679,15 @@ export default function EditProperty() {
       currentPage="properties"
       actions={actions}
     >
-      <div className="p-4 lg:p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+      <div className="max-w-4xl mx-auto p-4 lg:p-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="bg-white shadow rounded-lg">
               {/* Informações Básicas */}
-              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Informações Básicas</h3>
               </div>
               
-              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -806,12 +806,12 @@ export default function EditProperty() {
             </div>
 
             {/* Localização */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
+            <div className="bg-white shadow rounded-lg mt-6">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Localização</h3>
               </div>
               
-              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              <div className="p-6 space-y-6">
                 {/* Campo CEP */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -879,8 +879,8 @@ export default function EditProperty() {
             </div>
 
             {/* Características */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
+            <div className="bg-white shadow rounded-lg mt-6">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Características</h3>
               </div>
               
@@ -951,8 +951,8 @@ export default function EditProperty() {
             </div>
 
             {/* Imagens */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
+            <div className="bg-white shadow rounded-lg mt-6">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Imagens do Imóvel</h3>
                 <p className="text-sm text-gray-600 mt-1">Arraste e solte imagens ou clique para selecionar</p>
               </div>
@@ -1095,8 +1095,8 @@ export default function EditProperty() {
             </div>
 
             {/* Vídeos */}
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm mt-6">
-              <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200">
+            <div className="bg-white shadow rounded-lg mt-6">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900">Vídeos do Imóvel</h3>
                 <p className="text-sm text-gray-600 mt-1">Adicione vídeos para criar stories do imóvel</p>
               </div>
