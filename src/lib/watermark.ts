@@ -11,7 +11,7 @@ interface WatermarkOptions {
 
 export async function addWatermark(
   imageBuffer: Buffer,
-  options: WatermarkOptions = {}
+  options: WatermarkOptions
 ): Promise<Buffer> {
   const {
     text = 'FAIMOVEIS',
@@ -130,7 +130,7 @@ export async function addLogoWatermark(
 
     // Se não tiver logo, usar marca d'água de texto
     if (!logoPath) {
-      return addWatermark(imageBuffer)
+      return addWatermark(imageBuffer, { text: 'LOGO' })
     }
 
     // Redimensionar logo proporcionalmente
@@ -165,6 +165,6 @@ export async function addLogoWatermark(
   } catch (error) {
     console.error('Erro ao adicionar logo como marca d\'água:', error)
     // Fallback para marca d'água de texto
-    return addWatermark(imageBuffer)
+    return addWatermark(imageBuffer, { text: 'LOGO' })
   }
 }
