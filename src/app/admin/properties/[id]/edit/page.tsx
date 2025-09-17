@@ -6,6 +6,18 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
 import AdminLayout from '@/components/AdminLayout'
+import {
+  formatCurrency,
+  parseCurrency,
+  formatPhone,
+  parsePhone,
+  formatCEP,
+  parseCEP,
+  formatArea,
+  parseArea,
+  formatNumber,
+  parseNumber
+} from '@/lib/maskUtils'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -213,11 +225,24 @@ export default function EditProperty() {
 
     const updateData: any = {
       ...formData,
-      price: parseFloat(formData.price),
-      bedrooms: parseInt(formData.bedrooms),
-      bathrooms: parseInt(formData.bathrooms),
-      parking: parseInt(formData.parking),
-      area: parseFloat(formData.area),
+      price: parseCurrency(formData.price),
+      bedrooms: parseNumber(formData.bedrooms),
+      bathrooms: parseNumber(formData.bathrooms),
+      parking: parseNumber(formData.parking),
+      area: parseArea(formData.area),
+      // Campos específicos para apartamento
+      floor: formData.floor ? parseNumber(formData.floor) : null,
+      condoFee: formData.condoFee ? parseCurrency(formData.condoFee) : null,
+      amenities: formData.amenities.length > 0 ? JSON.stringify(formData.amenities) : null,
+      // Campos específicos para terreno
+      frontage: formData.frontage ? parseArea(formData.frontage) : null,
+      // Campos específicos para fazenda
+      totalArea: formData.totalArea ? parseArea(formData.totalArea) : null,
+      cultivatedArea: formData.cultivatedArea ? parseArea(formData.cultivatedArea) : null,
+      pastures: formData.pastures ? parseArea(formData.pastures) : null,
+      buildings: formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null,
+      // Campos específicos para comercial
+      features: formData.features.length > 0 ? JSON.stringify(formData.features) : null,
     }
 
     // Só incluir imagens/vídeos se mudaram (para evitar payload muito grande)
@@ -289,26 +314,10 @@ export default function EditProperty() {
     return url // Retorna a URL original se não for YouTube
   }
 
-  // Função para formatar CEP
-  const formatCep = (value: string) => {
-    // Remove tudo que não é dígito
-    const numbers = value.replace(/\D/g, '')
-
-    // Se não há números, retorna vazio
-    if (!numbers) return ''
-
-    // Aplica a máscara 00000-000
-    if (numbers.length <= 5) {
-      return numbers
-    } else {
-      return numbers.slice(0, 5) + '-' + numbers.slice(5, 8)
-    }
-  }
-
   // Função para buscar endereço pelo CEP
   const fetchAddressByCep = async (cep: string) => {
     // Remove formatação do CEP
-    const cleanCep = cep.replace(/\D/g, '')
+    const cleanCep = parseCEP(cep)
 
     if (cleanCep.length !== 8) return
 
@@ -345,6 +354,27 @@ export default function EditProperty() {
         ...prev,
         [name]: (e.target as HTMLInputElement).checked
       }))
+    } else if (name === 'price' || name === 'condoFee') {
+      // Aplicar máscara de dinheiro no campo preço e condomínio
+      const formattedValue = formatCurrency(value)
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }))
+    } else if (name === 'area' || name === 'totalArea' || name === 'cultivatedArea' || name === 'pastures' || name === 'frontage') {
+      // Aplicar máscara para áreas (com decimais)
+      const formattedValue = formatArea(value)
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }))
+    } else if (name === 'bedrooms' || name === 'bathrooms' || name === 'parking' || name === 'floor') {
+      // Aplicar máscara para números inteiros
+      const formattedValue = formatNumber(value)
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }))
     } else {
       setFormData(prev => ({
         ...prev,
@@ -355,7 +385,7 @@ export default function EditProperty() {
 
   const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    const formattedCep = formatCep(value)
+    const formattedCep = formatCEP(value)
 
     // Atualiza o campo CEP com formatação
     setFormData(prev => ({
@@ -364,7 +394,7 @@ export default function EditProperty() {
     }))
 
     // Se o CEP tem 8 dígitos, busca o endereço
-    const cleanCep = value.replace(/\D/g, '')
+    const cleanCep = parseCEP(value)
     if (cleanCep.length === 8) {
       fetchAddressByCep(formattedCep)
     }
