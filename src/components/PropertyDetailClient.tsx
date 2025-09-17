@@ -8,7 +8,7 @@ import FavoriteButton from '@/components/FavoriteButton'
 import SimilarProperties from '@/components/SimilarProperties'
 import AppointmentScheduler from '@/components/AppointmentScheduler'
 import Breadcrumbs from '@/components/Breadcrumbs'
-import { useSettings } from '@/hooks/useSettings'
+// import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
 
 interface Property {
@@ -58,7 +58,8 @@ interface PropertyDetailClientProps {
 }
 
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
-  const { settings } = useSettings()
+  // const { settings } = useSettings()
+  const settings = null // Simplified for now
   
   // Estados do formulário de interesse
   const [formData, setFormData] = useState({
