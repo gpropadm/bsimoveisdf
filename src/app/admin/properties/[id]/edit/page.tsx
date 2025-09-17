@@ -175,7 +175,7 @@ export default function EditProperty() {
         featured: data.featured || false,
         // Campos específicos para apartamento
         floor: data.floor ? data.floor.toString() : '',
-        condoFee: data.condoFee ? data.condoFee.toString() : '',
+        condoFee: data.condoFee ? formatCurrency(data.condoFee.toString()) : '',
         amenities: data.amenities ? (Array.isArray(data.amenities) ? data.amenities : JSON.parse(data.amenities || '[]')) : [],
         // Campos específicos para terreno
         zoning: data.zoning || '',
@@ -1116,14 +1116,12 @@ export default function EditProperty() {
                         Valor do Condomínio (R$)
                       </label>
                       <input
-                        type="number"
+                        type="text"
                         name="condoFee"
                         value={formData.condoFee || ''}
                         onChange={handleChange}
-                        min="0"
-                        step="0.01"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                        placeholder="500.00"
+                        placeholder="500,00"
                       />
                     </div>
                   </div>
