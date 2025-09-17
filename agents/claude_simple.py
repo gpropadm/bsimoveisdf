@@ -256,32 +256,53 @@ Considere urgência, completude dos dados, valor do imóvel e intenção de comp
                 "Content-Type": "application/x-www-form-urlencoded"
             }
 
-            logger.info(f"📱 ENVIANDO VIA TWILIO PARA: {whatsapp_number}")
+            # USAR ULTRAMSG DIRETO (sem Twilio)
+            logger.info(f"📱 USANDO ULTRAMSG DIRETAMENTE PARA: {whatsapp_number}")
+            return self.send_via_ultramsg(whatsapp_number, message)
+
+        except Exception as e:
+            logger.error(f"❌ Erro Twilio: {e}")
+            # Fallback para UltraMsg
+            return self.send_via_ultramsg(whatsapp_number, message)
+
+    def send_via_ultramsg(self, whatsapp_number: str, message: str) -> bool:
+        """Fallback via UltraMsg"""
+        try:
+            import requests
+
+            instance_id = os.getenv('ULTRAMSG_INSTANCE_ID')
+            token = os.getenv('ULTRAMSG_TOKEN')
+
+            if not instance_id or not token:
+                logger.error("❌ UltraMsg não configurado")
+                return False
+
+            url = f"https://api.ultramsg.com/{instance_id}/messages/chat"
+
+            payload = {
+                "token": token,
+                "to": whatsapp_number,
+                "body": message
+            }
+
+            headers = {
+                "Content-Type": "application/x-www-form-urlencoded"
+            }
+
+            logger.info(f"📱 ENVIANDO VIA ULTRAMSG PARA: {whatsapp_number}")
 
             response = requests.post(url, data=payload, headers=headers)
 
-            if response.status_code == 201:
+            if response.status_code == 200:
                 response_data = response.json()
-                logger.info(f"✅ WHATSAPP ENVIADO! SID: {response_data.get('sid')}")
-
-                # Backup: salvar também no arquivo
-                with open('logs/whatsapp_sent.txt', 'a', encoding='utf-8') as f:
-                    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    f.write(f"\n{'='*80}\n")
-                    f.write(f"✅ ENVIADO VIA TWILIO - {timestamp}\n")
-                    f.write(f"📱 PARA: {whatsapp_number}\n")
-                    f.write(f"🆔 SID: {response_data.get('sid')}\n")
-                    f.write(f"{'='*80}\n")
-                    f.write(f"{message}\n")
-                    f.write(f"{'='*80}\n\n")
-
+                logger.info(f"✅ ULTRAMSG ENVIADO! Response: {response_data}")
                 return True
             else:
-                logger.error(f"❌ Twilio erro: {response.status_code} - {response.text}")
+                logger.error(f"❌ UltraMsg erro: {response.status_code} - {response.text}")
                 return False
 
         except Exception as e:
-            logger.error(f"❌ Erro: {e}")
+            logger.error(f"❌ Erro UltraMsg: {e}")
             return False
 
     async def process_leads_cycle(self):
