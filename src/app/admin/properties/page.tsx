@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import AdminLayout from '@/components/AdminLayout'
 import { getFirstImage } from '@/lib/imageUtils'
 import { formatAreaDisplay } from '@/lib/maskUtils'
+import { toast } from 'react-toastify'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -115,9 +116,10 @@ export default function AdminPropertiesPage() {
       }
 
       setProperties(prev => prev.filter((property) => property.id !== propertyId))
+      toast.success('Imóvel excluído com sucesso!')
     } catch (error) {
       console.error('Erro ao excluir:', error)
-      alert('Erro ao excluir imóvel. Tente novamente.')
+      toast.error('Erro ao excluir imóvel. Tente novamente.')
     } finally {
       setDeleting(null)
     }

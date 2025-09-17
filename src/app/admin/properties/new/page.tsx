@@ -16,6 +16,7 @@ import {
   formatNumber,
   parseNumber
 } from '@/lib/maskUtils'
+import { toast } from 'react-toastify'
 
 export default function NewProperty() {
   const router = useRouter()
@@ -91,7 +92,7 @@ export default function NewProperty() {
       const data = await response.json()
       
       if (data.erro) {
-        alert('CEP não encontrado!')
+        toast.error('CEP não encontrado!')
         return
       }
       
@@ -105,7 +106,7 @@ export default function NewProperty() {
       
     } catch (error) {
       console.error('Erro ao buscar CEP:', error)
-      alert('Erro ao buscar CEP. Verifique se o CEP está correto.')
+      toast.error('Erro ao buscar CEP. Verifique se o CEP está correto.')
     }
   }
 
@@ -273,13 +274,13 @@ export default function NewProperty() {
       
       // Verificar se é um arquivo de vídeo
       if (!file.type.startsWith('video/')) {
-        alert(`${file.name}: Por favor, selecione apenas arquivos de vídeo.`)
+        toast.error(`${file.name}: Por favor, selecione apenas arquivos de vídeo.`)
         continue
       }
 
       // Verificar tamanho inicial (máximo 100MB para upload)
       if (file.size > 100 * 1024 * 1024) {
-        alert(`${file.name}: O vídeo deve ter no máximo 100MB para upload.`)
+        toast.error(`${file.name}: O vídeo deve ter no máximo 100MB para upload.`)
         continue
       }
 
@@ -292,7 +293,7 @@ export default function NewProperty() {
         // Validar se é adequado para shorts
         const validation = await validateShortsVideo(file)
         if (!validation.valid) {
-          alert(`${file.name}: Problemas encontrados:\n\n${validation.issues.join('\n')}`)
+          toast.error(`${file.name}: Problemas encontrados: ${validation.issues.join(', ')}`)
           continue
         }
 
@@ -323,7 +324,7 @@ export default function NewProperty() {
         
       } catch (error) {
         console.error(`Erro ao processar vídeo ${file.name}:`, error)
-        alert(`Erro ao processar o vídeo ${file.name}. Continuando com outros arquivos...`)
+        toast.error(`Erro ao processar o vídeo ${file.name}. Continuando com outros arquivos...`)
       }
     }
     
@@ -495,11 +496,12 @@ export default function NewProperty() {
         throw new Error(errorMessage)
       }
 
+      toast.success('Imóvel criado com sucesso!')
       router.push('/admin/properties')
     } catch (error) {
       console.error('Erro ao criar imóvel:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
-      alert(`Erro ao criar imóvel: ${errorMessage}`)
+      toast.error(`Erro ao criar imóvel: ${errorMessage}`)
     } finally {
       setLoading(false)
     }

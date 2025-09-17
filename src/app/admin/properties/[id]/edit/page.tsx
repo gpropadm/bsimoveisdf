@@ -18,6 +18,7 @@ import {
   formatNumber,
   parseNumber
 } from '@/lib/maskUtils'
+import { toast } from 'react-toastify'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -200,7 +201,7 @@ export default function EditProperty() {
     } catch (error) {
       console.error('Erro ao carregar imóvel:', error)
       // Só redirecionar após 3 segundos para mostrar o erro
-      alert(`Erro ao carregar imóvel: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+      toast.error(`Erro ao carregar imóvel: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
       setTimeout(() => {
         router.push('/admin/properties')
       }, 3000)
@@ -287,11 +288,12 @@ export default function EditProperty() {
         throw new Error(errorMessage)
       }
 
+      toast.success('Imóvel atualizado com sucesso!')
       router.push('/admin/properties')
     } catch (error) {
       console.error('Erro ao salvar:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
-      alert(`Erro ao salvar imóvel: ${errorMessage}`)
+      toast.error(`Erro ao salvar imóvel: ${errorMessage}`)
     } finally {
       setSaving(false)
     }
@@ -328,7 +330,7 @@ export default function EditProperty() {
       const data = await response.json()
 
       if (data.erro) {
-        alert('CEP não encontrado!')
+        toast.error('CEP não encontrado!')
         return
       }
 
@@ -342,7 +344,7 @@ export default function EditProperty() {
 
     } catch (error) {
       console.error('Erro ao buscar CEP:', error)
-      alert('Erro ao buscar CEP. Verifique se o CEP está correto.')
+      toast.error('Erro ao buscar CEP. Verifique se o CEP está correto.')
     }
   }
 
@@ -405,7 +407,7 @@ export default function EditProperty() {
 
     // Verificar limite de arquivos
     if (files.length > 30) {
-      alert(`❌ Muitos arquivos selecionados (${files.length}). Limite máximo: 30 arquivos por vez.`)
+      toast.error(`❌ Muitos arquivos selecionados (${files.length}). Limite máximo: 30 arquivos por vez.`)
       return
     }
 
@@ -433,13 +435,13 @@ export default function EditProperty() {
         // Validação local antes do upload
         if (!file.type.startsWith('image/')) {
           console.error('❌ Tipo de arquivo inválido:', file.name, file.type)
-          alert(`Arquivo ${file.name} não é uma imagem válida. Tipos aceitos: JPG, PNG, GIF, WebP`)
+          toast.error(`Arquivo ${file.name} não é uma imagem válida. Tipos aceitos: JPG, PNG, GIF, WebP`)
           continue
         }
 
         if (file.size > 5 * 1024 * 1024) {
           console.error('❌ Arquivo muito grande:', file.name, `${(file.size / 1024 / 1024).toFixed(2)}MB`)
-          alert(`Arquivo ${file.name} é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Limite: 5MB`)
+          toast.error(`Arquivo ${file.name} é muito grande (${(file.size / 1024 / 1024).toFixed(2)}MB). Limite: 5MB`)
           continue
         }
 
@@ -514,7 +516,7 @@ export default function EditProperty() {
         if (data.errors && data.errors.length > 0) {
           message += `\n\n⚠️ Alguns arquivos tiveram problemas:\n${data.errors.join('\n')}`
         }
-        alert(message)
+        toast.error(message)
       } else {
         console.error('❌ Resposta inválida do servidor:', data)
         throw new Error('Resposta inválida do servidor')
@@ -538,7 +540,7 @@ export default function EditProperty() {
         errorMessage = `Erro não identificado: ${JSON.stringify(error)}`
       }
 
-      alert(`❌ Erro ao fazer upload das imagens: ${errorMessage}`)
+      toast.error(`❌ Erro ao fazer upload das imagens: ${errorMessage}`)
     } finally {
       setUploading(false)
       setUploadProgress({ current: 0, total: 0 })
@@ -634,13 +636,13 @@ export default function EditProperty() {
                         file.name.toLowerCase().match(/\.(mov|mp4|webm|avi)$/)
 
     if (!isValidVideo) {
-      alert(`Tipo de arquivo não suportado: ${file.type}\nTipos aceitos: MP4, MOV, WebM, AVI`)
+      toast.error(`Tipo de arquivo não suportado: ${file.type}. Tipos aceitos: MP4, MOV, WebM, AVI`)
       return
     }
 
     // Limite de 100MB (bem maior que os 50MB anteriores)
     if (file.size > 100 * 1024 * 1024) {
-      alert(`Arquivo muito grande: ${(file.size / 1024 / 1024).toFixed(2)}MB\nLimite máximo: 100MB`)
+      toast.error(`Arquivo muito grande: ${(file.size / 1024 / 1024).toFixed(2)}MB. Limite máximo: 100MB`)
       return
     }
 
@@ -710,7 +712,7 @@ export default function EditProperty() {
     } catch (error) {
       console.error('❌ Erro no upload direto:', error)
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
-      alert(`Erro ao fazer upload do vídeo: ${errorMessage}`)
+      toast.error(`Erro ao fazer upload do vídeo: ${errorMessage}`)
     } finally {
       setUploadingVideo(null)
     }
