@@ -8,7 +8,7 @@ import FavoriteButton from '@/components/FavoriteButton'
 import SimilarProperties from '@/components/SimilarProperties'
 import AppointmentScheduler from '@/components/AppointmentScheduler'
 import Breadcrumbs from '@/components/Breadcrumbs'
-// import { useSettings } from '@/hooks/useSettings'
+import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
 
 interface Property {
@@ -58,17 +58,7 @@ interface PropertyDetailClientProps {
 }
 
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
-  // const { settings } = useSettings()
-  const settings = {
-    contactPhone: '(48) 99864-5864',
-    contactEmail: 'contato@faimoveis.com.br',
-    contactWhatsapp: '5548998645864',
-    city: 'Florianópolis',
-    state: 'SC',
-    socialFacebook: 'https://facebook.com',
-    socialInstagram: 'https://instagram.com',
-    siteName: 'FA IMÓVEIS'
-  }
+  const { settings } = useSettings()
   
   // Estados do formulário de interesse
   const [formData, setFormData] = useState({
