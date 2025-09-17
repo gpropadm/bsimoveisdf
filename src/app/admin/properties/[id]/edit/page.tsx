@@ -64,7 +64,30 @@ export default function EditProperty() {
     parking: '',
     area: '',
     video: '',
-    featured: false
+    featured: false,
+    // Campos específicos para apartamento
+    floor: '',
+    condoFee: '',
+    amenities: [] as string[],
+    // Campos específicos para terreno
+    zoning: '',
+    slope: '',
+    frontage: '',
+    // Campos específicos para fazenda
+    totalArea: '',
+    cultivatedArea: '',
+    pastures: '',
+    buildings: [] as string[],
+    waterSources: '',
+    // Campos específicos para casa
+    houseType: '',
+    yard: false,
+    garage: '',
+    // Campos específicos para comercial
+    commercialType: '',
+    floor_commercial: '',
+    businessCenter: '',
+    features: [] as string[]
   })
 
   useEffect(() => {
@@ -137,7 +160,30 @@ export default function EditProperty() {
         parking: data.parking ? data.parking.toString() : '',
         area: data.area ? data.area.toString() : '',
         video: data.video || '',
-        featured: data.featured || false
+        featured: data.featured || false,
+        // Campos específicos para apartamento
+        floor: data.floor ? data.floor.toString() : '',
+        condoFee: data.condoFee ? data.condoFee.toString() : '',
+        amenities: data.amenities ? (Array.isArray(data.amenities) ? data.amenities : JSON.parse(data.amenities || '[]')) : [],
+        // Campos específicos para terreno
+        zoning: data.zoning || '',
+        slope: data.slope || '',
+        frontage: data.frontage ? data.frontage.toString() : '',
+        // Campos específicos para fazenda
+        totalArea: data.totalArea ? data.totalArea.toString() : '',
+        cultivatedArea: data.cultivatedArea ? data.cultivatedArea.toString() : '',
+        pastures: data.pastures ? data.pastures.toString() : '',
+        buildings: data.buildings ? (Array.isArray(data.buildings) ? data.buildings : JSON.parse(data.buildings || '[]')) : [],
+        waterSources: data.waterSources || '',
+        // Campos específicos para casa
+        houseType: data.houseType || '',
+        yard: data.yard || false,
+        garage: data.garage || '',
+        // Campos específicos para comercial
+        commercialType: data.commercialType || '',
+        floor_commercial: data.floor_commercial || '',
+        businessCenter: data.businessCenter || '',
+        features: data.features ? (Array.isArray(data.features) ? data.features : JSON.parse(data.features || '[]')) : []
       })
     } catch (error) {
       console.error('Erro ao carregar imóvel:', error)
@@ -949,6 +995,434 @@ export default function EditProperty() {
                 </div>
               </div>
             </div>
+
+            {/* Seções dinâmicas por categoria */}
+            {/* Casa */}
+            {formData.category === 'casa' && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Características da Casa</h3>
+                  <p className="text-sm text-gray-600 mt-1">Informações específicas para casas</p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Tipo de Casa
+                      </label>
+                      <select
+                        name="houseType"
+                        value={formData.houseType || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="terrea">Térrea</option>
+                        <option value="sobrado">Sobrado</option>
+                        <option value="geminada">Geminada</option>
+                        <option value="isolada">Isolada</option>
+                        <option value="village">Village</option>
+                        <option value="condo">Condomínio Fechado</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Garagem
+                      </label>
+                      <input
+                        type="text"
+                        name="garage"
+                        value={formData.garage || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: Coberta para 2 carros"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="yard"
+                      checked={formData.yard || false}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
+                    />
+                    <label className="ml-2 text-sm text-gray-700">
+                      Possui quintal
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Apartamento */}
+            {(formData.category === 'apartamento' || formData.category === 'cobertura') && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Informações do Apartamento</h3>
+                  <p className="text-sm text-gray-600 mt-1">Dados específicos para apartamentos e coberturas</p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Andar
+                      </label>
+                      <input
+                        type="number"
+                        name="floor"
+                        value={formData.floor || ''}
+                        onChange={handleChange}
+                        min="0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: 5"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Valor do Condomínio (R$)
+                      </label>
+                      <input
+                        type="number"
+                        name="condoFee"
+                        value={formData.condoFee || ''}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="500.00"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Comodidades do Condomínio
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        'Piscina', 'Academia', 'Playground', 'Salão de Festas', 'Churrasqueira',
+                        'Quadra Esportiva', 'Sauna', 'Elevador', 'Portaria 24h', 'CFTV',
+                        'Garagem Coberta', 'Área de Lazer', 'Jardim', 'Interfone', 'Gás Central',
+                        'Salão de Jogos', 'Cinema/Home Theater', 'Spa', 'Coworking', 'Bicicletário',
+                        'Pet Place', 'Lavanderia', 'Piscina Aquecida', 'Quadra de Tênis', 'Gerador',
+                        'Pista de Cooper', 'Espaço Zen/Yoga', 'Espaço Gourmet', 'Área para Eventos',
+                        'Beach Tennis', 'Horta Comunitária', 'Brinquedoteca', 'Wifi Gratuito',
+                        'Depósito/Storage', 'Portão Eletrônico'
+                      ].map((amenity) => (
+                        <label key={amenity} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={(formData.amenities || []).includes(amenity)}
+                            onChange={(e) => {
+                              const currentAmenities = formData.amenities || []
+                              if (e.target.checked) {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  amenities: [...currentAmenities, amenity]
+                                }))
+                              } else {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  amenities: currentAmenities.filter(a => a !== amenity)
+                                }))
+                              }
+                            }}
+                            className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
+                          />
+                          <span className="text-sm text-gray-700">{amenity}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Terreno */}
+            {formData.category === 'terreno' && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Informações do Terreno</h3>
+                  <p className="text-sm text-gray-600 mt-1">Dados específicos para terrenos</p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Zoneamento
+                      </label>
+                      <select
+                        name="zoning"
+                        value={formData.zoning || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="residencial">Residencial</option>
+                        <option value="comercial">Comercial</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="misto">Misto</option>
+                        <option value="rural">Rural</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Topografia
+                      </label>
+                      <select
+                        name="slope"
+                        value={formData.slope || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="plano">Plano</option>
+                        <option value="aclive">Aclive</option>
+                        <option value="declive">Declive</option>
+                        <option value="irregular">Irregular</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Frente do Terreno (metros)
+                      </label>
+                      <input
+                        type="number"
+                        name="frontage"
+                        value={formData.frontage || ''}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: 12.5"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Fazenda */}
+            {formData.category === 'fazenda' && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Informações da Fazenda</h3>
+                  <p className="text-sm text-gray-600 mt-1">Dados específicos para fazendas e sítios</p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Área Total (hectares)
+                      </label>
+                      <input
+                        type="number"
+                        name="totalArea"
+                        value={formData.totalArea || ''}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: 50.5"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Área Cultivada (hectares)
+                      </label>
+                      <input
+                        type="number"
+                        name="cultivatedArea"
+                        value={formData.cultivatedArea || ''}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: 30.0"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Pastos (hectares)
+                      </label>
+                      <input
+                        type="number"
+                        name="pastures"
+                        value={formData.pastures || ''}
+                        onChange={handleChange}
+                        min="0"
+                        step="0.01"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: 15.0"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Fontes de Água
+                      </label>
+                      <input
+                        type="text"
+                        name="waterSources"
+                        value={formData.waterSources || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: Poço artesiano, rio, nascente"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Benfeitorias da Fazenda
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {[
+                          'Casa sede', 'Casa caseiro', 'Galpão', 'Curral', 'Estábulo',
+                          'Silo', 'Cerca elétrica', 'Poço artesiano', 'Energia elétrica'
+                        ].map((building) => (
+                          <label key={building} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={(formData.buildings || []).includes(building)}
+                              onChange={(e) => {
+                                const currentBuildings = formData.buildings || []
+                                if (e.target.checked) {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    buildings: [...currentBuildings, building]
+                                  }))
+                                } else {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    buildings: currentBuildings.filter(b => b !== building)
+                                  }))
+                                }
+                              }}
+                              className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
+                            />
+                            <span className="text-sm text-gray-700">{building}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Comercial */}
+            {formData.category === 'comercial' && (
+              <div className="bg-white shadow rounded-lg mt-6">
+                <div className="px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Informações Comerciais</h3>
+                  <p className="text-sm text-gray-600 mt-1">Dados específicos para imóveis comerciais</p>
+                </div>
+                <div className="p-6 space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Tipo Comercial
+                      </label>
+                      <select
+                        name="commercialType"
+                        value={formData.commercialType || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      >
+                        <option value="">Selecione</option>
+                        <option value="loja">Loja</option>
+                        <option value="escritorio">Escritório</option>
+                        <option value="galpao">Galpão</option>
+                        <option value="sala">Sala Comercial</option>
+                        <option value="predio">Prédio Comercial</option>
+                        <option value="terreno">Terreno Comercial</option>
+                        <option value="hotel">Hotel/Pousada</option>
+                        <option value="restaurante">Restaurante</option>
+                        <option value="consultorio">Consultório</option>
+                        <option value="industria">Industrial</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Andar
+                      </label>
+                      <input
+                        type="text"
+                        name="floor_commercial"
+                        value={formData.floor_commercial || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Ex: Térreo, 1º, 2º"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Centro Empresarial
+                      </label>
+                      <input
+                        type="text"
+                        name="businessCenter"
+                        value={formData.businessCenter || ''}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                        placeholder="Nome do edifício/centro"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Características e Facilidades
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        'Ar Condicionado', 'Internet/Wifi', 'Elevador', 'Estacionamento',
+                        'Segurança 24h', 'Recepção', 'CFTV', 'Gerador', 'Copa/Cozinha',
+                        'Banheiro Privativo', 'Sala de Reunião', 'Depósito', 'Vitrine',
+                        'Pé Direito Alto', 'Rampa de Acesso', 'Entrada Independente',
+                        'Mezanino', 'Escritório Anexo', 'Área Externa', 'Próximo ao Centro',
+                        'Transporte Público', 'Fácil Acesso'
+                      ].map((feature) => (
+                        <label key={feature} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={(formData.features || []).includes(feature)}
+                            onChange={(e) => {
+                              const currentFeatures = formData.features || []
+                              if (e.target.checked) {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  features: [...currentFeatures, feature]
+                                }))
+                              } else {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  features: currentFeatures.filter(f => f !== feature)
+                                }))
+                              }
+                            }}
+                            className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded mr-2"
+                          />
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Imagens */}
             <div className="bg-white shadow rounded-lg mt-6">

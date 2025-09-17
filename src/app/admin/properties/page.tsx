@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import AdminLayout from '@/components/AdminLayout'
+import { getFirstImage } from '@/lib/imageUtils'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -12,41 +13,26 @@ export const dynamic = 'force-dynamic'
 // Componente para exibir imagem da propriedade
 function PropertyImage({ images, title }: { images?: string; title: string }) {
   const [showPlaceholder, setShowPlaceholder] = useState(false)
-  
-  if (!images || images === '[]' || images === '') {
+  const firstImage = getFirstImage(images)
+
+  if (firstImage === '/placeholder-house.jpg') {
     return <PlaceholderIcon />
   }
 
-  try {
-    let imageArray: string[] = []
-    if (images.startsWith('[')) {
-      imageArray = JSON.parse(images)
-    } else {
-      imageArray = [images]
-    }
-    const firstImage = Array.isArray(imageArray) && imageArray.length > 0 ? imageArray[0] : null
-
-    if (!firstImage) {
-      return <PlaceholderIcon />
-    }
-
-    return (
-      <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-        {!showPlaceholder ? (
-          <img 
-            src={firstImage} 
-            alt={title}
-            className="w-full h-full object-cover"
-            onError={() => setShowPlaceholder(true)}
-          />
-        ) : (
-          <PlaceholderIcon />
-        )}
-      </div>
-    )
-  } catch (e) {
-    return <PlaceholderIcon />
-  }
+  return (
+    <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
+      {!showPlaceholder ? (
+        <img
+          src={firstImage}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={() => setShowPlaceholder(true)}
+        />
+      ) : (
+        <PlaceholderIcon />
+      )}
+    </div>
+  )
 }
 
 function PlaceholderIcon() {

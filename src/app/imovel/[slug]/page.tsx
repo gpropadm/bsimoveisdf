@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PropertyDetailClient from '@/components/PropertyDetailClient'
+import { parseImages, getFirstImage } from '@/lib/imageUtils'
 
 interface PropertyDetailProps {
   params: Promise<{ slug: string }>
@@ -64,19 +65,8 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
     }).format(price)
   }
 
-  let images: string[] = []
-  if (property.images) {
-    try {
-      if (property.images.startsWith('[')) {
-        images = JSON.parse(property.images)
-      } else {
-        images = [property.images]
-      }
-    } catch {
-      images = [property.images]
-    }
-  }
-  const firstImage = images[0] || '/placeholder-house.jpg'
+  const images = parseImages(property.images)
+  const firstImage = getFirstImage(property.images)
   
   const title = `${property.title} - ${formatPrice(property.price)} - ${property.city}`
   const description = property.description || 
@@ -131,20 +121,10 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
   }
 
   // Parse images safely
-  let propertyImages: string[] = []
-  if (property.images) {
-    try {
-      if (property.images.startsWith('[')) {
-        propertyImages = JSON.parse(property.images)
-      } else {
-        propertyImages = [property.images]
-      }
-    } catch {
-      propertyImages = [property.images]
-    }
-  } else {
-    propertyImages = ['/placeholder-house.jpg']
-  }
+  const propertyImages = parseImages(property.images)
+
+  // If no images, use placeholder
+  const finalImages = propertyImages.length > 0 ? propertyImages : ['/placeholder-house.jpg']
 
   // Structured Data (JSON-LD)
   const structuredData = {
@@ -153,7 +133,7 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
     name: property.title,
     description: property.description || `${property.category} para ${property.type} em ${property.city}`,
     url: `https://faimoveis.com.br/imovel/${property.slug}`,
-    image: propertyImages,
+    image: finalImages,
     offers: {
       '@type': 'Offer',
       price: property.price,
