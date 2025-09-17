@@ -18,9 +18,14 @@ function PropertyImage({ images, title }: { images?: string; title: string }) {
   }
 
   try {
-    const imageArray = JSON.parse(images)
+    let imageArray: string[] = []
+    if (images.startsWith('[')) {
+      imageArray = JSON.parse(images)
+    } else {
+      imageArray = [images]
+    }
     const firstImage = Array.isArray(imageArray) && imageArray.length > 0 ? imageArray[0] : null
-    
+
     if (!firstImage) {
       return <PlaceholderIcon />
     }
