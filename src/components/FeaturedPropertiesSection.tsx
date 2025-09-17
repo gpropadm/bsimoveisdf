@@ -52,15 +52,15 @@ export default function FeaturedPropertiesSection({ properties, loading }: Featu
             // Loading skeleton
             [...Array(6)].map((_, i) => (
               <div key={i} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                <div className="h-48 shimmer"></div>
+                <div className="h-48 bg-gray-200"></div>
                 <div className="p-4 space-y-3">
-                  <div className="h-5 shimmer rounded"></div>
-                  <div className="h-4 shimmer rounded w-3/4"></div>
-                  <div className="h-6 shimmer rounded w-1/2"></div>
+                  <div className="h-5 bg-gray-200 rounded"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-6 bg-gray-200 rounded w-1/2"></div>
                   <div className="flex gap-3 pt-2">
-                    <div className="h-4 shimmer rounded w-20"></div>
-                    <div className="h-4 shimmer rounded w-20"></div>
-                    <div className="h-4 shimmer rounded w-20"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
                   </div>
                 </div>
               </div>

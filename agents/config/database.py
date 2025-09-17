@@ -63,39 +63,28 @@ class DatabaseConfig:
     def get_unprocessed_leads(self) -> List[Dict[Any, Any]]:
         """Get leads that haven't been processed by agents"""
         query = """
-        SELECT
-            l.*,
-            p.title as property_title,
-            p.slug as property_slug,
-            p.price as property_price,
-            p.type as property_type,
-            p.address as property_address
-        FROM leads l
-        LEFT JOIN properties p ON l."propertyId" = p.id
-        WHERE l."agentProcessed" IS NULL OR l."agentProcessed" = false
-        ORDER BY l."createdAt" DESC
+        SELECT *
+        FROM leads
+        WHERE status = 'novo'
+        ORDER BY "createdAt" DESC
         LIMIT 50
         """
         return self.execute_query(query)
 
     def mark_lead_processed(self, lead_id: str, status: str = 'sent') -> bool:
         """Mark lead as processed by agent"""
-
-        # Detectar tipo de banco e usar query apropriada
         if 'postgresql://' in self.database_url:
             query = """
             UPDATE leads
-            SET "agentProcessed" = true,
-                "agentStatus" = :status,
-                "agentProcessedAt" = NOW()
+            SET status = :status,
+                "updatedAt" = NOW()
             WHERE id = :lead_id
             """
         else:
             query = """
             UPDATE leads
-            SET "agentProcessed" = true,
-                "agentStatus" = :status,
-                "agentProcessedAt" = datetime('now')
+            SET status = :status,
+                updatedAt = datetime('now')
             WHERE id = :lead_id
             """
 
