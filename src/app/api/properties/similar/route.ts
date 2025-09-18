@@ -7,9 +7,7 @@ export async function GET(request: NextRequest) {
     const city = searchParams.get('city')
     const neighborhood = searchParams.get('neighborhood') || searchParams.get('address') // Extrair bairro do endereço
     const price = searchParams.get('price')
-    const type = searchParams.get('type')
     const category = searchParams.get('category')
-    const bedrooms = searchParams.get('bedrooms')
     const exclude = searchParams.get('exclude')
 
     if (!city) {
@@ -20,7 +18,6 @@ export async function GET(request: NextRequest) {
     }
 
     const currentPrice = price ? parseFloat(price) : 0
-    const currentBedrooms = bedrooms ? parseInt(bedrooms) : 0
 
     // Extrair bairro do endereço se fornecido
     const extractNeighborhood = (address: string) => {
@@ -34,125 +31,84 @@ export async function GET(request: NextRequest) {
 
     let finalProperties: any[] = []
 
-    // NÍVEL 1: Máxima Relevância (mesma cidade, bairro, tipo, categoria, faixa de preço ±20%)
-    if (finalProperties.length < 6 && currentNeighborhood && currentPrice > 0) {
-      const level1Properties = await prisma.property.findMany({
-        where: {
-          city: city,
-          address: { contains: currentNeighborhood, mode: 'insensitive' },
-          type: type || undefined,
-          category: category || undefined,
-          price: {
-            gte: currentPrice * 0.8,
-            lte: currentPrice * 1.2
+    // CRITÉRIO ÚNICO: Mesma categoria, mesma cidade/bairro, faixa de preço ±30%
+    if (category && city && currentPrice > 0) {
+      console.log(`Buscando propriedades similares para: categoria=${category}, cidade=${city}, preço=R$${currentPrice.toLocaleString('pt-BR')}`)
+
+      // Primeiro: mesmo bairro + categoria + preço ±30%
+      if (currentNeighborhood) {
+        const neighborhoodProperties = await prisma.property.findMany({
+          where: {
+            category: category, // OBRIGATÓRIO: mesma categoria
+            city: city, // OBRIGATÓRIO: mesma cidade
+            address: { contains: currentNeighborhood, mode: 'insensitive' }, // Mesmo bairro
+            price: {
+              gte: currentPrice * 0.7, // -30%
+              lte: currentPrice * 1.3  // +30%
+            },
+            status: 'disponivel',
+            id: { not: exclude || undefined }
           },
-          status: 'disponivel',
-          id: { not: exclude || undefined }
-        },
-        orderBy: [
-          { featured: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        take: 6
-      })
+          orderBy: [
+            { featured: 'desc' },
+            { createdAt: 'desc' }
+          ],
+          take: 6
+        })
 
-      finalProperties = [...finalProperties, ...level1Properties]
-      console.log(`Nível 1 (bairro + categoria): ${level1Properties.length} imóveis`)
-    }
+        finalProperties = [...finalProperties, ...neighborhoodProperties]
+        console.log(`Bairro "${currentNeighborhood}": ${neighborhoodProperties.length} imóveis encontrados`)
+      }
 
-    // NÍVEL 2: Alta Relevância (mesma cidade, tipo, faixa de preço ±40%, quartos similares)
-    if (finalProperties.length < 6 && currentPrice > 0) {
-      const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
+      // Se não tem o suficiente, buscar na mesma cidade + categoria + preço ±30%
+      if (finalProperties.length < 6) {
+        const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
 
-      const level2Properties = await prisma.property.findMany({
-        where: {
-          city: city,
-          type: type || undefined,
-          price: {
-            gte: currentPrice * 0.6,
-            lte: currentPrice * 1.4
+        const cityProperties = await prisma.property.findMany({
+          where: {
+            category: category, // OBRIGATÓRIO: mesma categoria
+            city: city, // OBRIGATÓRIO: mesma cidade
+            price: {
+              gte: currentPrice * 0.7, // -30%
+              lte: currentPrice * 1.3  // +30%
+            },
+            status: 'disponivel',
+            id: { notIn: excludeIds }
           },
-          bedrooms: currentBedrooms > 0 ? {
-            gte: Math.max(1, currentBedrooms - 1),
-            lte: currentBedrooms + 1
-          } : undefined,
-          status: 'disponivel',
-          id: { notIn: excludeIds }
-        },
-        orderBy: [
-          { featured: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        take: 6 - finalProperties.length
-      })
+          orderBy: [
+            { featured: 'desc' },
+            { createdAt: 'desc' }
+          ],
+          take: 6 - finalProperties.length
+        })
 
-      finalProperties = [...finalProperties, ...level2Properties]
-      console.log(`Nível 2 (cidade + quartos): ${level2Properties.length} imóveis`)
-    }
+        finalProperties = [...finalProperties, ...cityProperties]
+        console.log(`Cidade "${city}": ${cityProperties.length} imóveis adicionais encontrados`)
+      }
 
-    // NÍVEL 3: Relevância Moderada (mesma cidade, mesmo tipo, qualquer preço)
-    if (finalProperties.length < 6) {
-      const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
+      // Se ainda não tem o suficiente, buscar mesma categoria na cidade sem restrição de preço
+      if (finalProperties.length < 6) {
+        const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
 
-      const level3Properties = await prisma.property.findMany({
-        where: {
-          city: city,
-          type: type || undefined,
-          status: 'disponivel',
-          id: { notIn: excludeIds }
-        },
-        orderBy: [
-          { featured: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        take: 6 - finalProperties.length
-      })
+        const categoryProperties = await prisma.property.findMany({
+          where: {
+            category: category, // OBRIGATÓRIO: mesma categoria
+            city: city, // OBRIGATÓRIO: mesma cidade
+            status: 'disponivel',
+            id: { notIn: excludeIds }
+          },
+          orderBy: [
+            { featured: 'desc' },
+            { createdAt: 'desc' }
+          ],
+          take: 6 - finalProperties.length
+        })
 
-      finalProperties = [...finalProperties, ...level3Properties]
-      console.log(`Nível 3 (cidade geral): ${level3Properties.length} imóveis`)
-    }
-
-    // NÍVEL 4: Mesma Categoria (priorizar mesma categoria mesmo em outras cidades)
-    if (finalProperties.length < 6 && category) {
-      const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
-
-      const level4Properties = await prisma.property.findMany({
-        where: {
-          category: category,
-          type: type || undefined,
-          status: 'disponivel',
-          id: { notIn: excludeIds }
-        },
-        orderBy: [
-          { featured: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        take: 6 - finalProperties.length
-      })
-
-      finalProperties = [...finalProperties, ...level4Properties]
-      console.log(`Nível 4 (mesma categoria): ${level4Properties.length} imóveis`)
-    }
-
-    // NÍVEL 5: Fallback Final (mesma cidade, qualquer categoria)
-    if (finalProperties.length < 6) {
-      const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
-
-      const level5Properties = await prisma.property.findMany({
-        where: {
-          city: city,
-          status: 'disponivel',
-          id: { notIn: excludeIds }
-        },
-        orderBy: [
-          { featured: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        take: 6 - finalProperties.length
-      })
-
-      finalProperties = [...finalProperties, ...level5Properties]
-      console.log(`Nível 5 (cidade fallback): ${level5Properties.length} imóveis`)
+        finalProperties = [...finalProperties, ...categoryProperties]
+        console.log(`Categoria "${category}" sem filtro de preço: ${categoryProperties.length} imóveis adicionais`)
+      }
+    } else {
+      console.log('Parâmetros insuficientes para busca de propriedades similares:', { category, city, currentPrice })
     }
 
     console.log(`Total de imóveis similares encontrados: ${finalProperties.length}`)
