@@ -103,9 +103,10 @@ model Property {
   frontage    Float?   // frente do terreno (metros)
   
   // Campos específicos para fazendas
-  totalArea   Float?   // área total da fazenda (hectares)
-  cultivatedArea Float? // área cultivada (hectares)
-  pastures    Float?   // área de pastagens (hectares)
+  totalArea   Float?   // área total da fazenda
+  cultivatedArea Float? // área cultivada
+  pastures    Float?   // área de pastagens
+  areaUnit    String?  // unidade de medida (hectares, alqueires, etc.)
   buildings   String?  // JSON string com benfeitorias da fazenda
   waterSources String? // fontes de água (rios, poços, açudes)
   

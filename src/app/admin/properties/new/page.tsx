@@ -49,6 +49,7 @@ export default function NewProperty() {
     totalArea: '',
     cultivatedArea: '',
     pastures: '',
+    areaUnit: 'hectares', // Unidade de medida para fazendas
     buildings: [] as string[],
     waterSources: '',
     // Campos específicos para casa
@@ -457,6 +458,7 @@ export default function NewProperty() {
           totalArea: formData.totalArea ? parseArea(formData.totalArea) : null,
           cultivatedArea: formData.cultivatedArea ? parseArea(formData.cultivatedArea) : null,
           pastures: formData.pastures ? parseArea(formData.pastures) : null,
+          areaUnit: formData.areaUnit || null,
           buildings: formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null,
           waterSources: formData.waterSources || null,
           // Campos específicos para casa
@@ -1037,10 +1039,43 @@ export default function NewProperty() {
                 <p className="text-sm text-gray-500 mt-1">Dados específicos para propriedades rurais</p>
               </div>
               <div className="p-6 space-y-6">
+                {/* Seletor de Unidade de Medida */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Unidade de Medida para Área
+                  </label>
+                  <select
+                    name="areaUnit"
+                    value={formData.areaUnit}
+                    onChange={handleChange}
+                    className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                  >
+                    <option value="hectares">Hectares (ha)</option>
+                    <option value="alqueires-sp">Alqueires Paulista (24.200 m²)</option>
+                    <option value="alqueires-mg">Alqueires Mineiro (48.400 m²)</option>
+                    <option value="alqueires-go">Alqueires Goiano (48.400 m²)</option>
+                    <option value="alqueires-norte">Alqueires do Norte (27.225 m²)</option>
+                    <option value="metros">Metros Quadrados (m²)</option>
+                    <option value="quilometros">Quilômetros Quadrados (km²)</option>
+                    <option value="acres">Acres</option>
+                    <option value="tarefas">Tarefas (3.025 m²)</option>
+                    <option value="braças">Braças Quadradas</option>
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Escolha a unidade mais comum na sua região
+                  </p>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área Total (hectares)
+                      Área Total ({formData.areaUnit === 'metros' ? 'm²' :
+                                  formData.areaUnit === 'quilometros' ? 'km²' :
+                                  formData.areaUnit === 'hectares' ? 'ha' :
+                                  formData.areaUnit === 'acres' ? 'acres' :
+                                  formData.areaUnit.includes('alqueires') ? 'alqueires' :
+                                  formData.areaUnit === 'tarefas' ? 'tarefas' :
+                                  formData.areaUnit === 'braças' ? 'braças²' : 'ha'})
                     </label>
                     <input
                       type="number"
@@ -1056,7 +1091,13 @@ export default function NewProperty() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área Cultivada (hectares)
+                      Área Cultivada ({formData.areaUnit === 'metros' ? 'm²' :
+                                      formData.areaUnit === 'quilometros' ? 'km²' :
+                                      formData.areaUnit === 'hectares' ? 'ha' :
+                                      formData.areaUnit === 'acres' ? 'acres' :
+                                      formData.areaUnit.includes('alqueires') ? 'alqueires' :
+                                      formData.areaUnit === 'tarefas' ? 'tarefas' :
+                                      formData.areaUnit === 'braças' ? 'braças²' : 'ha'})
                     </label>
                     <input
                       type="number"
@@ -1072,7 +1113,13 @@ export default function NewProperty() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área de Pastagens (hectares)
+                      Área de Pastagens ({formData.areaUnit === 'metros' ? 'm²' :
+                                         formData.areaUnit === 'quilometros' ? 'km²' :
+                                         formData.areaUnit === 'hectares' ? 'ha' :
+                                         formData.areaUnit === 'acres' ? 'acres' :
+                                         formData.areaUnit.includes('alqueires') ? 'alqueires' :
+                                         formData.areaUnit === 'tarefas' ? 'tarefas' :
+                                         formData.areaUnit === 'braças' ? 'braças²' : 'ha'})
                     </label>
                     <input
                       type="number"
