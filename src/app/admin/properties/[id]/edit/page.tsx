@@ -9,8 +9,6 @@ import AdminLayout from '@/components/AdminLayout'
 import {
   formatCurrency,
   parseCurrency,
-  formatPhone,
-  parsePhone,
   formatCEP,
   parseCEP,
   formatArea,
@@ -187,6 +185,7 @@ export default function EditProperty() {
         totalArea: data.totalArea ? data.totalArea.toString() : '',
         cultivatedArea: data.cultivatedArea ? data.cultivatedArea.toString() : '',
         pastures: data.pastures ? data.pastures.toString() : '',
+        areaUnit: data.areaUnit || 'hectares',
         buildings: data.buildings ? (Array.isArray(data.buildings) ? data.buildings : JSON.parse(data.buildings || '[]')) : [],
         waterSources: data.waterSources || '',
         // Campos específicos para casa
