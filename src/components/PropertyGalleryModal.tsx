@@ -207,7 +207,7 @@ ${formData.message}
         
         <button
           onClick={nextPhoto}
-          className="absolute right-[22rem] top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 bg-black/50 rounded-full p-3 transition-all hover:bg-black/70 z-10"
+          className="absolute right-6 lg:right-[22rem] top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 bg-black/50 rounded-full p-3 transition-all hover:bg-black/70 z-10"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="9,18 15,12 9,6"></polyline>
@@ -215,7 +215,7 @@ ${formData.message}
         </button>
 
         {/* Image Counter */}
-        <div className="absolute top-6 right-[22rem] text-white bg-black bg-opacity-60 px-4 py-2 rounded-full">
+        <div className="absolute top-6 right-6 lg:right-[22rem] text-white bg-black bg-opacity-60 px-4 py-2 rounded-full">
           {currentPhoto + 1} / {photos.length}
         </div>
 
@@ -276,8 +276,8 @@ ${formData.message}
         </div>
       </div>
 
-      {/* Sidebar */}
-      <div className="w-80 bg-white h-full overflow-y-auto">
+      {/* Sidebar - Hidden on mobile */}
+      <div className="hidden lg:block w-80 bg-white h-full overflow-y-auto">
         <div className="p-6">
           {/* Property Info */}
           <div className="mb-6">
