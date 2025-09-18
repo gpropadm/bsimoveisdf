@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { RxMobile, RxEnvelopeClosed } from 'react-icons/rx'
+import { useSettings } from '@/hooks/useSettings'
 
 interface PropertyGalleryModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ export default function PropertyGalleryModal({
   propertyType,
   images = []
 }: PropertyGalleryModalProps) {
+  const { settings } = useSettings()
   const [currentPhoto, setCurrentPhoto] = useState(0)
   const [formData, setFormData] = useState({
     name: '',
@@ -295,18 +297,18 @@ ${formData.message}
                 </svg>
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900">Ana Paula Corretor</h4>
-                <p className="text-sm text-gray-600">CRECI 5362J</p>
+                <h4 className="font-semibold text-gray-900">{settings?.siteName || 'Imobiliária'}</h4>
+                <p className="text-sm text-gray-600">CRECI</p>
               </div>
             </div>
             <div className="text-sm text-gray-600 space-y-1">
               <div className="flex items-center gap-2">
                 <RxMobile className="w-4 h-4 text-green-500" />
-                <span>(48) 99864-5864</span>
+                <span>{settings?.contactPhone || '(48) 99864-5864'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <RxEnvelopeClosed className="w-4 h-4 text-blue-500" />
-                <span>contato@imobinext.com</span>
+                <span>{settings?.contactEmail || 'contato@imobiliaria.com'}</span>
               </div>
             </div>
           </div>
@@ -386,16 +388,18 @@ ${formData.message}
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.24c-.23.64-1.15 1.18-1.79 1.32-.43.09-.99.16-2.89-.63-2.29-.96-3.74-3.27-3.86-3.42-.11-.15-.95-1.26-.95-2.41s.59-1.71.8-1.94c.2-.23.44-.29.59-.29.15 0 .29 0 .42.01.13.01.31-.05.48.37.18.44.61 1.49.66 1.6.05.11.08.23.02.38-.06.15-.09.25-.18.38-.09.13-.19.29-.27.39-.09.1-.18.21-.08.41.1.2.45.74.96 1.2.66.6 1.21.79 1.39.88.18.09.29.08.39-.05.1-.13.43-.5.54-.68.11-.18.23-.15.38-.09.15.06.96.45 1.12.53.16.08.27.12.31.19.04.07.04.39-.19 1.03z"/>
-                  </svg>
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    Enviar Interesse
+                  </>
                 )}
-                {isSubmitting ? 'Enviando...' : 'Enviar'}
               </button>
             </div>
           </div>
