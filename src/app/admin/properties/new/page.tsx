@@ -715,15 +715,14 @@ export default function NewProperty() {
             </div>
           </div>
 
-          {/* Campos específicos para casa */}
-          {formData.category === 'casa' && (
+          {/* Características Básicas - Para apartamento, casa, cobertura e comercial */}
+          {(formData.category === 'apartamento' || formData.category === 'casa' || formData.category === 'cobertura' || formData.category === 'comercial') && (
             <div className="bg-white shadow rounded-lg">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Características da Casa</h3>
-                <p className="text-sm text-gray-500 mt-1">Informações específicas para casas</p>
+                <h3 className="text-lg font-medium text-gray-900">Características Básicas</h3>
+                <p className="text-sm text-gray-500 mt-1">Informações gerais do imóvel</p>
               </div>
               <div className="p-6 space-y-6">
-                {/* Características básicas */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -782,7 +781,18 @@ export default function NewProperty() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
 
+          {/* Campos específicos para casa */}
+          {formData.category === 'casa' && (
+            <div className="bg-white shadow rounded-lg">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">Características da Casa</h3>
+                <p className="text-sm text-gray-500 mt-1">Informações específicas para casas</p>
+              </div>
+              <div className="p-6 space-y-6">
                 {/* Características específicas da casa */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
@@ -1181,52 +1191,21 @@ export default function NewProperty() {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área Total (m²)
-                    </label>
-                    <input
-                      type="number"
-                      name="area"
-                      value={formData.area}
-                      onChange={handleChange}
-                      step="0.01"
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                      placeholder="Ex: 150.50"
-                    />
-                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Andar (se aplicável)
-                    </label>
-                    <input
-                      type="number"
-                      name="floor_commercial"
-                      value={formData.floor_commercial}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                      placeholder="Ex: 3"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Vagas de Garagem
-                    </label>
-                    <input
-                      type="number"
-                      name="parking"
-                      value={formData.parking}
-                      onChange={handleChange}
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Andar (se aplicável)
+                  </label>
+                  <input
+                    type="number"
+                    name="floor_commercial"
+                    value={formData.floor_commercial}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                    placeholder="Ex: 3"
+                  />
                 </div>
 
                 <div>

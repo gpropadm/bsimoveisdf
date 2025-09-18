@@ -933,12 +933,12 @@ export default function EditProperty() {
               </div>
             </div>
 
-            {/* Características - Condicional por categoria */}
-            {(formData.category === 'apartamento' || formData.category === 'casa' || formData.category === 'sobrado' || formData.category === 'cobertura') && (
+            {/* Características Básicas - Para apartamento, casa, sobrado, cobertura e comercial */}
+            {(formData.category === 'apartamento' || formData.category === 'casa' || formData.category === 'sobrado' || formData.category === 'cobertura' || formData.category === 'comercial') && (
               <div className="bg-white shadow rounded-lg mt-6">
                 <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Características</h3>
-                  <p className="text-sm text-gray-600 mt-1">Características residenciais</p>
+                  <h3 className="text-lg font-semibold text-gray-900">Características Básicas</h3>
+                  <p className="text-sm text-gray-600 mt-1">Informações gerais do imóvel</p>
                 </div>
 
                 <div className="p-4 sm:p-6">
@@ -1008,8 +1008,8 @@ export default function EditProperty() {
               </div>
             )}
 
-            {/* Área para Terrenos, Comerciais e Fazendas */}
-            {(formData.category === 'terreno' || formData.category === 'comercial' || formData.category === 'fazenda') && (
+            {/* Área para Terrenos e Fazendas */}
+            {(formData.category === 'terreno' || formData.category === 'fazenda') && (
               <div className="bg-white shadow rounded-lg mt-6">
                 <div className="px-6 py-4 border-b border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900">Área</h3>
@@ -1034,21 +1034,6 @@ export default function EditProperty() {
                       />
                     </div>
 
-                    {formData.category === 'comercial' && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Vagas de Garagem
-                        </label>
-                        <input
-                          type="number"
-                          name="parking"
-                          value={formData.parking}
-                          onChange={handleChange}
-                          min="0"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                        />
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
