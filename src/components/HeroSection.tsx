@@ -190,17 +190,17 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
 
 
         {/* Property Filters */}
-        <div className="bg-white md:bg-white/15 md:backdrop-blur-sm rounded-2xl p-6 border border-gray-200 md:border-white/20 shadow-lg md:shadow-none max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
+        <div className="bg-white md:bg-white/15 md:backdrop-blur-sm rounded-2xl p-4 md:p-6 border border-gray-200 md:border-white/20 shadow-lg md:shadow-none max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 items-start">
             {/* Tipo de Imóvel */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 md:text-white mb-2">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 md:text-white mb-1 md:mb-2">
                 Tipo
               </label>
               <select
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
+                className="w-full p-2 md:p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
               >
                 <option value="">Todos</option>
                 {uniqueCategories.map(category => (
@@ -211,13 +211,13 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
 
             {/* Finalidade */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 md:text-white mb-2">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 md:text-white mb-1 md:mb-2">
                 Finalidade
               </label>
               <select
                 value={filters.type}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
+                className="w-full p-2 md:p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
               >
                 <option value="">Todos</option>
                 <option value="venda">Venda</option>
@@ -226,14 +226,14 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
             </div>
 
             {/* Cidade */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 md:text-white mb-2">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 md:text-white mb-1 md:mb-2">
                 Cidade
               </label>
               <select
                 value={filters.city}
                 onChange={(e) => handleFilterChange('city', e.target.value)}
-                className="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
+                className="w-full p-2 md:p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors bg-white"
               >
                 <option value="">Todas as cidades</option>
                 {uniqueCities.map(city => (
@@ -243,11 +243,11 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
             </div>
 
             {/* Valor Máximo */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 md:text-white mb-2">
-                Valor até: {formatPrice(filters.maxPrice)}
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 md:text-white mb-1 md:mb-2">
+                Valor até: <span className="font-semibold">{formatPrice(filters.maxPrice)}</span>
               </label>
-              <div className="relative h-10 flex items-center">
+              <div className="relative h-8 md:h-10 flex items-center">
                 <input
                   type="range"
                   min={minPropertyPrice}
@@ -255,21 +255,21 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
                   step={stepPrice}
                   value={Math.min(filters.maxPrice, maxPropertyPrice)}
                   onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
-                  className="w-full h-2 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
+                  className="w-full h-3 md:h-2 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
                 />
               </div>
             </div>
 
             {/* Botão Limpar */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 md:text-white mb-2 opacity-0">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 md:text-white mb-1 md:mb-2 opacity-0">
                 Ação
               </label>
               <button
                 onClick={clearFilters}
-                className="w-full bg-gray-100 md:bg-white/20 hover:bg-gray-200 md:hover:bg-white/30 text-gray-700 md:text-white text-sm py-3 px-4 rounded-lg transition-colors duration-200 border border-gray-300 md:border-white/30"
+                className="w-full bg-gray-100 md:bg-white/20 hover:bg-gray-200 md:hover:bg-white/30 text-gray-700 md:text-white text-sm py-2 md:py-3 px-3 md:px-4 rounded-lg transition-colors duration-200 border border-gray-300 md:border-white/30"
               >
-                Limpar
+                Limpar Filtros
               </button>
             </div>
           </div>
@@ -278,40 +278,72 @@ export default function HeroSection({ properties = [], onFilterChange }: HeroSec
         <style jsx>{`
           .slider::-webkit-slider-thumb {
             appearance: none;
-            height: 20px;
-            width: 20px;
+            height: 24px;
+            width: 24px;
             border-radius: 50%;
             background: #14b8a6;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border: 3px solid white;
           }
 
           .slider::-moz-range-thumb {
-            height: 20px;
-            width: 20px;
+            height: 24px;
+            width: 24px;
             border-radius: 50%;
             background: #14b8a6;
             cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          }
+
+          @media (max-width: 768px) {
+            .slider::-webkit-slider-thumb {
+              height: 28px;
+              width: 28px;
+              border: 4px solid white;
+            }
+
+            .slider::-moz-range-thumb {
+              height: 28px;
+              width: 28px;
+              border: 4px solid white;
+            }
           }
 
           .slider::-webkit-slider-track {
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             background: linear-gradient(to right, #14b8a6 0%, #14b8a6 ${((Math.min(filters.maxPrice, maxPropertyPrice) - minPropertyPrice) / (maxPropertyPrice - minPropertyPrice)) * 100}%, rgba(255,255,255,0.3) ${((Math.min(filters.maxPrice, maxPropertyPrice) - minPropertyPrice) / (maxPropertyPrice - minPropertyPrice)) * 100}%, rgba(255,255,255,0.3) 100%);
           }
 
           .slider::-moz-range-track {
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             background: rgba(255,255,255,0.3);
           }
 
           .slider::-moz-range-progress {
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             background: #14b8a6;
+          }
+
+          @media (max-width: 768px) {
+            .slider::-webkit-slider-track {
+              height: 12px;
+              border-radius: 6px;
+            }
+
+            .slider::-moz-range-track {
+              height: 12px;
+              border-radius: 6px;
+            }
+
+            .slider::-moz-range-progress {
+              height: 12px;
+              border-radius: 6px;
+            }
           }
         `}</style>
       </div>

@@ -155,8 +155,8 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 items-start">
         {/* Tipo de Imóvel */}
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">
@@ -191,7 +191,7 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
         </div>
 
         {/* Cidade */}
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <label className="block text-xs font-medium text-gray-500 mb-1">
             Cidade
           </label>
@@ -208,11 +208,11 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
         </div>
 
         {/* Valor Máximo */}
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <label className="block text-xs font-medium text-gray-500 mb-1">
-            Valor até: {formatPrice(filters.maxPrice)}
+            Valor até: <span className="font-semibold">{formatPrice(filters.maxPrice)}</span>
           </label>
-          <div className="relative h-8 flex items-center">
+          <div className="relative h-8 md:h-8 flex items-center">
             <input
               type="range"
               min={minPropertyPrice}
@@ -220,13 +220,13 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
               step={stepPrice}
               value={Math.min(filters.maxPrice, maxPropertyPrice)}
               onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              className="w-full h-3 md:h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
             />
           </div>
         </div>
 
         {/* Botão Limpar */}
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <label className="block text-xs font-medium text-gray-600 mb-1 opacity-0">
             Ação
           </label>
@@ -234,7 +234,7 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
             onClick={clearFilters}
             className="w-full bg-gray-50 hover:bg-gray-100 text-gray-500 text-sm py-2 px-3 rounded-md transition-colors duration-200 border border-gray-200 h-8 flex items-center justify-center"
           >
-            Limpar
+            Limpar Filtros
           </button>
         </div>
       </div>
@@ -242,40 +242,72 @@ export default function PropertyFilters({ properties, onFilterChange }: Property
       <style jsx>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
-          height: 16px;
-          width: 16px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
           background: #f97316;
           cursor: pointer;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          border: 2px solid white;
         }
 
         .slider::-moz-range-thumb {
-          height: 16px;
-          width: 16px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
           background: #f97316;
           cursor: pointer;
-          border: none;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+          .slider::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border: 3px solid white;
+          }
+
+          .slider::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border: 3px solid white;
+          }
         }
 
         .slider::-webkit-slider-track {
-          height: 6px;
-          border-radius: 3px;
+          height: 8px;
+          border-radius: 4px;
           background: linear-gradient(to right, #f97316 0%, #f97316 ${((Math.min(filters.maxPrice, maxPropertyPrice) - minPropertyPrice) / (maxPropertyPrice - minPropertyPrice)) * 100}%, #e5e7eb ${((Math.min(filters.maxPrice, maxPropertyPrice) - minPropertyPrice) / (maxPropertyPrice - minPropertyPrice)) * 100}%, #e5e7eb 100%);
         }
 
         .slider::-moz-range-track {
-          height: 6px;
-          border-radius: 3px;
+          height: 8px;
+          border-radius: 4px;
           background: #e5e7eb;
         }
 
         .slider::-moz-range-progress {
-          height: 6px;
-          border-radius: 3px;
+          height: 8px;
+          border-radius: 4px;
           background: #f97316;
+        }
+
+        @media (max-width: 768px) {
+          .slider::-webkit-slider-track {
+            height: 10px;
+            border-radius: 5px;
+          }
+
+          .slider::-moz-range-track {
+            height: 10px;
+            border-radius: 5px;
+          }
+
+          .slider::-moz-range-progress {
+            height: 10px;
+            border-radius: 5px;
+          }
         }
       `}</style>
     </div>
