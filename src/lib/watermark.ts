@@ -48,14 +48,15 @@ export async function addWatermark(
     console.log('Texto original:', text)
     console.log('Texto limpo:', cleanText)
 
-    // Criar uma abordagem mais simples com Sharp text
-    const textWidth = cleanText.length * dynamicFontSize * 0.6
-    const textHeight = dynamicFontSize * 1.2
+    // Se o texto estiver vazio após limpeza, usar fallback
+    const finalText = cleanText || 'IMOBILIARIA'
 
-    // Calcular posição
-    let x: number, y: number
+    // Criar marca d'água usando Sharp text() - funcionalidade nativa
+    const textWidth = finalText.length * dynamicFontSize * 0.6
+    const textHeight = dynamicFontSize
     const margin = 20
 
+    let x: number, y: number
     switch (position) {
       case 'center':
         x = Math.max(0, (metadata.width - textWidth) / 2)
@@ -82,47 +83,62 @@ export async function addWatermark(
         y = Math.max(0, (metadata.height - textHeight) / 2)
     }
 
-    // Criar uma imagem de texto simples usando Sharp
-    const textSvg = Buffer.from(`
-      <svg width="${metadata.width}" height="${metadata.height}">
-        <style>
-          .watermark {
-            font-family: Arial, sans-serif;
-            font-size: ${dynamicFontSize}px;
-            font-weight: bold;
-            fill: white;
-            opacity: ${opacity};
-            text-anchor: start;
-            dominant-baseline: central;
+    // Tentar usar o Sharp text() se disponível
+    try {
+      const watermarkedImage = await image
+        .composite([
+          {
+            input: {
+              text: {
+                text: finalText,
+                font: 'Arial Bold',
+                width: Math.round(textWidth),
+                height: Math.round(dynamicFontSize),
+                rgba: true
+              }
+            },
+            left: Math.round(x),
+            top: Math.round(y),
+            blend: 'over'
           }
-          .background {
-            fill: black;
-            opacity: 0.4;
+        ])
+        .jpeg({ quality: 85 })
+        .toBuffer()
+
+      return watermarkedImage
+    } catch (textError) {
+      console.warn('Sharp text() não disponível, usando SVG simples')
+
+      // Fallback para SVG mais básico possível
+      const simpleSvg = `<svg width="${metadata.width}" height="${metadata.height}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .watermark-text {
+              font-family: Arial, sans-serif;
+              font-size: ${dynamicFontSize}px;
+              font-weight: bold;
+              fill: white;
+              opacity: ${opacity};
+            }
+          </style>
+        </defs>
+        <rect x="${x - 10}" y="${y - 5}" width="${textWidth + 20}" height="${dynamicFontSize + 10}"
+              fill="black" opacity="0.4" rx="5"/>
+        <text x="${x}" y="${y + dynamicFontSize - 5}" class="watermark-text">${finalText}</text>
+      </svg>`
+
+      const watermarkedImage = await image
+        .composite([
+          {
+            input: Buffer.from(simpleSvg),
+            blend: 'over'
           }
-        </style>
+        ])
+        .jpeg({ quality: 85 })
+        .toBuffer()
 
-        <!-- Fundo do texto -->
-        <rect x="${x - 10}" y="${y - dynamicFontSize/2}"
-              width="${textWidth + 20}" height="${dynamicFontSize + 10}"
-              class="background" rx="5"/>
-
-        <!-- Texto da marca d'água -->
-        <text x="${x}" y="${y}" class="watermark">${cleanText}</text>
-      </svg>
-    `)
-
-    // Aplicar marca d'água
-    const watermarkedImage = await image
-      .composite([
-        {
-          input: textSvg,
-          blend: 'over'
-        }
-      ])
-      .jpeg({ quality: 85 })
-      .toBuffer()
-
-    return watermarkedImage
+      return watermarkedImage
+    }
 
   } catch (error) {
     console.error('Erro ao adicionar marca d\'água:', error)
