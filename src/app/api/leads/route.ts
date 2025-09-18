@@ -3,12 +3,22 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('📧 [API Leads] Recebendo dados...')
+
     const body = await request.json()
-    
+    console.log('📧 [API Leads] Dados recebidos:', {
+      name: body.name,
+      email: body.email,
+      phone: body.phone,
+      propertyId: body.propertyId,
+      hasMessage: !!body.message
+    })
+
     const { name, email, phone, message, propertyId, propertyTitle, propertyPrice, propertyType } = body
 
     // Validação básica
     if (!name || name.trim() === '') {
+      console.log('❌ [API Leads] Nome obrigatório')
       return NextResponse.json(
         { error: 'Nome é obrigatório' },
         { status: 400 }
@@ -62,11 +72,12 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    console.log('🏠 Novo lead de imóvel:', {
+    console.log('✅ [API Leads] Lead criado com sucesso:', {
       id: lead.id,
       nome: lead.name,
       imovel: lead.propertyTitle,
-      email: lead.email
+      email: lead.email,
+      preferenciasExtraidas: Object.keys(preferredData).length > 0
     })
 
     // Enviar notificação via WhatsApp usando UltraMsg
@@ -149,9 +160,13 @@ ${lead.message || 'Demonstrou interesse no imóvel'}
     )
 
   } catch (error) {
-    console.error('Erro ao criar lead:', error)
+    console.error('❌ [API Leads] Erro ao criar lead:', error)
+    console.error('❌ [API Leads] Stack:', error instanceof Error ? error.stack : 'N/A')
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido'
+      },
       { status: 500 }
     )
   }
