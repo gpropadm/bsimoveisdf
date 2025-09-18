@@ -31,10 +31,79 @@ export async function POST(request: NextRequest) {
       email: contactMessage.email
     })
 
-    return NextResponse.json({ 
-      success: true, 
+    // Enviar notificação via WhatsApp usando UltraMsg
+    try {
+      const phoneAdmin = process.env.ULTRAMSG_ADMIN_PHONE || '5561996900444'
+      const whatsappMessage = `🏠 *NOVA MENSAGEM DE CONTATO*
+
+👤 *Nome:* ${data.name}
+📧 *Email:* ${data.email}
+📱 *Telefone:* ${data.phone || 'Não informado'}
+📋 *Assunto:* ${data.subject}
+
+💬 *Mensagem:*
+${data.message}
+
+🌐 *Origem:* ${request.headers.get('referer') || 'Site'}
+🕐 *Data:* ${new Date().toLocaleString('pt-BR')}
+
+#ContatoSite #Lead`
+
+      // Chamar API do UltraMsg diretamente
+      const instanceId = process.env.ULTRAMSG_INSTANCE_ID
+      const token = process.env.ULTRAMSG_TOKEN
+
+      if (instanceId && token) {
+        const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+        const payload = {
+          token: token,
+          to: phoneAdmin.replace(/\D/g, ''), // Remove formatação
+          body: whatsappMessage,
+          priority: 'high'
+        }
+
+        const ultraMsgResponse = await fetch(ultraMsgUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+
+        const responseData = await ultraMsgResponse.json()
+
+        if (ultraMsgResponse.ok && responseData.sent) {
+          console.log('✅ Notificação WhatsApp enviada para admin')
+
+          // Salvar mensagem no banco
+          await prisma.whatsAppMessage.create({
+            data: {
+              messageId: responseData.id || `contact-${Date.now()}`,
+              from: instanceId,
+              to: phoneAdmin.replace(/\D/g, ''),
+              body: whatsappMessage,
+              type: 'text',
+              timestamp: new Date(),
+              fromMe: true,
+              status: 'sent',
+              source: 'contact_notification',
+              contactName: data.name
+            }
+          })
+        } else {
+          console.error('❌ Falha ao enviar WhatsApp:', responseData)
+        }
+      } else {
+        console.log('⚠️ UltraMsg não configurado')
+      }
+
+    } catch (whatsappError) {
+      console.error('⚠️ Erro ao enviar notificação WhatsApp:', whatsappError)
+      // Não falha o contato se o WhatsApp falhar
+    }
+
+    return NextResponse.json({
+      success: true,
       message: 'Mensagem enviada com sucesso',
-      messageId: contactMessage.id 
+      messageId: contactMessage.id
     }, { status: 201 })
 
   } catch (error) {

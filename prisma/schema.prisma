@@ -125,6 +125,7 @@ model Property {
 
   leads Lead[]
   appointments Appointment[]
+  whatsappMessages WhatsAppMessage[]
 
   @@map("properties")
 }
@@ -314,5 +315,37 @@ model Settings {
   updatedAt            DateTime @updatedAt
 
   @@map("settings")
+}
+
+model WhatsAppMessage {
+  id           String   @id @default(cuid())
+
+  // Identificadores da mensagem
+  messageId    String   @unique // ID da mensagem no UltraMsg
+  from         String   // Número de telefone de quem enviou
+  to           String   // Número de telefone de quem recebeu
+
+  // Conteúdo da mensagem
+  body         String   // Texto da mensagem
+  type         String   @default("text") // "text", "image", "video", "audio", "document"
+  caption      String?  // Legenda para mídias
+
+  // Metadata
+  timestamp    DateTime // Quando a mensagem foi enviada/recebida
+  fromMe       Boolean  // true se foi enviada por nós, false se recebida
+  status       String   @default("sent") // "sent", "delivered", "read", "failed"
+  source       String   // "ultramsg_api", "ultramsg_webhook", "baileys"
+
+  // Contexto do imóvel (opcional)
+  propertyId   String?  // Relaciona com algum imóvel específico
+  contactName  String?  // Nome do contato se conhecido
+
+  // Relacionamentos
+  property     Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("whatsapp_messages")
 }
 
