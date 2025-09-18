@@ -82,7 +82,7 @@ ${data.message}
           // Salvar mensagem no banco
           await prisma.whatsAppMessage.create({
             data: {
-              messageId: String(responseData.id) || `contact-${Date.now()}`,
+              messageId: responseData.id ? String(responseData.id) : `contact-${Date.now()}`,
               from: instanceId,
               to: phoneAdmin.replace(/\D/g, ''),
               body: whatsappMessage,
