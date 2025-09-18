@@ -494,9 +494,10 @@ ${formData.message}
         </div>
       </main>
 
-      <SimilarProperties 
+      <SimilarProperties
         currentPropertyId={property.id}
         city={property.city}
+        state={property.state}
         price={property.price}
         type={property.type}
         showAsSlider={true}

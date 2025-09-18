@@ -24,6 +24,7 @@ interface Property {
 interface SimilarPropertiesProps {
   currentPropertyId: string
   city: string
+  state: string
   address?: string
   price: number
   type: string
@@ -37,6 +38,7 @@ interface SimilarPropertiesProps {
 export default function SimilarProperties({
   currentPropertyId,
   city,
+  state,
   address,
   price,
   type,
@@ -55,6 +57,7 @@ export default function SimilarProperties({
         // Construir URL com novos parâmetros para algoritmo inteligente
         const params = new URLSearchParams({
           city: city,
+          state: state,
           price: price.toString(),
           type: type,
           exclude: currentPropertyId
@@ -83,7 +86,7 @@ export default function SimilarProperties({
     }
 
     fetchSimilarProperties()
-  }, [currentPropertyId, city, address, price, type, category, bedrooms, limit])
+  }, [currentPropertyId, city, state, address, price, type, category, bedrooms, limit])
 
   if (loading) {
     if (showAsSlider) return null // No loading for slider mode

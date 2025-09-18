@@ -459,6 +459,7 @@ ${formData.message}
         <SimilarProperties
           currentPropertyId={property.id}
           city={property.city}
+          state={property.state}
           address={property.address}
           price={property.price}
           type={property.type}
