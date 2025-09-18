@@ -70,13 +70,19 @@ ${data.message}
 
         const responseData = await ultraMsgResponse.json()
 
+        console.log('📊 [UltraMsg] Resposta completa:', {
+          status: ultraMsgResponse.status,
+          ok: ultraMsgResponse.ok,
+          data: responseData
+        })
+
         if (ultraMsgResponse.ok && responseData.sent) {
-          console.log('✅ Notificação WhatsApp enviada para admin')
+          console.log('✅ Notificação WhatsApp enviada para admin:', responseData.id)
 
           // Salvar mensagem no banco
           await prisma.whatsAppMessage.create({
             data: {
-              messageId: responseData.id || `contact-${Date.now()}`,
+              messageId: String(responseData.id) || `contact-${Date.now()}`,
               from: instanceId,
               to: phoneAdmin.replace(/\D/g, ''),
               body: whatsappMessage,
