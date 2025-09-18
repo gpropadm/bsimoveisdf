@@ -196,7 +196,7 @@ export default function FavoritesPage() {
                         <span>{property.parking} vagas</span>
                       </span>
                     )}
-                    {property.area && (
+                    {property.area && property.area > 0 && (
                       <span className="flex items-center gap-1">
                         <img src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4 opacity-60" />
                         <span>{property.area}m²</span>

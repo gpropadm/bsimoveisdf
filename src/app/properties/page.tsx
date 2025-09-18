@@ -76,7 +76,7 @@ export default async function Properties() {
                 <div className="mt-4 flex gap-4 text-sm text-gray-500">
                   {property.bedrooms && <span>{property.bedrooms} quartos</span>}
                   {property.bathrooms && <span>{property.bathrooms} banheiros</span>}
-                  {property.area && <span>{property.area}m²</span>}
+                  {property.area && property.area > 0 && <span>{property.area}m²</span>}
                 </div>
                 <div className="mt-4">
                   <Link 
