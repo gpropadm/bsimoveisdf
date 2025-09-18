@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import PropertyGallery from '@/components/PropertyGallery'
@@ -88,7 +88,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   }
 
   const images = parseImages(property.images)
-  const videoUrl = property.video || null
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -141,27 +140,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         throw new Error(data.error || 'Erro ao enviar dados')
       }
 
-      // Enviar WhatsApp automático via API
-      const message = `*🏠 INTERESSE EM IMÓVEL*
-
-*Imóvel:* ${property.title}
-*Preço:* ${formatPrice(property.price)}
-*Link:* ${window.location.href}
-
-*👤 Dados do Cliente:*
-*Nome:* ${formData.name}
-*Telefone:* ${formData.phone}
-*Email:* ${formData.email}
-
-*💬 Mensagem:*
-${formData.message}
-
-*📅 Data:* ${new Date().toLocaleString('pt-BR')}`
-
-      // Buscar configurações para pegar o WhatsApp
-      const settingsResponse = await fetch('/api/admin/settings')
-      const settingsData = await settingsResponse.json()
-      const whatsappNumber = settingsData.site?.contactWhatsapp || '5548998645864'
+      // WhatsApp integration handled by API
 
       // Abrir WhatsApp (funcionamento original) - REMOVIDO para usar apenas nossa integração automática
       // const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`
@@ -278,7 +257,7 @@ ${formData.message}
               />
               
               {/* Property Features */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">Características</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {property.bedrooms && (
@@ -501,7 +480,7 @@ function ApartmentInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Apartamento</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -564,7 +543,7 @@ function HouseInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-green-50 rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Casa</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -639,7 +618,7 @@ function FarmInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-yellow-50 rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Fazenda</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -727,7 +706,7 @@ function LandInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-orange-50 rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Terreno</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -801,7 +780,7 @@ function CommercialInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-purple-50 rounded-2xl p-6 mb-8">
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações Comerciais</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
