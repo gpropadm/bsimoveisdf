@@ -165,7 +165,7 @@ export default function EditProperty() {
         city: data.city || '',
         state: data.state || '',
         zipcode: data.zipcode || '',
-        price: data.price ? data.price.toString() : '',
+        price: data.price ? formatCurrency(data.price.toString()) : '',
         type: data.type || '',
         status: data.status || 'disponivel',
         category: data.category || '',
@@ -834,14 +834,13 @@ export default function EditProperty() {
                       Preço (R$) *
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       name="price"
                       value={formData.price}
                       onChange={handleChange}
                       required
-                      min="0"
-                      step="0.01"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
+                      placeholder="0,00"
                     />
                   </div>
 
