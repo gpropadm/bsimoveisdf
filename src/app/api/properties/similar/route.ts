@@ -5,6 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const city = searchParams.get('city')
+    const state = searchParams.get('state')
     const neighborhood = searchParams.get('neighborhood') || searchParams.get('address') // Extrair bairro do endereço
     const price = searchParams.get('price')
     const category = searchParams.get('category')
@@ -31,15 +32,16 @@ export async function GET(request: NextRequest) {
 
     let finalProperties: any[] = []
 
-    // CRITÉRIO ÚNICO: Mesma categoria, mesma cidade/bairro, faixa de preço ±30%
-    if (category && city && currentPrice > 0) {
-      console.log(`Buscando propriedades similares para: categoria=${category}, cidade=${city}, preço=R$${currentPrice.toLocaleString('pt-BR')}`)
+    // CRITÉRIOS OBRIGATÓRIOS: Mesma categoria, mesmo estado, mesma cidade/bairro, faixa de preço ±30%
+    if (category && state && city && currentPrice > 0) {
+      console.log(`Buscando propriedades similares para: categoria=${category}, estado=${state}, cidade=${city}, preço=R$${currentPrice.toLocaleString('pt-BR')}`)
 
-      // Primeiro: mesmo bairro + categoria + preço ±30%
+      // NÍVEL 1: Mesmo bairro + categoria + estado + cidade + preço ±30%
       if (currentNeighborhood) {
         const neighborhoodProperties = await prisma.property.findMany({
           where: {
             category: category, // OBRIGATÓRIO: mesma categoria
+            state: state, // OBRIGATÓRIO: mesmo estado
             city: city, // OBRIGATÓRIO: mesma cidade
             address: { contains: currentNeighborhood, mode: 'insensitive' }, // Mesmo bairro
             price: {
@@ -57,16 +59,17 @@ export async function GET(request: NextRequest) {
         })
 
         finalProperties = [...finalProperties, ...neighborhoodProperties]
-        console.log(`Bairro "${currentNeighborhood}": ${neighborhoodProperties.length} imóveis encontrados`)
+        console.log(`Nível 1 - Bairro "${currentNeighborhood}" | Estado "${state}" | Cidade "${city}": ${neighborhoodProperties.length} imóveis`)
       }
 
-      // Se não tem o suficiente, buscar na mesma cidade + categoria + preço ±30%
+      // NÍVEL 2: Mesma cidade + categoria + estado + preço ±30%
       if (finalProperties.length < 6) {
         const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
 
         const cityProperties = await prisma.property.findMany({
           where: {
             category: category, // OBRIGATÓRIO: mesma categoria
+            state: state, // OBRIGATÓRIO: mesmo estado
             city: city, // OBRIGATÓRIO: mesma cidade
             price: {
               gte: currentPrice * 0.7, // -30%
@@ -83,16 +86,17 @@ export async function GET(request: NextRequest) {
         })
 
         finalProperties = [...finalProperties, ...cityProperties]
-        console.log(`Cidade "${city}": ${cityProperties.length} imóveis adicionais encontrados`)
+        console.log(`Nível 2 - Estado "${state}" | Cidade "${city}": ${cityProperties.length} imóveis adicionais`)
       }
 
-      // Se ainda não tem o suficiente, buscar mesma categoria na cidade sem restrição de preço
+      // NÍVEL 3: Mesma categoria + estado + cidade (sem filtro de preço)
       if (finalProperties.length < 6) {
         const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
 
         const categoryProperties = await prisma.property.findMany({
           where: {
             category: category, // OBRIGATÓRIO: mesma categoria
+            state: state, // OBRIGATÓRIO: mesmo estado
             city: city, // OBRIGATÓRIO: mesma cidade
             status: 'disponivel',
             id: { notIn: excludeIds }
@@ -105,10 +109,33 @@ export async function GET(request: NextRequest) {
         })
 
         finalProperties = [...finalProperties, ...categoryProperties]
-        console.log(`Categoria "${category}" sem filtro de preço: ${categoryProperties.length} imóveis adicionais`)
+        console.log(`Nível 3 - Categoria "${category}" | Estado "${state}" | Cidade "${city}" (sem filtro preço): ${categoryProperties.length} imóveis`)
+      }
+
+      // NÍVEL 4: Mesma categoria + estado (outras cidades do mesmo estado)
+      if (finalProperties.length < 6) {
+        const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
+
+        const stateProperties = await prisma.property.findMany({
+          where: {
+            category: category, // OBRIGATÓRIO: mesma categoria
+            state: state, // OBRIGATÓRIO: mesmo estado
+            city: { not: city }, // Outras cidades do estado
+            status: 'disponivel',
+            id: { notIn: excludeIds }
+          },
+          orderBy: [
+            { featured: 'desc' },
+            { createdAt: 'desc' }
+          ],
+          take: 6 - finalProperties.length
+        })
+
+        finalProperties = [...finalProperties, ...stateProperties]
+        console.log(`Nível 4 - Categoria "${category}" | Estado "${state}" (outras cidades): ${stateProperties.length} imóveis`)
       }
     } else {
-      console.log('Parâmetros insuficientes para busca de propriedades similares:', { category, city, currentPrice })
+      console.log('Parâmetros insuficientes para busca de propriedades similares:', { category, state, city, currentPrice })
     }
 
     console.log(`Total de imóveis similares encontrados: ${finalProperties.length}`)
