@@ -163,9 +163,9 @@ ${formData.message}
       const settingsData = await settingsResponse.json()
       const whatsappNumber = settingsData.site?.contactWhatsapp || '5548998645864'
 
-      // Abrir WhatsApp (funcionamento original)
-      const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`
-      window.open(whatsappURL, '_blank')
+      // Abrir WhatsApp (funcionamento original) - REMOVIDO para usar apenas nossa integração automática
+      // const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`
+      // window.open(whatsappURL, '_blank')
 
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')
       
