@@ -51,6 +51,46 @@ export default function SimilarProperties({
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Função para pluralizar as categorias corretamente
+  const getPluralCategory = (category: string): string => {
+    const categoryLower = category.toLowerCase()
+
+    switch (categoryLower) {
+      case 'casa':
+        return 'casas'
+      case 'apartamento':
+        return 'apartamentos'
+      case 'fazenda':
+        return 'fazendas'
+      case 'terreno':
+        return 'terrenos'
+      case 'chácara':
+        return 'chácaras'
+      case 'sítio':
+        return 'sítios'
+      case 'loja':
+        return 'lojas'
+      case 'galpão':
+        return 'galpões'
+      case 'escritório':
+        return 'escritórios'
+      case 'sala':
+        return 'salas'
+      case 'prédio':
+        return 'prédios'
+      case 'sobrado':
+        return 'sobrados'
+      case 'cobertura':
+        return 'coberturas'
+      case 'pousada':
+        return 'pousadas'
+      case 'hotel':
+        return 'hotéis'
+      default:
+        return `${categoryLower}s`
+    }
+  }
+
   useEffect(() => {
     const fetchSimilarProperties = async () => {
       try {
@@ -123,7 +163,9 @@ export default function SimilarProperties({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Você poderá gostar</h2>
-              <p className="text-gray-600">Outros imóveis em {city}</p>
+              <p className="text-gray-600">
+                {category ? `Outros ${getPluralCategory(category)} em ${city}` : `Outros imóveis em ${city}`}
+              </p>
             </div>
             
             <div className="overflow-x-auto">
@@ -327,7 +369,10 @@ export default function SimilarProperties({
             Você poderá gostar dessas opções!
           </h2>
           <p className="text-gray-600">
-            Outros imóveis em {city} com valores similares
+            {category
+              ? `Outros ${getPluralCategory(category)} em ${city} com valores similares`
+              : `Outros imóveis em ${city} com valores similares`
+            }
           </p>
         </div>
         
