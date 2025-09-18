@@ -145,6 +145,17 @@ model Lead {
   status       String   @default("novo") // "novo", "contatado", "interessado", "convertido", "perdido"
   notes        String?  // observações do corretor
 
+  // Preferências do cliente para matching
+  preferredPriceMin    Float?   // preço mínimo de interesse
+  preferredPriceMax    Float?   // preço máximo de interesse
+  preferredCategory    String?  // casa, apartamento, etc.
+  preferredCity        String?  // cidade preferida
+  preferredState       String?  // estado preferido
+  preferredBedrooms    Int?     // quantidade de quartos
+  preferredBathrooms   Int?     // quantidade de banheiros
+  preferredType        String?  // venda ou aluguel
+  enableMatching       Boolean  @default(true) // se quer receber sugestões
+
   // Campos para agentes IA
   agentProcessed    Boolean?   @default(false)
   agentStatus       String?    // 'sent', 'error', 'processed', 'whatsapp_sent', 'whatsapp_error'

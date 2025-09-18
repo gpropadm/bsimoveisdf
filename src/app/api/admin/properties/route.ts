@@ -195,6 +195,43 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    console.log('✅ Imóvel criado:', {
+      id: property.id,
+      title: property.title,
+      slug: property.slug,
+      price: property.price,
+      type: property.type,
+      category: property.category,
+      city: property.city
+    })
+
+    // 🎯 DISPARAR MATCHING AUTOMÁTICO COM LEADS
+    try {
+      console.log('🔍 Iniciando matching automático de leads...')
+
+      const matchResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/admin/properties/match-leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': request.headers.get('Authorization') || ''
+        },
+        body: JSON.stringify({ propertyId: property.id })
+      })
+
+      if (matchResponse.ok) {
+        const matchResult = await matchResponse.json()
+        console.log('🎉 Matching completado:', {
+          matches: matchResult.matches,
+          whatsappSent: matchResult.whatsappSent
+        })
+      } else {
+        console.error('⚠️ Erro no matching automático:', await matchResponse.text())
+      }
+    } catch (matchError) {
+      console.error('⚠️ Falha no matching automático:', matchError)
+      // Não falha a criação do imóvel se o matching falhar
+    }
+
     return NextResponse.json(property, { status: 201 })
   } catch (error) {
     console.error('Error creating property:', error)
@@ -202,7 +239,7 @@ export async function POST(request: NextRequest) {
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     })
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Internal Server Error',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })

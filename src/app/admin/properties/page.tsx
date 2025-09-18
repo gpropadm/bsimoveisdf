@@ -76,6 +76,7 @@ export default function AdminPropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [matching, setMatching] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -122,6 +123,38 @@ export default function AdminPropertiesPage() {
       toast.error('Erro ao excluir imóvel. Tente novamente.')
     } finally {
       setDeleting(null)
+    }
+  }
+
+  const handleMatchLeads = async (propertyId: string) => {
+    setMatching(propertyId)
+    try {
+      const response = await fetch('/api/admin/properties/match-leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ propertyId })
+      })
+
+      if (!response.ok) {
+        throw new Error('Erro ao buscar leads')
+      }
+
+      const result = await response.json()
+
+      if (result.matches > 0) {
+        toast.success(`🎯 ${result.matches} leads encontrados! ${result.whatsappSent} WhatsApps enviados.`)
+      } else {
+        toast.info('Nenhum lead compatível encontrado para este imóvel.')
+      }
+
+      console.log('Resultado do matching:', result)
+    } catch (error) {
+      console.error('Erro no matching:', error)
+      toast.error('Erro ao buscar leads. Tente novamente.')
+    } finally {
+      setMatching(null)
     }
   }
 
@@ -200,6 +233,13 @@ export default function AdminPropertiesPage() {
               </div>
 
               <div className="flex justify-end space-x-2">
+                <button
+                  onClick={() => handleMatchLeads(property.id)}
+                  disabled={matching === property.id}
+                  className="text-green-600 hover:text-green-900 text-sm disabled:opacity-50"
+                >
+                  {matching === property.id ? '🔍 Buscando...' : '🎯 Buscar Leads'}
+                </button>
                 <Link
                   href={`/admin/properties/${property.id}/edit`}
                   className="text-[#7360ee] hover:text-[#7360ee]/80 text-sm"
@@ -336,6 +376,13 @@ export default function AdminPropertiesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-3">
+                        <button
+                          onClick={() => handleMatchLeads(property.id)}
+                          disabled={matching === property.id}
+                          className="text-green-600 hover:text-green-900 disabled:opacity-50"
+                        >
+                          {matching === property.id ? '🔍 Buscando...' : '🎯 Buscar Leads'}
+                        </button>
                         <Link
                           href={`/admin/properties/${property.id}/edit`}
                           className="text-[#7360ee] hover:text-[#7360ee]/80"

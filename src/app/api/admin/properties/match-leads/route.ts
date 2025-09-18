@@ -1,0 +1,296 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { propertyId } = body
+
+    if (!propertyId) {
+      return NextResponse.json(
+        { error: 'ID do imóvel é obrigatório' },
+        { status: 400 }
+      )
+    }
+
+    // Buscar o imóvel cadastrado
+    const property = await prisma.property.findUnique({
+      where: { id: propertyId }
+    })
+
+    if (!property) {
+      return NextResponse.json(
+        { error: 'Imóvel não encontrado' },
+        { status: 404 }
+      )
+    }
+
+    console.log('🔍 Iniciando matching para imóvel:', {
+      id: property.id,
+      title: property.title,
+      price: property.price,
+      type: property.type,
+      category: property.category,
+      city: property.city
+    })
+
+    // Buscar leads que podem ter interesse neste imóvel
+    const potentialLeads = await prisma.lead.findMany({
+      where: {
+        AND: [
+          { enableMatching: true },
+          { phone: { not: null } }, // Só leads com WhatsApp
+          { status: { in: ['novo', 'interessado'] } }, // Só leads ativos
+          {
+            OR: [
+              // Matching por tipo (venda/aluguel)
+              { preferredType: property.type },
+              { propertyType: property.type },
+              { AND: [{ preferredType: null }, { propertyType: null }] }
+            ]
+          },
+          {
+            OR: [
+              // Matching por categoria
+              { preferredCategory: property.category },
+              { preferredCategory: null }
+            ]
+          },
+          {
+            OR: [
+              // Matching por cidade
+              { preferredCity: property.city },
+              { preferredCity: null }
+            ]
+          }
+        ]
+      }
+    })
+
+    console.log(`🎯 Encontrados ${potentialLeads.length} leads potenciais`)
+
+    const matchingLeads = []
+    const whatsappResults = []
+
+    for (const lead of potentialLeads) {
+      let matchScore = 0
+      const matchReasons = []
+
+      // Verificar compatibilidade de preço
+      const priceMatch = checkPriceMatch(lead, property)
+      if (priceMatch.matches) {
+        matchScore += 30
+        matchReasons.push(priceMatch.reason)
+      }
+
+      // Verificar categoria
+      if (lead.preferredCategory === property.category) {
+        matchScore += 25
+        matchReasons.push(`Categoria: ${property.category}`)
+      }
+
+      // Verificar cidade
+      if (lead.preferredCity === property.city) {
+        matchScore += 20
+        matchReasons.push(`Cidade: ${property.city}`)
+      }
+
+      // Verificar quartos
+      if (lead.preferredBedrooms && property.bedrooms &&
+          Math.abs(lead.preferredBedrooms - property.bedrooms) <= 1) {
+        matchScore += 15
+        matchReasons.push(`Quartos: ${property.bedrooms}`)
+      }
+
+      // Verificar banheiros
+      if (lead.preferredBathrooms && property.bathrooms &&
+          Math.abs(lead.preferredBathrooms - property.bathrooms) <= 1) {
+        matchScore += 10
+        matchReasons.push(`Banheiros: ${property.bathrooms}`)
+      }
+
+      // Se score >= 50, é um match válido
+      if (matchScore >= 50) {
+        matchingLeads.push({
+          lead,
+          matchScore,
+          matchReasons
+        })
+
+        // Enviar WhatsApp para este lead
+        const whatsappResult = await sendPropertyWhatsApp(lead, property, matchReasons)
+        whatsappResults.push(whatsappResult)
+      }
+    }
+
+    console.log(`✅ ${matchingLeads.length} matches encontrados e WhatsApps enviados`)
+
+    return NextResponse.json({
+      success: true,
+      property: {
+        id: property.id,
+        title: property.title
+      },
+      matches: matchingLeads.length,
+      whatsappSent: whatsappResults.filter(r => r.success).length,
+      details: matchingLeads.map(m => ({
+        leadName: m.lead.name,
+        leadPhone: m.lead.phone,
+        matchScore: m.matchScore,
+        matchReasons: m.matchReasons
+      }))
+    })
+
+  } catch (error) {
+    console.error('Erro no matching de leads:', error)
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    )
+  }
+}
+
+function checkPriceMatch(lead: any, property: any) {
+  const propertyPrice = property.price
+
+  // Se o lead tem faixa de preço definida
+  if (lead.preferredPriceMin || lead.preferredPriceMax) {
+    const min = lead.preferredPriceMin || 0
+    const max = lead.preferredPriceMax || Infinity
+
+    if (propertyPrice >= min && propertyPrice <= max) {
+      return {
+        matches: true,
+        reason: `Preço na faixa: R$ ${propertyPrice.toLocaleString('pt-BR')}`
+      }
+    }
+  }
+
+  // Se o lead demonstrou interesse em um imóvel similar (±20%)
+  if (lead.propertyPrice) {
+    const tolerance = lead.propertyPrice * 0.2 // 20% de tolerância
+    const minPrice = lead.propertyPrice - tolerance
+    const maxPrice = lead.propertyPrice + tolerance
+
+    if (propertyPrice >= minPrice && propertyPrice <= maxPrice) {
+      return {
+        matches: true,
+        reason: `Preço similar ao interesse anterior (±20%)`
+      }
+    }
+  }
+
+  return { matches: false, reason: 'Preço incompatível' }
+}
+
+async function sendPropertyWhatsApp(lead: any, property: any, matchReasons: string[]) {
+  try {
+    const instanceId = process.env.ULTRAMSG_INSTANCE_ID
+    const token = process.env.ULTRAMSG_TOKEN
+
+    if (!instanceId || !token) {
+      throw new Error('UltraMsg não configurado')
+    }
+
+    const propertyUrl = `${process.env.NEXTAUTH_URL}/imovel/${property.slug}`
+
+    const whatsappMessage = `🏠 *NOVA OPORTUNIDADE PARA VOCÊ!*
+
+Olá *${lead.name}*! 👋
+
+Encontramos um imóvel que pode te interessar:
+
+🏠 *${property.title}*
+💰 *Preço:* R$ ${property.price.toLocaleString('pt-BR')}
+📍 *Local:* ${property.city}, ${property.state}
+🏘️ *Categoria:* ${property.category}
+${property.bedrooms ? `🛏️ *Quartos:* ${property.bedrooms}` : ''}
+${property.bathrooms ? `🚿 *Banheiros:* ${property.bathrooms}` : ''}
+${property.area ? `📐 *Área:* ${property.area}m²` : ''}
+
+*Por que este imóvel é perfeito para você:*
+${matchReasons.map(reason => `✅ ${reason}`).join('\n')}
+
+👀 *Veja mais fotos e detalhes:*
+${propertyUrl}
+
+📞 *Quer agendar uma visita?*
+Responda esta mensagem ou ligue para nós!
+
+---
+BS Imóveis DF - Realizando sonhos! 🏡`
+
+    const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+    const payload = {
+      token: token,
+      to: lead.phone.replace(/\D/g, ''),
+      body: whatsappMessage,
+      priority: 'high'
+    }
+
+    const response = await fetch(ultraMsgUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+
+    const responseData = await response.json()
+
+    if (response.ok && responseData.sent) {
+      console.log(`✅ WhatsApp enviado para ${lead.name} (${lead.phone})`)
+
+      // Salvar mensagem no banco
+      await prisma.whatsAppMessage.create({
+        data: {
+          messageId: String(responseData.id) || `match-${Date.now()}`,
+          from: instanceId,
+          to: lead.phone.replace(/\D/g, ''),
+          body: whatsappMessage,
+          type: 'text',
+          timestamp: new Date(),
+          fromMe: true,
+          status: 'sent',
+          source: 'property_matching',
+          contactName: lead.name,
+          propertyId: property.id
+        }
+      })
+
+      // Atualizar status do lead
+      await prisma.lead.update({
+        where: { id: lead.id },
+        data: {
+          agentProcessed: true,
+          agentStatus: 'whatsapp_sent',
+          agentProcessedAt: new Date(),
+          status: 'contatado'
+        }
+      })
+
+      return {
+        success: true,
+        leadName: lead.name,
+        leadPhone: lead.phone,
+        messageId: responseData.id
+      }
+
+    } else {
+      console.error(`❌ Falha ao enviar WhatsApp para ${lead.name}:`, responseData)
+      return {
+        success: false,
+        leadName: lead.name,
+        leadPhone: lead.phone,
+        error: responseData
+      }
+    }
+
+  } catch (error) {
+    console.error(`⚠️ Erro ao enviar WhatsApp para ${lead.name}:`, error)
+    return {
+      success: false,
+      leadName: lead.name,
+      leadPhone: lead.phone,
+      error: error.message
+    }
+  }
+}

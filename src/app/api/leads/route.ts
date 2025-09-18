@@ -15,6 +15,36 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Se há interesse em um imóvel específico, extrair preferências
+    let preferredData = {}
+    if (propertyId) {
+      try {
+        const property = await prisma.property.findUnique({
+          where: { id: propertyId }
+        })
+
+        if (property) {
+          // Definir faixa de preço baseada no imóvel de interesse (±20%)
+          const priceVariation = property.price * 0.2
+          preferredData = {
+            preferredPriceMin: Math.max(0, property.price - priceVariation),
+            preferredPriceMax: property.price + priceVariation,
+            preferredCategory: property.category,
+            preferredCity: property.city,
+            preferredState: property.state,
+            preferredBedrooms: property.bedrooms,
+            preferredBathrooms: property.bathrooms,
+            preferredType: property.type,
+            enableMatching: true
+          }
+
+          console.log('🎯 Preferências extraídas do imóvel de interesse:', preferredData)
+        }
+      } catch (error) {
+        console.error('Erro ao extrair preferências do imóvel:', error)
+      }
+    }
+
     // Criar lead no banco
     const lead = await prisma.lead.create({
       data: {
@@ -27,7 +57,8 @@ export async function POST(request: NextRequest) {
         propertyPrice: propertyPrice || null,
         propertyType: propertyType || null,
         source: 'site',
-        status: 'novo'
+        status: 'novo',
+        ...preferredData
       }
     })
 
