@@ -112,11 +112,33 @@ export async function GET(request: NextRequest) {
       console.log(`Nível 3 (cidade geral): ${level3Properties.length} imóveis`)
     }
 
-    // NÍVEL 4: Fallback Final (mesma cidade, qualquer tipo)
-    if (finalProperties.length < 6) {
+    // NÍVEL 4: Mesma Categoria (priorizar mesma categoria mesmo em outras cidades)
+    if (finalProperties.length < 6 && category) {
       const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
 
       const level4Properties = await prisma.property.findMany({
+        where: {
+          category: category,
+          type: type || undefined,
+          status: 'disponivel',
+          id: { notIn: excludeIds }
+        },
+        orderBy: [
+          { featured: 'desc' },
+          { createdAt: 'desc' }
+        ],
+        take: 6 - finalProperties.length
+      })
+
+      finalProperties = [...finalProperties, ...level4Properties]
+      console.log(`Nível 4 (mesma categoria): ${level4Properties.length} imóveis`)
+    }
+
+    // NÍVEL 5: Fallback Final (mesma cidade, qualquer categoria)
+    if (finalProperties.length < 6) {
+      const excludeIds = finalProperties.map(p => p.id).concat(exclude ? [exclude] : [])
+
+      const level5Properties = await prisma.property.findMany({
         where: {
           city: city,
           status: 'disponivel',
@@ -129,8 +151,8 @@ export async function GET(request: NextRequest) {
         take: 6 - finalProperties.length
       })
 
-      finalProperties = [...finalProperties, ...level4Properties]
-      console.log(`Nível 4 (cidade fallback): ${level4Properties.length} imóveis`)
+      finalProperties = [...finalProperties, ...level5Properties]
+      console.log(`Nível 5 (cidade fallback): ${level5Properties.length} imóveis`)
     }
 
     console.log(`Total de imóveis similares encontrados: ${finalProperties.length}`)
