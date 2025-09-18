@@ -118,6 +118,12 @@ export default function AdminLeadsPage() {
     }
   }
 
+  const markAsContacted = async (leadId: string, phone: string) => {
+    // Marcar como contatado e abrir WhatsApp
+    await updateLeadStatus(leadId, 'contatado')
+    window.open(`https://wa.me/55${phone.replace(/\D/g, '')}`, '_blank')
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('pt-BR')
   }
@@ -259,21 +265,27 @@ export default function AdminLeadsPage() {
                 )}
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">{formatDate(lead.createdAt)}</span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     {lead.phone && (
-                      <a
-                        href={`https://wa.me/55${lead.phone.replace(/\D/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-green-600 hover:text-green-900"
+                      <button
+                        onClick={() => markAsContacted(lead.id, lead.phone!)}
+                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-colors ${
+                          lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido'
+                            ? 'bg-green-100 text-green-800 border border-green-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
+                        }`}
+                        title={lead.status === 'contatado' ? 'Já contatado via WhatsApp' : 'Marcar como contatado e abrir WhatsApp'}
                       >
-                        WhatsApp
-                      </a>
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 2.079.549 4.03 1.518 5.728L0 24l6.46-1.695c1.618.832 3.446 1.302 5.557 1.302 6.621 0 11.988-5.367 11.988-11.987C23.988 5.367 18.637.001 12.017 0zm5.624 17.025c-.282.79-1.692 1.51-2.31 1.578-.133.015-.133.015-.133.015-.619.067-1.618.201-4.917-1.048-3.299-1.249-5.445-4.548-5.614-4.763-.168-.215-1.369-1.822-1.369-3.477s.869-2.466 1.177-2.806c.308-.34.674-.425 1.177-.425.133 0 .267 0 .384.016.308.014.463.029.668.514.215.511.73 1.775.793 1.906.064.131.106.282.021.458-.085.176-.127.282-.253.434-.127.152-.267.34-.382.458-.127.131-.259.271-.111.53.148.258.659 1.086 1.414 1.758 1.369 1.218 2.53 1.591 2.886 1.774.355.183.562.152.77-.091.207-.243.885-1.034 1.121-1.391.236-.357.472-.297.795-.178.324.118 2.048.966 2.399 1.142.351.176.585.265.668.414.084.149.084.858-.197 1.649z"/>
+                        </svg>
+                        {lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido' ? '✓' : 'WhatsApp'}
+                      </button>
                     )}
                     {lead.email && (
                       <a
                         href={`mailto:${lead.email}`}
-                        className="text-[#7360ee] hover:text-[#7360ee]/80"
+                        className="text-[#7360ee] hover:text-[#7360ee]/80 text-xs"
                       >
                         Email
                       </a>
@@ -371,24 +383,41 @@ export default function AdminLeadsPage() {
                         {formatDate(lead.createdAt)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        {lead.phone && (
-                          <a
-                            href={`https://wa.me/55${lead.phone.replace(/\D/g, '')}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-green-600 hover:text-green-900 mr-3"
-                          >
-                            WhatsApp
-                          </a>
-                        )}
-                        {lead.email && (
-                          <a
-                            href={`mailto:${lead.email}`}
-                            className="text-[#7360ee] hover:text-[#7360ee]/80"
-                          >
-                            Email
-                          </a>
-                        )}
+                        <div className="flex items-center gap-3">
+                          {lead.phone && (
+                            <button
+                              onClick={() => markAsContacted(lead.id, lead.phone!)}
+                              className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                                lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido'
+                                  ? 'bg-green-100 text-green-800 border border-green-300'
+                                  : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600 hover:border-green-200 border border-gray-200'
+                              }`}
+                              title={lead.status === 'contatado' ? 'Já contatado via WhatsApp' : 'Marcar como contatado e abrir WhatsApp'}
+                            >
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 2.079.549 4.03 1.518 5.728L0 24l6.46-1.695c1.618.832 3.446 1.302 5.557 1.302 6.621 0 11.988-5.367 11.988-11.987C23.988 5.367 18.637.001 12.017 0zm5.624 17.025c-.282.79-1.692 1.51-2.31 1.578-.133.015-.133.015-.133.015-.619.067-1.618.201-4.917-1.048-3.299-1.249-5.445-4.548-5.614-4.763-.168-.215-1.369-1.822-1.369-3.477s.869-2.466 1.177-2.806c.308-.34.674-.425 1.177-.425.133 0 .267 0 .384.016.308.014.463.029.668.514.215.511.73 1.775.793 1.906.064.131.106.282.021.458-.085.176-.127.282-.253.434-.127.152-.267.34-.382.458-.127.131-.259.271-.111.53.148.258.659 1.086 1.414 1.758 1.369 1.218 2.53 1.591 2.886 1.774.355.183.562.152.77-.091.207-.243.885-1.034 1.121-1.391.236-.357.472-.297.795-.178.324.118 2.048.966 2.399 1.142.351.176.585.265.668.414.084.149.084.858-.197 1.649z"/>
+                              </svg>
+                              {lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido' ? (
+                                <span className="flex items-center gap-1">
+                                  <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                  Lido
+                                </span>
+                              ) : (
+                                'WhatsApp'
+                              )}
+                            </button>
+                          )}
+                          {lead.email && (
+                            <a
+                              href={`mailto:${lead.email}`}
+                              className="text-[#7360ee] hover:text-[#7360ee]/80 px-2 py-1 rounded hover:bg-[#7360ee]/10 transition-colors"
+                            >
+                              Email
+                            </a>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
