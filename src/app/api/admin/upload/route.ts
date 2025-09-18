@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { v2 as cloudinary } from 'cloudinary'
-import { addWatermark } from '@/lib/watermark'
-import prisma from '@/lib/prisma'
 
 // Configurar Cloudinary
 cloudinary.config({
@@ -12,18 +10,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-// Função para buscar o nome do site das configurações
-async function getSiteName(): Promise<string> {
-  try {
-    const settings = await prisma.settings.findFirst({
-      orderBy: { createdAt: 'asc' }
-    })
-    return settings?.siteName || 'FAIMOVEIS'
-  } catch (error) {
-    console.error('Erro ao buscar nome do site:', error)
-    return 'FAIMOVEIS' // Fallback padrão
-  }
-}
 
 export async function POST(request: NextRequest) {
   const requestId = Math.random().toString(36).substr(2, 9)
@@ -147,27 +133,7 @@ export async function POST(request: NextRequest) {
           // Converter File para Buffer
           console.log(`🔄 [${requestId}] Convertendo arquivo para buffer: "${file.name}"`)
           const bytes = await file.arrayBuffer()
-          let buffer = Buffer.from(new Uint8Array(bytes))
-
-          // Adicionar marca d'água
-          console.log(`🎨 [${requestId}] Adicionando marca d'água: "${file.name}"`)
-          try {
-            // Buscar nome do site das configurações
-            const siteName = await getSiteName()
-            const watermarkOpacity = parseFloat(process.env.WATERMARK_OPACITY || '0.4')
-
-            buffer = await addWatermark(buffer, {
-              text: siteName.toUpperCase(),
-              fontSize: 60,
-              opacity: watermarkOpacity,
-              color: 'white',
-              position: 'center'
-            })
-            console.log(`✅ [${requestId}] Marca d'água "${siteName}" adicionada: "${file.name}"`)
-          } catch (watermarkError) {
-            console.warn(`⚠️ [${requestId}] Erro ao adicionar marca d'água em "${file.name}":`, watermarkError)
-            // Continua com imagem original se houver erro na marca d'água
-          }
+          const buffer = Buffer.from(new Uint8Array(bytes))
 
           console.log(`☁️ [${requestId}] Fazendo upload para Cloudinary: "${file.name}" - Tamanho: ${(buffer.length/1024/1024).toFixed(2)}MB`)
 
