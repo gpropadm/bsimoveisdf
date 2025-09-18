@@ -10,7 +10,7 @@ import AppointmentScheduler from '@/components/AppointmentScheduler'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
-import { formatAreaDisplay, formatAreaHectares } from '@/lib/maskUtils'
+import { formatAreaDisplay } from '@/lib/maskUtils'
 
 interface Property {
   id: string
@@ -302,10 +302,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <HouseInfo property={property} />
               )}
 
-              {/* Farm Specific Info */}
-              {property.category === 'fazenda' && (
-                <FarmInfo property={property} />
-              )}
 
               {/* Land Specific Info */}
               {property.category === 'terreno' && (
@@ -600,104 +596,6 @@ function HouseInfo({ property }: { property: Property }) {
   )
 }
 
-// Componente para informações específicas de fazendas
-function FarmInfo({ property }: { property: Property }) {
-  const parseBuildings = (buildings: string | null): string[] => {
-    if (!buildings) return []
-    try {
-      return JSON.parse(buildings)
-    } catch {
-      return []
-    }
-  }
-
-  const buildingsList = parseBuildings(property.buildings)
-
-  if ((!property.totalArea || property.totalArea <= 0) && (!property.cultivatedArea || property.cultivatedArea <= 0) && (!property.pastures || property.pastures <= 0) && buildingsList.length === 0 && !property.waterSources) {
-    return null
-  }
-
-  return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Fazenda</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {property.totalArea && property.totalArea > 0 && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.totalArea)}</div>
-                <div className="text-sm text-gray-600">Área total</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {property.cultivatedArea && property.cultivatedArea > 0 && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.cultivatedArea)}</div>
-                <div className="text-sm text-gray-600">Área cultivada</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {property.pastures && property.pastures > 0 && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-gray-900">{formatAreaHectares(property.pastures)}</div>
-                <div className="text-sm text-gray-600">Pastagens</div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {buildingsList.length > 0 && (
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Benfeitorias</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {buildingsList.map((building, index) => (
-              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
-                <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                {building}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {property.waterSources && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Fontes de Água</h3>
-          <div className="bg-white p-4 rounded-lg">
-            <p className="text-gray-700">{property.waterSources}</p>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
 
 // Componente para informações específicas de terrenos
 function LandInfo({ property }: { property: Property }) {
