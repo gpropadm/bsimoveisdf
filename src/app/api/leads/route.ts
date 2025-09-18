@@ -174,8 +174,37 @@ export async function GET(request: NextRequest) {
       prisma.lead.count({ where })
     ])
 
+    // Para cada lead, verificar se há mensagens WhatsApp relacionadas
+    const leadsWithWhatsAppStatus = await Promise.all(
+      leads.map(async (lead) => {
+        if (!lead.phone) return { ...lead, hasWhatsAppMessage: false }
+
+        // Verificar se existe mensagem WhatsApp para este lead
+        const whatsappMessage = await prisma.whatsAppMessage.findFirst({
+          where: {
+            OR: [
+              { contactName: { contains: lead.name } },
+              {
+                AND: [
+                  { body: { contains: lead.name } },
+                  { fromMe: true }
+                ]
+              }
+            ]
+          },
+          orderBy: { createdAt: 'desc' }
+        })
+
+        return {
+          ...lead,
+          hasWhatsAppMessage: !!whatsappMessage,
+          whatsAppMessageDate: whatsappMessage?.createdAt || null
+        }
+      })
+    )
+
     return NextResponse.json({
-      leads,
+      leads: leadsWithWhatsAppStatus,
       pagination: {
         page,
         limit,
