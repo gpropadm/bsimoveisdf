@@ -613,7 +613,7 @@ function FarmInfo({ property }: { property: Property }) {
 
   const buildingsList = parseBuildings(property.buildings)
 
-  if (!property.totalArea && !property.cultivatedArea && !property.pastures && buildingsList.length === 0 && !property.waterSources) {
+  if ((!property.totalArea || property.totalArea <= 0) && (!property.cultivatedArea || property.cultivatedArea <= 0) && (!property.pastures || property.pastures <= 0) && buildingsList.length === 0 && !property.waterSources) {
     return null
   }
 
@@ -622,7 +622,7 @@ function FarmInfo({ property }: { property: Property }) {
       <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Fazenda</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {property.totalArea && (
+        {property.totalArea && property.totalArea > 0 && (
           <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -638,7 +638,7 @@ function FarmInfo({ property }: { property: Property }) {
           </div>
         )}
 
-        {property.cultivatedArea && (
+        {property.cultivatedArea && property.cultivatedArea > 0 && (
           <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -654,7 +654,7 @@ function FarmInfo({ property }: { property: Property }) {
           </div>
         )}
 
-        {property.pastures && (
+        {property.pastures && property.pastures > 0 && (
           <div className="bg-white p-4 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
