@@ -87,23 +87,46 @@ export async function POST(request: NextRequest) {
       const token = process.env.ULTRAMSG_TOKEN
 
       if (instanceId && token) {
-        const whatsappMessage = `🏠 *INTERESSE EM IMÓVEL*
+        // Buscar dados completos do imóvel para pegar a imagem
+        let propertyImage = null
+        let fullProperty = null
 
-👤 *Nome:* ${lead.name}
-📧 *Email:* ${lead.email || 'Não informado'}
-📱 *Telefone:* ${lead.phone || 'Não informado'}
-🏠 *Imóvel:* ${lead.propertyTitle || 'Não informado'}
-💰 *Preço:* ${lead.propertyPrice ? `R$ ${lead.propertyPrice.toLocaleString('pt-BR')}` : 'Não informado'}
+        if (propertyId) {
+          try {
+            fullProperty = await prisma.property.findUnique({
+              where: { id: propertyId }
+            })
 
-💬 *Mensagem:*
-${lead.message || 'Demonstrou interesse no imóvel'}
+            if (fullProperty && fullProperty.images) {
+              const images = JSON.parse(fullProperty.images)
+              if (Array.isArray(images) && images.length > 0) {
+                propertyImage = images[0] // Primeira imagem (principal)
+              }
+            }
+          } catch (error) {
+            console.log('⚠️ Erro ao buscar imagem do imóvel:', error)
+          }
+        }
 
-🕐 *Data:* ${new Date().toLocaleString('pt-BR')}
-🆔 *Lead ID:* ${lead.id}
+        // Mensagem mais natural como se fosse o cliente falando
+        const clientMessage = lead.message || `Olá! Tenho interesse no imóvel "${lead.propertyTitle}". Gostaria de mais informações.`
 
-#InteresseImovel #LeadQuente`
+        const whatsappMessage = `*NOVO LEAD INTERESSADO*
 
-        const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+*Cliente:* ${lead.name}
+*WhatsApp:* ${lead.phone || 'Não informado'}
+*Email:* ${lead.email || 'Não informado'}
+
+*Imóvel de interesse:*
+${lead.propertyTitle || 'Não informado'}
+*Valor:* ${lead.propertyPrice ? `R$ ${lead.propertyPrice.toLocaleString('pt-BR')}` : 'Não informado'}
+
+*Mensagem do cliente:*
+"${clientMessage}"
+
+*Recebido em:* ${new Date().toLocaleString('pt-BR')}
+*Lead ID:* ${lead.id}`
+
         // Função para normalizar telefone
         function normalizePhoneNumber(phone: string): string {
           const cleanPhone = phone.replace(/\D/g, '')
@@ -115,18 +138,44 @@ ${lead.message || 'Demonstrou interesse no imóvel'}
 
         const normalizedAdminPhone = normalizePhoneNumber(phoneAdmin)
 
-        const payload = {
-          token: token,
-          to: normalizedAdminPhone,
-          body: whatsappMessage,
-          priority: 'high'
-        }
+        let ultraMsgResponse
 
-        const ultraMsgResponse = await fetch(ultraMsgUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
+        // Se tem imagem, enviar como mídia com caption
+        if (propertyImage) {
+          console.log('Enviando lead com imagem do imóvel:', propertyImage)
+
+          const mediaUrl = `https://api.ultramsg.com/${instanceId}/messages/image`
+          const mediaPayload = {
+            token: token,
+            to: normalizedAdminPhone,
+            image: propertyImage,
+            caption: whatsappMessage,
+            priority: 'high'
+          }
+
+          ultraMsgResponse = await fetch(mediaUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(mediaPayload)
+          })
+        } else {
+          // Sem imagem, enviar só texto
+          console.log('Enviando lead sem imagem (só texto)')
+
+          const textUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+          const textPayload = {
+            token: token,
+            to: normalizedAdminPhone,
+            body: whatsappMessage,
+            priority: 'high'
+          }
+
+          ultraMsgResponse = await fetch(textUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(textPayload)
+          })
+        }
 
         const responseData = await ultraMsgResponse.json()
 
