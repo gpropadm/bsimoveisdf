@@ -187,10 +187,10 @@ export function parsePercentage(value: string): number {
  * Format area with m² symbol for display
  */
 export function formatAreaDisplay(value: number | string | null | undefined): string {
-  if (!value || value === 0) return ''
+  if (!value || value === 0 || value === '0') return ''
 
   const numValue = typeof value === 'string' ? parseFloat(value) : value
-  if (isNaN(numValue) || numValue === 0) return ''
+  if (isNaN(numValue) || numValue <= 0) return ''
 
   // Formatar com vírgula para decimais em português brasileiro
   const formatted = numValue.toLocaleString('pt-BR', {
