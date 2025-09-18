@@ -183,6 +183,29 @@ function checkPriceMatch(lead: any, property: any) {
   return { matches: false, reason: 'Preço incompatível' }
 }
 
+function normalizePhoneNumber(phone: string): string {
+  // Remove todos os caracteres não numéricos
+  const cleanPhone = phone.replace(/\D/g, '')
+
+  // Se já tem 13 dígitos (55 + DDD + número), retorna como está
+  if (cleanPhone.length === 13 && cleanPhone.startsWith('55')) {
+    return cleanPhone
+  }
+
+  // Se tem 11 dígitos (DDD + número), adiciona 55
+  if (cleanPhone.length === 11) {
+    return '55' + cleanPhone
+  }
+
+  // Se tem 10 dígitos (DDD sem 9 + número), adiciona 55 e 9
+  if (cleanPhone.length === 10) {
+    return '55' + cleanPhone.substring(0, 2) + '9' + cleanPhone.substring(2)
+  }
+
+  // Outros casos, retorna como está
+  return cleanPhone
+}
+
 async function sendPropertyWhatsApp(lead: any, property: any, matchReasons: string[]) {
   try {
     const instanceId = process.env.ULTRAMSG_INSTANCE_ID
@@ -220,10 +243,16 @@ Responda esta mensagem ou ligue para nós!
 ---
 BS Imóveis DF - Realizando sonhos! 🏡`
 
+    const normalizedPhone = normalizePhoneNumber(lead.phone)
+    console.log(`📱 Enviando WhatsApp para ${lead.name}:`, {
+      original: lead.phone,
+      normalizado: normalizedPhone
+    })
+
     const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
     const payload = {
       token: token,
-      to: lead.phone.replace(/\D/g, ''),
+      to: normalizedPhone,
       body: whatsappMessage,
       priority: 'high'
     }
@@ -244,7 +273,7 @@ BS Imóveis DF - Realizando sonhos! 🏡`
         data: {
           messageId: String(responseData.id) || `match-${Date.now()}`,
           from: instanceId,
-          to: lead.phone.replace(/\D/g, ''),
+          to: normalizedPhone,
           body: whatsappMessage,
           type: 'text',
           timestamp: new Date(),

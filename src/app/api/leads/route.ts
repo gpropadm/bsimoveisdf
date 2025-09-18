@@ -104,9 +104,20 @@ ${lead.message || 'Demonstrou interesse no imóvel'}
 #InteresseImovel #LeadQuente`
 
         const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+        // Função para normalizar telefone
+        function normalizePhoneNumber(phone: string): string {
+          const cleanPhone = phone.replace(/\D/g, '')
+          if (cleanPhone.length === 13 && cleanPhone.startsWith('55')) return cleanPhone
+          if (cleanPhone.length === 11) return '55' + cleanPhone
+          if (cleanPhone.length === 10) return '55' + cleanPhone.substring(0, 2) + '9' + cleanPhone.substring(2)
+          return cleanPhone
+        }
+
+        const normalizedAdminPhone = normalizePhoneNumber(phoneAdmin)
+
         const payload = {
           token: token,
-          to: phoneAdmin.replace(/\D/g, ''),
+          to: normalizedAdminPhone,
           body: whatsappMessage,
           priority: 'high'
         }
@@ -127,7 +138,7 @@ ${lead.message || 'Demonstrou interesse no imóvel'}
             data: {
               messageId: String(responseData.id) || `lead-${Date.now()}`,
               from: instanceId,
-              to: phoneAdmin.replace(/\D/g, ''),
+              to: normalizedAdminPhone,
               body: whatsappMessage,
               type: 'text',
               timestamp: new Date(),
