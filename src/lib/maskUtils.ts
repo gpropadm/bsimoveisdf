@@ -184,6 +184,19 @@ export function parsePercentage(value: string): number {
 }
 
 /**
+ * Format number value from database to currency string for input
+ */
+export function formatCurrencyFromNumber(value: number | null | undefined): string {
+  if (!value || value === 0) return ''
+
+  // Converte número para o formato brasileiro com vírgula
+  return value.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+}
+
+/**
  * Format area with m² symbol for display
  */
 export function formatAreaDisplay(value: number | string | null | undefined): string {

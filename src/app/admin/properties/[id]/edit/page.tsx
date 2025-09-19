@@ -8,6 +8,7 @@ import { useRouter, useParams } from 'next/navigation'
 import AdminLayout from '@/components/AdminLayout'
 import {
   formatCurrency,
+  formatCurrencyFromNumber,
   parseCurrency,
   formatCEP,
   parseCEP,
@@ -163,7 +164,7 @@ export default function EditProperty() {
         city: data.city || '',
         state: data.state || '',
         zipcode: data.zipcode || '',
-        price: data.price ? formatCurrency(data.price.toString()) : '',
+        price: data.price ? formatCurrencyFromNumber(data.price) : '',
         type: data.type || '',
         status: data.status || 'disponivel',
         category: data.category || '',
@@ -175,7 +176,7 @@ export default function EditProperty() {
         featured: data.featured || false,
         // Campos específicos para apartamento
         floor: data.floor ? data.floor.toString() : '',
-        condoFee: data.condoFee ? formatCurrency(data.condoFee.toString()) : '',
+        condoFee: data.condoFee ? formatCurrencyFromNumber(data.condoFee) : '',
         amenities: data.amenities ? (Array.isArray(data.amenities) ? data.amenities : JSON.parse(data.amenities || '[]')) : [],
         // Campos específicos para terreno
         zoning: data.zoning || '',
