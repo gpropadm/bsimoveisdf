@@ -246,41 +246,43 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 propertyType={property.type}
               />
               
-              {/* Property Features */}
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Características</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {property.bedrooms && (
-                    <div className="bg-white p-3 rounded-lg text-center">
-                      <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.bedrooms}</div>
-                      <div className="text-xs text-gray-600">{property.bedrooms === 1 ? 'Quarto' : 'Quartos'}</div>
-                    </div>
-                  )}
-                  {property.bathrooms && (
-                    <div className="bg-white p-3 rounded-lg text-center">
-                      <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.bathrooms}</div>
-                      <div className="text-xs text-gray-600">{property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}</div>
-                    </div>
-                  )}
-                  {property.parking && (
-                    <div className="bg-white p-3 rounded-lg text-center">
-                      <img src="/icons/icons8-hennessey-venom-30.png" alt="Garagem" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.parking}</div>
-                      <div className="text-xs text-gray-600">{property.parking === 1 ? 'Vaga' : 'Vagas'}</div>
-                    </div>
-                  )}
-                  {property.area && property.area > 0 && property.category !== 'fazenda' && (
-                    <div className="bg-white p-3 rounded-lg text-center">
-                      <svg className="w-6 h-6 mx-auto mb-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
-                      </svg>
-                      <div className="text-lg font-semibold text-gray-900">{formatAreaDisplay(property.area)}</div>
-                    </div>
-                  )}
+              {/* Property Features - Only show if there are any features to display */}
+              {(property.bedrooms || property.bathrooms || property.parking || (property.area && property.area > 0 && property.category !== 'fazenda')) && (
+                <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-6">Características</h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {property.bedrooms && (
+                      <div className="bg-white p-3 rounded-lg text-center">
+                        <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-6 h-6 mx-auto mb-1 opacity-60" />
+                        <div className="text-lg font-semibold text-gray-900">{property.bedrooms}</div>
+                        <div className="text-xs text-gray-600">{property.bedrooms === 1 ? 'Quarto' : 'Quartos'}</div>
+                      </div>
+                    )}
+                    {property.bathrooms && (
+                      <div className="bg-white p-3 rounded-lg text-center">
+                        <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-6 h-6 mx-auto mb-1 opacity-60" />
+                        <div className="text-lg font-semibold text-gray-900">{property.bathrooms}</div>
+                        <div className="text-xs text-gray-600">{property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}</div>
+                      </div>
+                    )}
+                    {property.parking && (
+                      <div className="bg-white p-3 rounded-lg text-center">
+                        <img src="/icons/icons8-hennessey-venom-30.png" alt="Garagem" className="w-6 h-6 mx-auto mb-1 opacity-60" />
+                        <div className="text-lg font-semibold text-gray-900">{property.parking}</div>
+                        <div className="text-xs text-gray-600">{property.parking === 1 ? 'Vaga' : 'Vagas'}</div>
+                      </div>
+                    )}
+                    {property.area && property.area > 0 && property.category !== 'fazenda' && (
+                      <div className="bg-white p-3 rounded-lg text-center">
+                        <svg className="w-6 h-6 mx-auto mb-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
+                        </svg>
+                        <div className="text-lg font-semibold text-gray-900">{formatAreaDisplay(property.area)}</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Apartment/Condo Specific Info */}
               {(property.category === 'apartamento' || property.category === 'cobertura') && (
@@ -341,7 +343,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                         placeholder="Seu nome completo"
                       />
                     </div>
@@ -356,7 +358,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         value={formData.phone}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                         placeholder="(00) 00000-0000"
                       />
                     </div>
@@ -371,7 +373,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                         placeholder="seu@email.com"
                       />
                     </div>
@@ -385,7 +387,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
                       />
                     </div>
 
@@ -402,7 +404,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

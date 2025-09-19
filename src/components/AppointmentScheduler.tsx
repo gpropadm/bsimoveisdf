@@ -25,7 +25,7 @@ export default function AppointmentScheduler({ propertyId, propertyTitle }: Appo
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="w-full border-2 border-gray-400 text-gray-600 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2"
+        className="w-full border border-gray-300 text-gray-600 py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2"
       >
         <Calendar size={20} />
         Agendar Visita
