@@ -51,62 +51,24 @@ function PlaceholderIcon() {
   )
 }
 
-function getStatusBadge(status: string) {
-  const statusConfig = {
-    'disponivel': {
-      color: 'bg-green-50 text-green-700 border-green-200',
-      icon: (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-        </svg>
-      ),
-      label: 'Disponível'
-    },
-    'vendido': {
-      color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-      icon: (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-        </svg>
-      ),
-      label: 'Vendido'
-    },
-    'alugado': {
-      color: 'bg-blue-50 text-blue-700 border-blue-200',
-      icon: (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clipRule="evenodd" />
-        </svg>
-      ),
-      label: 'Alugado'
-    },
-    'reservado': {
-      color: 'bg-amber-50 text-amber-700 border-amber-200',
-      icon: (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-        </svg>
-      ),
-      label: 'Reservado'
-    },
-    'indisponivel': {
-      color: 'bg-gray-50 text-gray-700 border-gray-200',
-      icon: (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clipRule="evenodd" />
-        </svg>
-      ),
-      label: 'Indisponível'
-    }
-  }
-
-  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig['disponivel']
-
+// Toggle Switch Component
+function ToggleSwitch({ enabled, onChange, label }: { enabled: boolean; onChange: () => void; label: string }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border ${config.color}`}>
-      {config.icon}
-      {config.label}
-    </span>
+    <div className="flex flex-col items-center space-y-1">
+      <button
+        onClick={onChange}
+        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+          enabled ? 'bg-green-500' : 'bg-red-500'
+        }`}
+      >
+        <span
+          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+            enabled ? 'translate-x-6' : 'translate-x-1'
+          }`}
+        />
+      </button>
+      <span className="text-xs text-gray-600">{label}</span>
+    </div>
   )
 }
 
@@ -135,6 +97,7 @@ export default function AdminPropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [updating, setUpdating] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -181,6 +144,54 @@ export default function AdminPropertiesPage() {
       toast.error('Erro ao excluir imóvel. Tente novamente.')
     } finally {
       setDeleting(null)
+    }
+  }
+
+  const updatePropertyStatus = async (propertyId: string, newStatus: string) => {
+    setUpdating(propertyId)
+    try {
+      const response = await fetch(`/api/admin/properties/${propertyId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+
+      if (!response.ok) throw new Error('Erro ao atualizar status')
+
+      setProperties(prev =>
+        prev.map(p => p.id === propertyId ? { ...p, status: newStatus } : p)
+      )
+
+      toast.success(`Status atualizado para ${newStatus}`)
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error)
+      toast.error('Erro ao atualizar status')
+    } finally {
+      setUpdating(null)
+    }
+  }
+
+  const updatePropertyFeatured = async (propertyId: string, featured: boolean) => {
+    setUpdating(propertyId)
+    try {
+      const response = await fetch(`/api/admin/properties/${propertyId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ featured })
+      })
+
+      if (!response.ok) throw new Error('Erro ao atualizar destaque')
+
+      setProperties(prev =>
+        prev.map(p => p.id === propertyId ? { ...p, featured } : p)
+      )
+
+      toast.success(featured ? 'Adicionado aos destaques' : 'Removido dos destaques')
+    } catch (error) {
+      console.error('Erro ao atualizar destaque:', error)
+      toast.error('Erro ao atualizar destaque')
+    } finally {
+      setUpdating(null)
     }
   }
 
@@ -243,33 +254,25 @@ export default function AdminPropertiesPage() {
                   <span>{property.bathrooms}🚿</span>
                   <span>{formatAreaDisplay(property.area)}</span>
                 </div>
-                <div className="flex flex-wrap gap-1">
-                  {getStatusBadge(property.status)}
-                  <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md border ${
-                    property.type === 'venda'
-                      ? 'bg-violet-50 text-violet-700 border-violet-200'
-                      : 'bg-cyan-50 text-cyan-700 border-cyan-200'
-                  }`}>
-                    {property.type === 'venda' ? (
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                      </svg>
-                    )}
-                    {property.type === 'venda' ? 'Venda' : 'Aluguel'}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <ToggleSwitch
+                      enabled={property.status === 'disponivel'}
+                      onChange={() => updatePropertyStatus(
+                        property.id,
+                        property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
+                      )}
+                      label="Disponível"
+                    />
+                    <ToggleSwitch
+                      enabled={property.featured}
+                      onChange={() => updatePropertyFeatured(property.id, !property.featured)}
+                      label="Destaque"
+                    />
+                  </div>
+                  <span className="text-xs text-gray-600 capitalize font-medium">
+                    {property.type}
                   </span>
-                  {property.featured && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 border border-orange-200">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                      Destaque
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -403,35 +406,23 @@ export default function AdminPropertiesPage() {
                       <div>{formatAreaDisplay(property.area)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col space-y-2">
-                        {getStatusBadge(property.status)}
-                        <div className="flex flex-wrap gap-1">
-                          <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md border ${
-                            property.type === 'venda'
-                              ? 'bg-violet-50 text-violet-700 border-violet-200'
-                              : 'bg-cyan-50 text-cyan-700 border-cyan-200'
-                          }`}>
-                            {property.type === 'venda' ? (
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
-                              </svg>
-                            ) : (
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                              </svg>
-                            )}
-                            {property.type === 'venda' ? 'Venda' : 'Aluguel'}
-                          </span>
-                          {property.featured && (
-                            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-orange-50 text-orange-700 border border-orange-200">
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                              Destaque
-                            </span>
+                      <div className="flex items-center space-x-4">
+                        <ToggleSwitch
+                          enabled={property.status === 'disponivel'}
+                          onChange={() => updatePropertyStatus(
+                            property.id,
+                            property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
                           )}
-                        </div>
+                          label="Disponível"
+                        />
+                        <ToggleSwitch
+                          enabled={property.featured}
+                          onChange={() => updatePropertyFeatured(property.id, !property.featured)}
+                          label="Destaque"
+                        />
+                        <span className="text-xs text-gray-600 capitalize">
+                          {property.type}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

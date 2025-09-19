@@ -130,6 +130,57 @@ export async function PUT(
   }
 }
 
+// PATCH - Atualizar campos específicos
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { id } = await params
+    const body = await request.json()
+
+    // Campos que podem ser atualizados via PATCH
+    const allowedFields = ['status', 'featured']
+    const updateData: any = {}
+
+    for (const field of allowedFields) {
+      if (field in body) {
+        updateData[field] = body[field]
+      }
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        { error: 'Nenhum campo válido para atualizar' },
+        { status: 400 }
+      )
+    }
+
+    const updatedProperty = await prisma.property.update({
+      where: { id },
+      data: updateData
+    })
+
+    return NextResponse.json({
+      success: true,
+      property: updatedProperty
+    })
+
+  } catch (error) {
+    console.error('Erro ao atualizar propriedade:', error)
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    )
+  }
+}
+
 // DELETE - Excluir imóvel
 export async function DELETE(
   request: NextRequest,
@@ -137,7 +188,7 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions)
-    
+
     if (!session) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
