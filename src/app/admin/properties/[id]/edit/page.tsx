@@ -1399,7 +1399,11 @@ export default function EditProperty() {
                           <label key={building} className="flex items-center">
                             <input
                               type="checkbox"
-                              checked={(formData.buildings || []).includes(building)}
+                              checked={(() => {
+                                const isChecked = (formData.buildings || []).includes(building)
+                                console.log(`🏗️ Checkbox ${building}: ${isChecked}, formData.buildings:`, formData.buildings)
+                                return isChecked
+                              })()}
                               onChange={(e) => {
                                 const currentBuildings = formData.buildings || []
                                 if (e.target.checked) {
