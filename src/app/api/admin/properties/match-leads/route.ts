@@ -154,15 +154,19 @@ function checkPriceMatch(lead: any, property: any) {
   const propertyPrice = property.price
 
   // Se o lead tem faixa de preço definida
-  if (lead.preferredPriceMin || lead.preferredPriceMax) {
-    const min = lead.preferredPriceMin || 0
-    const max = lead.preferredPriceMax || Infinity
+  if (lead.preferredPriceMin && lead.preferredPriceMax) {
+    const min = lead.preferredPriceMin
+    const max = lead.preferredPriceMax
+
+    console.log(`🔍 Verificando preço: ${propertyPrice} vs faixa ${min}-${max}`)
 
     if (propertyPrice >= min && propertyPrice <= max) {
       return {
         matches: true,
         reason: `Preço na faixa: R$ ${propertyPrice.toLocaleString('pt-BR')}`
       }
+    } else {
+      console.log(`❌ Preço fora da faixa: ${propertyPrice} não está entre ${min}-${max}`)
     }
   }
 
