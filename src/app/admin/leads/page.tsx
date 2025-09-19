@@ -28,6 +28,7 @@ interface Lead {
     slug: string
     type: string
     price: number
+    images?: string
   }
 }
 
@@ -49,7 +50,6 @@ export default function AdminLeadsPage() {
   })
   const [loading, setLoading] = useState(true)
   const [sendingSuggestions, setSendingSuggestions] = useState<string | null>(null)
-  const [fixingPreferences, setFixingPreferences] = useState<string | null>(null)
   const [filters, setFilters] = useState({
     status: 'all',
     search: ''
@@ -155,37 +155,11 @@ export default function AdminLeadsPage() {
     }
   }
 
-  const fixPreferences = async (leadId: string) => {
-    setFixingPreferences(leadId)
-    try {
-      const response = await fetch(`/api/admin/leads/${leadId}/fix-preferences`, {
-        method: 'POST'
-      })
-
-      const result = await response.json()
-
-      if (response.ok) {
-        alert(`✅ Preferências corrigidas! Faixa: R$ ${Math.round(result.preferences.priceMin/1000)}k-${Math.round(result.preferences.priceMax/1000)}k`)
-        fetchLeads(pagination.page) // Refresh a lista
-      } else {
-        alert(`❌ Erro: ${result.error}`)
-      }
-    } catch (error) {
-      console.error('Erro ao corrigir preferências:', error)
-      alert('❌ Erro ao corrigir preferências. Tente novamente.')
-    } finally {
-      setFixingPreferences(null)
-    }
-  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('pt-BR')
   }
 
-  const formatPrice = (price?: number) => {
-    if (!price) return 'N/A'
-    return `R$ ${price.toLocaleString('pt-BR')}`
-  }
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -282,12 +256,39 @@ export default function AdminLeadsPage() {
           <div className="space-y-4">
             {leads.map((lead) => (
               <div key={lead.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
+                <div className="flex items-start gap-4 mb-3">
+                  {/* Foto do Imóvel */}
+                  {lead.property && (
+                    <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
+                        alt={lead.property.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  {/* Cliente e Contato */}
+                  <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{lead.name}</h3>
-                    <div className="text-sm text-gray-600">
-                      {lead.phone && <div>📞 {lead.phone}</div>}
-                      {lead.email && <div>📧 {lead.email}</div>}
+                    <div className="text-sm text-gray-600 space-y-1">
+                      {lead.phone && (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                          </svg>
+                          {lead.phone}
+                        </div>
+                      )}
+                      {lead.email && (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                          </svg>
+                          {lead.email}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <select
@@ -302,16 +303,6 @@ export default function AdminLeadsPage() {
                     <option value="perdido">Perdido</option>
                   </select>
                 </div>
-                {lead.propertyTitle && (
-                  <div className="mb-3">
-                    <div className="font-medium text-sm">{lead.propertyTitle}</div>
-                    {lead.propertyPrice && (
-                      <div className="text-gray-500 text-sm">
-                        {formatPrice(lead.propertyPrice)} • {lead.propertyType}
-                      </div>
-                    )}
-                  </div>
-                )}
                 {lead.message && (
                   <div className="mb-3 text-sm text-gray-600">
                     {lead.message.length > 100 ? `${lead.message.substring(0, 100)}...` : lead.message}
@@ -320,22 +311,6 @@ export default function AdminLeadsPage() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">{formatDate(lead.createdAt)}</span>
                   <div className="flex gap-2 items-center">
-                    <button
-                      onClick={() => fixPreferences(lead.id)}
-                      disabled={fixingPreferences === lead.id}
-                      className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors disabled:opacity-50"
-                      title="Corrigir preferências do lead"
-                    >
-                      {fixingPreferences === lead.id ? (
-                        <div className="animate-spin w-3 h-3 border border-blue-600 border-t-transparent rounded-full"></div>
-                      ) : (
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      )}
-                      {fixingPreferences === lead.id ? 'Corrigindo...' : 'Fix'}
-                    </button>
                     {lead.status === 'perdido' && lead.phone && (
                       <button
                         onClick={() => sendSuggestions(lead.id)}
@@ -346,8 +321,8 @@ export default function AdminLeadsPage() {
                         {sendingSuggestions === lead.id ? (
                           <div className="animate-spin w-3 h-3 border border-orange-600 border-t-transparent rounded-full"></div>
                         ) : (
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
                         )}
                         {sendingSuggestions === lead.id ? 'Enviando...' : 'Sugestões'}
@@ -363,8 +338,8 @@ export default function AdminLeadsPage() {
                         }`}
                         title={lead.hasWhatsAppMessage ? 'WhatsApp enviado' : 'Marcar como contatado e abrir WhatsApp'}
                       >
-                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 2.079.549 4.03 1.518 5.728L0 24l6.46-1.695c1.618.832 3.446 1.302 5.557 1.302 6.621 0 11.988-5.367 11.988-11.987C23.988 5.367 18.637.001 12.017 0zm5.624 17.025c-.282.79-1.692 1.51-2.31 1.578-.133.015-.133.015-.133.015-.619.067-1.618.201-4.917-1.048-3.299-1.249-5.445-4.548-5.614-4.763-.168-.215-1.369-1.822-1.369-3.477s.869-2.466 1.177-2.806c.308-.34.674-.425 1.177-.425.133 0 .267 0 .384.016.308.014.463.029.668.514.215.511.73 1.775.793 1.906.064.131.106.282.021.458-.085.176-.127.282-.253.434-.127.152-.267.34-.382.458-.127.131-.259.271-.111.53.148.258.659 1.086 1.414 1.758 1.369 1.218 2.53 1.591 2.886 1.774.355.183.562.152.77-.091.207-.243.885-1.034 1.121-1.391.236-.357.472-.297.795-.178.324.118 2.048.966 2.399 1.142.351.176.585.265.668.414.084.149.084.858-.197 1.649z"/>
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                         </svg>
                         {lead.hasWhatsAppMessage || lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido' ? '✓' : 'WhatsApp'}
                       </button>
@@ -404,7 +379,7 @@ export default function AdminLeadsPage() {
                       Contato
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Imóvel
+                      Foto
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -436,22 +411,42 @@ export default function AdminLeadsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {lead.phone && <div>📞 {lead.phone}</div>}
-                          {lead.email && <div>📧 {lead.email}</div>}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {lead.propertyTitle && (
-                            <div className="font-medium">{lead.propertyTitle}</div>
+                        <div className="text-sm text-gray-900 space-y-1">
+                          {lead.phone && (
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                              </svg>
+                              {lead.phone}
+                            </div>
                           )}
-                          {lead.propertyPrice && (
-                            <div className="text-gray-500">
-                              {formatPrice(lead.propertyPrice)} • {lead.propertyType}
+                          {lead.email && (
+                            <div className="flex items-center gap-2">
+                              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                              </svg>
+                              {lead.email}
                             </div>
                           )}
                         </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {lead.property ? (
+                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
+                            <img
+                              src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
+                              alt={lead.property.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
@@ -471,22 +466,6 @@ export default function AdminLeadsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => fixPreferences(lead.id)}
-                            disabled={fixingPreferences === lead.id}
-                            className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors disabled:opacity-50 border border-blue-300"
-                            title="Corrigir preferências do lead"
-                          >
-                            {fixingPreferences === lead.id ? (
-                              <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                            ) : (
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
-                            )}
-                            {fixingPreferences === lead.id ? 'Corrigindo...' : 'Fix'}
-                          </button>
                           {lead.status === 'perdido' && lead.phone && (
                             <button
                               onClick={() => sendSuggestions(lead.id)}
@@ -497,8 +476,8 @@ export default function AdminLeadsPage() {
                               {sendingSuggestions === lead.id ? (
                                 <div className="animate-spin w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full"></div>
                               ) : (
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
                               )}
                               {sendingSuggestions === lead.id ? 'Enviando...' : 'Sugestões'}
@@ -514,8 +493,8 @@ export default function AdminLeadsPage() {
                               }`}
                               title={lead.hasWhatsAppMessage ? 'WhatsApp enviado automaticamente' : 'Marcar como contatado e abrir WhatsApp'}
                             >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 2.079.549 4.03 1.518 5.728L0 24l6.46-1.695c1.618.832 3.446 1.302 5.557 1.302 6.621 0 11.988-5.367 11.988-11.987C23.988 5.367 18.637.001 12.017 0zm5.624 17.025c-.282.79-1.692 1.51-2.31 1.578-.133.015-.133.015-.133.015-.619.067-1.618.201-4.917-1.048-3.299-1.249-5.445-4.548-5.614-4.763-.168-.215-1.369-1.822-1.369-3.477s.869-2.466 1.177-2.806c.308-.34.674-.425 1.177-.425.133 0 .267 0 .384.016.308.014.463.029.668.514.215.511.73 1.775.793 1.906.064.131.106.282.021.458-.085.176-.127.282-.253.434-.127.152-.267.34-.382.458-.127.131-.259.271-.111.53.148.258.659 1.086 1.414 1.758 1.369 1.218 2.53 1.591 2.886 1.774.355.183.562.152.77-.091.207-.243.885-1.034 1.121-1.391.236-.357.472-.297.795-.178.324.118 2.048.966 2.399 1.142.351.176.585.265.668.414.084.149.084.858-.197 1.649z"/>
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                               </svg>
                               {lead.hasWhatsAppMessage || lead.status === 'contatado' || lead.status === 'interessado' || lead.status === 'convertido' ? (
                                 <span className="flex items-center gap-1">
