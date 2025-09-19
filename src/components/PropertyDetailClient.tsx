@@ -195,10 +195,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       <main className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           
-          {/* Property Header with Form */}
+          {/* Property Header */}
           <div className="mb-8">
-            <div className="flex justify-between items-start gap-8">
-              {/* Left side - Property info */}
+            <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">
                   {property.title}
@@ -235,8 +234,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 </div>
               </div>
 
-              {/* Right side - Interest Form */}
-              <div className="w-80 flex-shrink-0">
+              {/* Formulário Tenho Interesse movido para cá */}
+              <div className="w-80 ml-8">
                 <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Tenho Interesse
