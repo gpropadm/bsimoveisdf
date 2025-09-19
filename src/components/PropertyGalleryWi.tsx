@@ -44,41 +44,41 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
   return (
     <>
       {/* Galeria Principal */}
-      <div className="w-full grid grid-cols-4 gap-3 h-[500px] rounded-lg overflow-hidden">
-        {/* Imagem Principal - 3/4 da largura */}
-        <div className="col-span-3 relative cursor-pointer group rounded-lg overflow-hidden" onClick={() => openModal(0)}>
+      <div className="grid grid-cols-3 gap-2 h-96 rounded-lg overflow-hidden">
+        {/* Imagem Principal - 2/3 da largura */}
+        <div className="col-span-2 relative cursor-pointer group" onClick={() => openModal(0)}>
           <Image
             src={mainImage}
             alt={propertyTitle}
             fill
-            className="object-cover transition-transform group-hover:scale-105 rounded-lg"
+            className="object-cover transition-transform group-hover:scale-105"
             priority
           />
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-lg" />
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
         </div>
 
-        {/* Grid de Thumbnails - 1/4 da largura */}
-        <div className="grid grid-rows-4 gap-3 h-full">
-          {thumbnailImages.slice(0, 4).map((image, index) => (
+        {/* Grid de Thumbnails - 1/3 da largura */}
+        <div className="grid grid-rows-2 grid-cols-2 gap-2">
+          {thumbnailImages.map((image, index) => (
             <div
               key={index + 1}
-              className="relative cursor-pointer group h-full rounded-lg overflow-hidden"
+              className="relative cursor-pointer group h-full"
               onClick={() => openModal(index + 1)}
             >
               <Image
                 src={image}
                 alt={`${propertyTitle} - Foto ${index + 2}`}
                 fill
-                className="object-cover transition-transform group-hover:scale-105 rounded-lg"
+                className="object-cover transition-transform group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-lg" />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
 
               {/* "Ver mais fotos" na última thumbnail */}
-              {index === 3 && images.length > 5 && (
-                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-lg">
+              {index === thumbnailImages.length - 1 && images.length > 5 && (
+                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="text-lg font-bold">+{remainingCount}</div>
-                    <div className="text-sm">Ver mais</div>
+                    <div className="text-sm">Ver mais fotos</div>
                   </div>
                 </div>
               )}
@@ -87,7 +87,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
 
           {/* Se houver menos de 4 thumbnails, preencher espaços vazios */}
           {thumbnailImages.length < 4 && Array.from({ length: 4 - thumbnailImages.length }).map((_, index) => (
-            <div key={`empty-${index}`} className="bg-gray-100 rounded-lg h-full" />
+            <div key={`empty-${index}`} className="bg-gray-100" />
           ))}
         </div>
       </div>
