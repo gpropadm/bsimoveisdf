@@ -261,11 +261,18 @@ export default function AdminLeadsPage() {
                   {lead.property ? (
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
+                        src={lead.property.images ? (() => {
+                          try {
+                            const images = JSON.parse(lead.property.images);
+                            return Array.isArray(images) && images.length > 0 ? images[0] : '/placeholder.jpg';
+                          } catch {
+                            return '/placeholder.jpg';
+                          }
+                        })() : '/placeholder.jpg'}
                         alt={lead.property.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = '/placeholder.jpg'
+                          e.currentTarget.src = 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'
                         }}
                       />
                     </div>
@@ -408,11 +415,18 @@ export default function AdminLeadsPage() {
                         {lead.property ? (
                           <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
                             <img
-                              src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
+                              src={lead.property.images ? (() => {
+                                try {
+                                  const images = JSON.parse(lead.property.images);
+                                  return Array.isArray(images) && images.length > 0 ? images[0] : '/placeholder.jpg';
+                                } catch {
+                                  return '/placeholder.jpg';
+                                }
+                              })() : '/placeholder.jpg'}
                               alt={lead.property.title}
                               className="w-full h-full object-cover"
                               onError={(e) => {
-                                e.currentTarget.src = '/placeholder.jpg'
+                                e.currentTarget.src = 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'
                               }}
                             />
                           </div>
