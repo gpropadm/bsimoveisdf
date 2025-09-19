@@ -100,7 +100,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
             </span>
           </div>
           <div className="flex flex-wrap gap-1.5 text-sm text-gray-500">
-            {property.bedrooms && (
+            {property.bedrooms && property.bedrooms > 0 && (
               <span className="flex items-center gap-1">
                 <svg className="w-4 h-4 opacity-60" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V9c0-1.1.9-2 2-2h6c1.1 0 2 .9 2 2v1h4c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2h-4v-2h4v-3h-2v-2z"/>
@@ -108,7 +108,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
                 <span>{property.bedrooms} quartos</span>
               </span>
             )}
-            {property.bathrooms && (
+            {property.bathrooms && property.bathrooms > 0 && (
               <span className="flex items-center gap-1">
                 <svg className="w-4 h-4 opacity-60" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 20h3c0 1.11-.89 2-2 2s-2-.89-2-2zm8 0c0 1.11-.89 2-2 2s-2-.89-2-2h4zm2-5v3H6v-3c0-3.53 2.61-6.43 6-6.92V6h-1c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1h-1v2.08c3.39.49 6 3.39 6 6.92z"/>
@@ -116,7 +116,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
                 <span>{property.bathrooms} banheiros</span>
               </span>
             )}
-            {property.parking && (
+            {property.parking && property.parking > 0 && (
               <span className="flex items-center gap-1">
                 <img src="/icons/icons8-hennessey-venom-30.png" alt="Vagas" className="w-4 h-4 opacity-60" />
                 <span>{property.parking} vagas</span>

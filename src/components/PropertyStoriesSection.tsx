@@ -319,19 +319,19 @@ function PropertyCard({ property, onViewDetails, formatPrice, onOpenVideo, hasVi
         
         {/* Property Features - quartos, banheiros, garagem */}
         <div className="font-roboto flex items-center space-x-4 text-sm text-gray-500 mb-4">
-          {property.bedrooms && (
+          {property.bedrooms && property.bedrooms > 0 && (
             <div className="flex items-center">
               <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Ícone de quartos" width={16} height={16} className="opacity-60 mr-1" />
               {property.bedrooms} {property.bedrooms === 1 ? 'Quarto' : 'Quartos'}
             </div>
           )}
-          {property.bathrooms && (
+          {property.bathrooms && property.bathrooms > 0 && (
             <div className="flex items-center">
               <Image src="/icons/icons8-bathroom-32.png" alt="Ícone de banheiros" width={16} height={16} className="opacity-60 mr-1" />
               {property.bathrooms} {property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}
             </div>
           )}
-          {property.parking && (
+          {property.parking && property.parking > 0 && (
             <div className="flex items-center">
               <Image src="/icons/icons8-hennessey-venom-30.png" alt="Ícone de garagem" width={16} height={16} className="opacity-60 mr-1" />
               {property.parking} {property.parking === 1 ? 'Vaga' : 'Vagas'}

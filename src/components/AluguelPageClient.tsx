@@ -413,19 +413,19 @@ function AluguelPageContent() {
                             </p>
                             
                             <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                              {property.bedrooms && (
+                              {property.bedrooms && property.bedrooms > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4 opacity-60" />
                                   <span>{property.bedrooms} quartos</span>
                                 </span>
                               )}
-                              {property.bathrooms && (
+                              {property.bathrooms && property.bathrooms > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4 opacity-60" />
                                   <span>{property.bathrooms} banheiros</span>
                                 </span>
                               )}
-                              {property.parking && (
+                              {property.parking && property.parking > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-hennessey-venom-30.png" alt="Vagas" className="w-4 h-4 opacity-60" />
                                   <span>{property.parking} vagas</span>
@@ -493,19 +493,19 @@ function AluguelPageContent() {
                             </p>
                             
                             <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                              {property.bedrooms && (
+                              {property.bedrooms && property.bedrooms > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4 opacity-60" />
                                   <span>{property.bedrooms} quartos</span>
                                 </span>
                               )}
-                              {property.bathrooms && (
+                              {property.bathrooms && property.bathrooms > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4 opacity-60" />
                                   <span>{property.bathrooms} banheiros</span>
                                 </span>
                               )}
-                              {property.parking && (
+                              {property.parking && property.parking > 0 && (
                                 <span className="flex items-center gap-1">
                                   <img src="/icons/icons8-hennessey-venom-30.png" alt="Vagas" className="w-4 h-4 opacity-60" />
                                   <span>{property.parking} vagas</span>
