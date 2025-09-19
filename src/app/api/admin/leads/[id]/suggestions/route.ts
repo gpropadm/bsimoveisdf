@@ -42,39 +42,50 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       type: lead.preferredType
     })
 
-    // Buscar imóveis compatíveis (excluindo o que ele já demonstrou interesse)
+    // Construir filtros dinamicamente
+    const whereConditions: any[] = [
+      { status: 'disponivel' }
+    ]
+
+    // Exclui o imóvel original se existir
+    if (lead.propertyId) {
+      whereConditions.push({ id: { not: lead.propertyId } })
+    }
+
+    // Filtro de tipo
+    const typeConditions = []
+    if (lead.preferredType) typeConditions.push({ type: lead.preferredType })
+    if (lead.propertyType) typeConditions.push({ type: lead.propertyType })
+    if (typeConditions.length > 0) {
+      whereConditions.push({ OR: typeConditions })
+    }
+
+    // Filtro de categoria
+    if (lead.preferredCategory) {
+      whereConditions.push({ category: lead.preferredCategory })
+    }
+
+    // Filtro de cidade
+    if (lead.preferredCity) {
+      whereConditions.push({ city: lead.preferredCity })
+    }
+
+    // Filtro de preço
+    if (lead.preferredPriceMin && lead.preferredPriceMax) {
+      whereConditions.push({
+        price: {
+          gte: lead.preferredPriceMin,
+          lte: lead.preferredPriceMax
+        }
+      })
+    }
+
+    console.log('🔍 Filtros de busca:', whereConditions)
+
+    // Buscar imóveis compatíveis
     const compatibleProperties = await prisma.property.findMany({
       where: {
-        AND: [
-          { status: 'disponivel' },
-          { id: { not: lead.propertyId } }, // Exclui o imóvel original
-          {
-            OR: [
-              { type: lead.preferredType },
-              { type: lead.propertyType },
-              { AND: [{ type: null }, { type: null }] }
-            ]
-          },
-          {
-            OR: [
-              { category: lead.preferredCategory },
-              { category: null }
-            ]
-          },
-          {
-            OR: [
-              { city: lead.preferredCity },
-              { city: null }
-            ]
-          },
-          // Filtro de preço
-          lead.preferredPriceMin && lead.preferredPriceMax ? {
-            price: {
-              gte: lead.preferredPriceMin,
-              lte: lead.preferredPriceMax
-            }
-          } : {}
-        ]
+        AND: whereConditions
       },
       take: 5, // Máximo 5 sugestões
       orderBy: { createdAt: 'desc' }
