@@ -7,7 +7,6 @@ import PropertyGallery from '@/components/PropertyGallery'
 import FavoriteButton from '@/components/FavoriteButton'
 import SimilarProperties from '@/components/SimilarProperties'
 import AppointmentScheduler from '@/components/AppointmentScheduler'
-import Breadcrumbs from '@/components/Breadcrumbs'
 import FarmInfo from '@/components/FarmInfo'
 import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
@@ -187,12 +186,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     }
   }
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: property.type === 'venda' ? 'Venda' : 'Aluguel', href: `/${property.type}` },
-    { label: property.city, href: '' },
-    { label: property.title, href: '', current: true },
-  ]
 
   return (
     <ToastProvider>
@@ -201,9 +194,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       
       <main className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          
-          {/* Breadcrumbs */}
-          <Breadcrumbs items={breadcrumbItems} />
           
           {/* Property Header */}
           <div className="mb-8">
