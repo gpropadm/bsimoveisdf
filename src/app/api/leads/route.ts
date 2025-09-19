@@ -272,7 +272,8 @@ export async function GET(request: NextRequest) {
               title: true,
               slug: true,
               type: true,
-              price: true
+              price: true,
+              images: true
             }
           }
         }

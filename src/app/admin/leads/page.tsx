@@ -55,6 +55,24 @@ export default function AdminLeadsPage() {
     search: ''
   })
 
+  // Função para obter a primeira imagem de uma propriedade
+  const getPropertyImage = (property: Lead['property']) => {
+    if (!property?.images) {
+      return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'
+    }
+
+    try {
+      const images = JSON.parse(property.images)
+      if (Array.isArray(images) && images.length > 0) {
+        return images[0]
+      }
+      return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'
+    } catch (error) {
+      console.error('Erro ao processar imagens da propriedade:', error)
+      return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'
+    }
+  }
+
   // Redirect if not authenticated
   if (status === 'unauthenticated') {
     redirect('/admin/login')
@@ -194,7 +212,7 @@ export default function AdminLeadsPage() {
               placeholder="Buscar por nome, email, telefone ou imóvel..."
               value={filters.search}
               onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-transparent"
             />
           </div>
@@ -261,21 +279,7 @@ export default function AdminLeadsPage() {
                   {lead.property ? (
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src={(() => {
-                          if (!lead.property?.images) {
-                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
-                          }
-
-                          try {
-                            const images = JSON.parse(lead.property.images);
-                            if (Array.isArray(images) && images.length > 0) {
-                              return images[0];
-                            }
-                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
-                          } catch {
-                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
-                          }
-                        })()}
+                        src={getPropertyImage(lead.property)}
                         alt={lead.property.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -422,14 +426,7 @@ export default function AdminLeadsPage() {
                         {lead.property ? (
                           <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
                             <img
-                              src={lead.property.images ? (() => {
-                                try {
-                                  const images = JSON.parse(lead.property.images);
-                                  return Array.isArray(images) && images.length > 0 ? images[0] : 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
-                                } catch {
-                                  return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
-                                }
-                              })() : 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'}
+                              src={getPropertyImage(lead.property)}
                               alt={lead.property.title}
                               className="w-full h-full object-cover"
                               onError={(e) => {
