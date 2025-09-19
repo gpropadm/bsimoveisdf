@@ -87,8 +87,6 @@ export async function PUT(
       features
     } = body
 
-    console.log('🎬 Dados de vídeo recebidos na API:', video)
-    console.log('🎬 Tipo do dado de vídeo:', typeof video)
 
     // Verificar se o imóvel existe
     const { id } = await params
@@ -125,57 +123,50 @@ export async function PUT(
       }
     }
 
-    console.log('🔧 Dados para update:', {
-      buildings: typeof buildings,
-      amenities: typeof amenities,
-      features: typeof features,
-      totalArea: typeof totalArea,
-      yard: typeof yard
-    })
-
-    const updateData: any = {
-      title,
-      description,
-      address,
-      city,
-      state,
-      price,
-      type,
-      category,
-      bedrooms,
-      bathrooms,
-      parking,
-      area,
-      video,
-      featured,
-      images,
-      slug
-    }
-
-    // Adicionar campos opcionais apenas se não forem undefined
-    if (totalArea !== undefined) updateData.totalArea = totalArea
-    if (cultivatedArea !== undefined) updateData.cultivatedArea = cultivatedArea
-    if (pastures !== undefined) updateData.pastures = pastures
-    if (areaUnit !== undefined) updateData.areaUnit = areaUnit
-    if (buildings !== undefined) updateData.buildings = buildings
-    if (waterSources !== undefined) updateData.waterSources = waterSources
-    if (floor !== undefined) updateData.floor = floor
-    if (condoFee !== undefined) updateData.condoFee = condoFee
-    if (amenities !== undefined) updateData.amenities = amenities
-    if (zoning !== undefined) updateData.zoning = zoning
-    if (slope !== undefined) updateData.slope = slope
-    if (frontage !== undefined) updateData.frontage = frontage
-    if (houseType !== undefined) updateData.houseType = houseType
-    if (yard !== undefined) updateData.yard = yard
-    if (garage !== undefined) updateData.garage = garage
-    if (commercialType !== undefined) updateData.commercialType = commercialType
-    if (floor_commercial !== undefined) updateData.floor_commercial = floor_commercial
-    if (businessCenter !== undefined) updateData.businessCenter = businessCenter
-    if (features !== undefined) updateData.features = features
-
     const updatedProperty = await prisma.property.update({
       where: { id },
-      data: updateData
+      data: {
+        title,
+        description,
+        address,
+        city,
+        state,
+        price,
+        type,
+        category,
+        bedrooms: bedrooms || null,
+        bathrooms: bathrooms || null,
+        parking: parking || null,
+        area: area || null,
+        video,
+        featured,
+        images,
+        slug,
+        // Campos específicos para fazenda
+        totalArea: totalArea || null,
+        cultivatedArea: cultivatedArea || null,
+        pastures: pastures || null,
+        areaUnit,
+        buildings,
+        waterSources,
+        // Campos específicos para apartamento
+        floor: floor || null,
+        condoFee: condoFee || null,
+        amenities,
+        // Campos específicos para terreno
+        zoning,
+        slope,
+        frontage: frontage || null,
+        // Campos específicos para casa
+        houseType,
+        yard,
+        garage,
+        // Campos específicos para comercial
+        commercialType,
+        floor_commercial: floor_commercial || null,
+        businessCenter,
+        features
+      }
     })
 
     return NextResponse.json(updatedProperty)
