@@ -123,7 +123,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
             {property.area && property.area > 0 && (
               <span className="flex items-center gap-1">
                 <img src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4 opacity-60" />
-                <span>{property.area}m²</span>
+                <span>{property.area && property.area > 0 ? `${property.area}m²` : ''}</span>
               </span>
             )}
           </div>
