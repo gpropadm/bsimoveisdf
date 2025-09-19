@@ -1371,10 +1371,26 @@ export default function EditProperty() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Benfeitorias da Fazenda
                       </label>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {[
-                          'Casa sede', 'Casa caseiro', 'Galpão', 'Curral', 'Estábulo',
-                          'Silo', 'Cerca elétrica', 'Poço artesiano', 'Energia elétrica'
+                          'Casa Sede',
+                          'Galpão',
+                          'Estábulo',
+                          'Curral',
+                          'Pocilga',
+                          'Galinheiro',
+                          'Armazém',
+                          'Oficina',
+                          'Casa de Funcionários',
+                          'Energia Elétrica',
+                          'Cerca Elétrica',
+                          'Irrigação',
+                          'Estrada Interna',
+                          'Porteira',
+                          'Balança para Gado',
+                          'Sistema de Ordenha',
+                          'Reservatório de Água',
+                          'Poço Artesiano'
                         ].map((building) => (
                           <label key={building} className="flex items-center">
                             <input
