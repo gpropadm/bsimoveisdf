@@ -58,11 +58,11 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
         </div>
 
         {/* Grid de Thumbnails - 1/3 da largura */}
-        <div className="grid grid-rows-2 gap-2">
+        <div className="grid grid-rows-2 grid-cols-2 gap-2">
           {thumbnailImages.map((image, index) => (
             <div
               key={index + 1}
-              className="relative cursor-pointer group"
+              className="relative cursor-pointer group h-full"
               onClick={() => openModal(index + 1)}
             >
               <Image
