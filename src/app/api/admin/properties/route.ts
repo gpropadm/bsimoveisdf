@@ -209,60 +209,26 @@ export async function POST(request: NextRequest) {
     try {
       console.log('🔍 Iniciando matching automático de leads...')
 
-      // Buscar leads compatíveis diretamente
-      const potentialLeads = await prisma.lead.findMany({
-        where: {
-          AND: [
-            { enableMatching: true },
-            { phone: { not: null } },
-            { status: { in: ['novo', 'interessado', 'perdido'] } },
-            {
-              OR: [
-                { preferredType: property.type },
-                { propertyType: property.type }
-              ]
-            }
-          ]
-        }
+      // Chamar a API de matching que já funciona
+      const baseUrl = process.env.NEXTAUTH_URL || 'https://modelo-site-imob.vercel.app'
+      const matchResponse = await fetch(`${baseUrl}/api/admin/properties/match-leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ propertyId: property.id })
       })
 
-      console.log(`🎯 Encontrados ${potentialLeads.length} leads potenciais para verificar`)
-
-      let matchingCount = 0
-      let whatsappSentCount = 0
-
-      for (const lead of potentialLeads) {
-        // Verificar compatibilidade de preço
-        let isCompatible = false
-
-        if (lead.preferredPriceMin && lead.preferredPriceMax) {
-          isCompatible = property.price >= lead.preferredPriceMin && property.price <= lead.preferredPriceMax
-        } else if (lead.propertyPrice) {
-          const tolerance = lead.propertyPrice * 0.2
-          const minPrice = lead.propertyPrice - tolerance
-          const maxPrice = lead.propertyPrice + tolerance
-          isCompatible = property.price >= minPrice && property.price <= maxPrice
-        }
-
-        // Verificar cidade e categoria
-        if (lead.preferredCity && lead.preferredCity !== property.city) isCompatible = false
-        if (lead.preferredCategory && lead.preferredCategory !== property.category) isCompatible = false
-
-        if (isCompatible) {
-          matchingCount++
-          console.log(`✅ Match encontrado: ${lead.name} - ${lead.phone}`)
-
-          // Enviar WhatsApp (implementação simplificada por enquanto)
-          // TODO: Implementar envio completo aqui
-          whatsappSentCount++
-        }
+      if (matchResponse.ok) {
+        const matchResult = await matchResponse.json()
+        console.log('🎉 Matching automático completado:', {
+          matches: matchResult.matches,
+          whatsappSent: matchResult.whatsappSent
+        })
+      } else {
+        const errorText = await matchResponse.text()
+        console.error('⚠️ Erro no matching automático:', errorText)
       }
-
-      console.log('🎉 Matching automático completado:', {
-        potentialLeads: potentialLeads.length,
-        matches: matchingCount,
-        whatsappSent: whatsappSentCount
-      })
 
     } catch (matchError) {
       console.error('⚠️ Falha no matching automático:', matchError)
