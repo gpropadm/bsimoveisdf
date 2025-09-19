@@ -194,14 +194,12 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       
       <main className="pt-20">
         {/* Nova Galeria WiImóveis - Largura completa da tela */}
-        <div className="w-full mb-8 px-4">
-          <PropertyGalleryWi
-            images={images}
-            propertyTitle={property.title}
-          />
-        </div>
+        <PropertyGalleryWi
+          images={images}
+          propertyTitle={property.title}
+        />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8">
           {/* Informações do Imóvel + Formulário */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             {/* Informações do Imóvel - 2/3 da largura */}
