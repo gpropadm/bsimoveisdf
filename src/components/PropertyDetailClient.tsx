@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import PropertyGallery from '@/components/PropertyGallery'
+import PropertyGalleryWi from '@/components/PropertyGalleryWi'
 import FavoriteButton from '@/components/FavoriteButton'
 import SimilarProperties from '@/components/SimilarProperties'
 import AppointmentScheduler from '@/components/AppointmentScheduler'
@@ -194,57 +194,163 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       
       <main className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          
-          {/* Property Header */}
+
+          {/* Nova Galeria WiImóveis */}
           <div className="mb-8">
-            <div className="mb-4">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <PropertyGalleryWi
+              images={images}
+              propertyTitle={property.title}
+            />
+          </div>
+
+          {/* Informações do Imóvel + Formulário */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Informações do Imóvel - 2/3 da largura */}
+            <div className="lg:col-span-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 {property.title}
               </h1>
-              <p className="text-base text-gray-600 mb-2">
+              <p className="text-lg text-gray-600 mb-4">
                 {property.address}, {property.city} - {property.state}
               </p>
-              <div className="flex items-center gap-4">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+
+              <div className="flex items-center gap-4 mb-6">
+                <span className={`px-4 py-2 rounded-full text-sm font-medium uppercase ${
                   property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
                 }`}>
-                  {property.type === 'venda' ? 'VENDA' : 'ALUGUEL'}
+                  {property.type}
                 </span>
-                <span className="text-sm text-gray-500 capitalize">
+                <span className="text-lg text-gray-600 capitalize font-medium">
                   {property.category}
                 </span>
               </div>
+
+              <div className="flex items-center justify-between">
+                <div className="text-4xl font-bold text-gray-900">
+                  {formatPrice(property.price)}
+                </div>
+                <div className="flex items-center gap-4">
+                  <FavoriteButton propertyId={property.id} size="large" />
+                  <button
+                    onClick={handleShare}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                    Compartilhar
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div className="flex justify-between items-center">
-              <div className="text-3xl font-bold text-gray-900">
-                {formatPrice(property.price)}
-              </div>
-              <div className="flex items-center gap-4">
-                <FavoriteButton propertyId={property.id} size="large" />
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                  </svg>
-                  Compartilhar
-                </button>
+            {/* Formulário Tenho Interesse - 1/3 da largura */}
+            <div className="lg:col-span-1">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-24">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Tenho Interesse
+                </h3>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nome Completo
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                      placeholder="Seu nome completo"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Telefone
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                      placeholder="(11) 99999-9999"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      E-mail
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                      placeholder="seu@email.com"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Mensagem
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
+                      placeholder="Sua mensagem..."
+                    />
+                  </div>
+
+                  {submitMessage && (
+                    <div className={`p-3 rounded-lg text-sm ${
+                      submitMessage.includes('✅')
+                        ? 'bg-green-100 text-green-800 border border-green-200'
+                        : 'bg-red-100 text-red-800 border border-red-200'
+                    }`}>
+                      {submitMessage}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-teal-600 text-white py-3 px-6 rounded-lg hover:bg-teal-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        Enviar Interesse
+                      </>
+                    )}
+                  </button>
+                </form>
               </div>
             </div>
           </div>
 
+          {/* Detalhes do Imóvel */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Gallery and Details */}
+            {/* Left Column - Details */}
             <div className="lg:col-span-2">
-              {/* Property Gallery */}
-              <PropertyGallery 
-                images={images} 
-                propertyTitle={property.title}
-                propertyPrice={property.price}
-                propertyType={property.type}
-              />
               
               {/* Property Features - Only show if there are any features to display */}
               {(property.bedrooms || property.bathrooms || property.parking || (property.area && property.area > 0 && property.category !== 'fazenda')) && (
@@ -323,104 +429,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               )}
             </div>
 
-            {/* Right Column - Contact Form and Appointment */}
+            {/* Right Column - Appointment Scheduler Only */}
             <div className="lg:col-span-1">
               <div className="sticky top-24">
-                {/* Interest Form */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Tenho Interesse
-                  </h3>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Nome completo *
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                        placeholder="Seu nome completo"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Telefone *
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                        placeholder="(00) 00000-0000"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        E-mail *
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                        placeholder="seu@email.com"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Mensagem
-                      </label>
-                      <textarea
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
-                      />
-                    </div>
-
-                    {submitMessage && (
-                      <div className={`p-3 rounded-lg text-sm ${
-                        submitMessage.includes('✅') 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {submitMessage}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      {isSubmitting ? (
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      ) : (
-                        <>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                          </svg>
-                          Enviar Interesse
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </div>
-
-                {/* Appointment Scheduler */}
                 <AppointmentScheduler propertyId={property.id} propertyTitle={property.title} />
               </div>
             </div>
