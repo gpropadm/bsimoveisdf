@@ -8,6 +8,7 @@ import FavoriteButton from '@/components/FavoriteButton'
 import SimilarProperties from '@/components/SimilarProperties'
 import AppointmentScheduler from '@/components/AppointmentScheduler'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import FarmInfo from '@/components/FarmInfo'
 import { useSettings } from '@/hooks/useSettings'
 import { ToastProvider } from '@/contexts/ToastContext'
 import { formatAreaDisplay } from '@/lib/maskUtils'
@@ -306,6 +307,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               {/* Land Specific Info */}
               {property.category === 'terreno' && (
                 <LandInfo property={property} />
+              )}
+
+              {/* Farm Specific Info */}
+              {property.category === 'fazenda' && (
+                <FarmInfo property={property} />
               )}
 
               {/* Commercial Specific Info */}
