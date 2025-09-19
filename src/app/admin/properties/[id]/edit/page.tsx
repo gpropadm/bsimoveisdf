@@ -187,7 +187,23 @@ export default function EditProperty() {
         cultivatedArea: data.cultivatedArea ? data.cultivatedArea.toString() : '',
         pastures: data.pastures ? data.pastures.toString() : '',
         areaUnit: data.areaUnit || 'hectares',
-        buildings: data.buildings ? (Array.isArray(data.buildings) ? data.buildings : JSON.parse(data.buildings || '[]')) : [],
+        buildings: (() => {
+          console.log('🏗️ Buildings do banco (frontend):', data.buildings)
+          console.log('🏗️ Tipo buildings (frontend):', typeof data.buildings)
+          if (!data.buildings) return []
+          if (Array.isArray(data.buildings)) {
+            console.log('🏗️ Buildings já é array:', data.buildings)
+            return data.buildings
+          }
+          try {
+            const parsed = JSON.parse(data.buildings)
+            console.log('🏗️ Buildings parseado:', parsed)
+            return Array.isArray(parsed) ? parsed : []
+          } catch {
+            console.log('🏗️ Erro no parse, retornando array vazio')
+            return []
+          }
+        })(),
         waterSources: data.waterSources || '',
         // Campos específicos para casa
         houseType: data.houseType || '',
@@ -242,7 +258,11 @@ export default function EditProperty() {
       totalArea: formData.totalArea ? parseArea(formData.totalArea) : null,
       cultivatedArea: formData.cultivatedArea ? parseArea(formData.cultivatedArea) : null,
       pastures: formData.pastures ? parseArea(formData.pastures) : null,
-      buildings: formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null,
+      buildings: (() => {
+        console.log('🏗️ Buildings no envio:', formData.buildings)
+        console.log('🏗️ Buildings length:', formData.buildings.length)
+        return formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null
+      })(),
       // Campos específicos para comercial
       features: formData.features.length > 0 ? JSON.stringify(formData.features) : null,
     }
