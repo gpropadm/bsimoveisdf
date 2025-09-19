@@ -51,7 +51,7 @@ function PlaceholderIcon() {
   )
 }
 
-// Toggle Switch Component (Flowbite style)
+// Toggle Switch Component (Simple)
 function ToggleSwitch({ enabled, onChange, label, description }: {
   enabled: boolean;
   onChange: () => void;
@@ -61,20 +61,23 @@ function ToggleSwitch({ enabled, onChange, label, description }: {
   return (
     <div className="flex items-center justify-between">
       <div className="flex-1">
-        <label className="text-sm font-medium text-gray-900">{label}</label>
+        <div className="text-sm font-medium text-gray-900">{label}</div>
         {description && (
-          <p className="text-sm text-gray-500">{description}</p>
+          <div className="text-sm text-gray-500">{description}</div>
         )}
       </div>
-      <label className="relative inline-flex items-center cursor-pointer ml-4">
-        <input
-          type="checkbox"
-          checked={enabled}
-          onChange={onChange}
-          className="sr-only peer"
+      <button
+        onClick={onChange}
+        className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+          enabled ? 'bg-blue-600' : 'bg-gray-200'
+        }`}
+      >
+        <span
+          className={`inline-block w-4 h-4 transform rounded-full bg-white transition-transform ${
+            enabled ? 'translate-x-6' : 'translate-x-1'
+          }`}
         />
-        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-      </label>
+      </button>
     </div>
   )
 }
