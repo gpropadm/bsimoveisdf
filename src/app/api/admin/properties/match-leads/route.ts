@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         AND: [
           { enableMatching: true },
           { phone: { not: null } }, // Só leads com WhatsApp
-          { status: { in: ['novo', 'interessado', 'perdido'] } }, // Só leads ativos
+          { status: { in: ['novo', 'interessado', 'perdido', 'contatado'] } }, // Só leads ativos
           {
             OR: [
               // Matching por tipo (venda/aluguel)

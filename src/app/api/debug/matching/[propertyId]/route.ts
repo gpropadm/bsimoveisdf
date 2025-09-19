@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: { property
         AND: [
           { enableMatching: true },
           { phone: { not: null } },
-          { status: { in: ['novo', 'interessado', 'perdido'] } },
+          { status: { in: ['novo', 'interessado', 'perdido', 'contatado'] } },
           {
             OR: [
               { preferredType: property.type },
