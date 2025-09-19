@@ -261,14 +261,28 @@ export default function AdminLeadsPage() {
                   {lead.property ? (
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src={lead.property.images ? (() => {
+                        src={(() => {
+                          console.log('Lead property:', lead.property);
+                          console.log('Lead property images:', lead.property?.images);
+
+                          if (!lead.property?.images) {
+                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
+                          }
+
                           try {
                             const images = JSON.parse(lead.property.images);
-                            return Array.isArray(images) && images.length > 0 ? images[0] : '/placeholder.jpg';
-                          } catch {
-                            return '/placeholder.jpg';
+                            console.log('Parsed images:', images);
+
+                            if (Array.isArray(images) && images.length > 0) {
+                              console.log('Using image:', images[0]);
+                              return images[0];
+                            }
+                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
+                          } catch (error) {
+                            console.log('Error parsing images:', error);
+                            return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
                           }
-                        })() : '/placeholder.jpg'}
+                        })()}
                         alt={lead.property.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
