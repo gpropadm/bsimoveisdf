@@ -48,6 +48,7 @@ export default function AdminLeadsPage() {
     pages: 0
   })
   const [loading, setLoading] = useState(true)
+  const [sendingSuggestions, setSendingSuggestions] = useState<string | null>(null)
   const [filters, setFilters] = useState({
     status: 'all',
     search: ''
@@ -124,6 +125,33 @@ export default function AdminLeadsPage() {
     // Marcar como contatado e abrir WhatsApp
     await updateLeadStatus(leadId, 'contatado')
     window.open(`https://wa.me/55${phone.replace(/\D/g, '')}`, '_blank')
+  }
+
+  const sendSuggestions = async (leadId: string) => {
+    setSendingSuggestions(leadId)
+    try {
+      const response = await fetch(`/api/admin/leads/${leadId}/suggestions`, {
+        method: 'POST'
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        if (result.suggestions > 0) {
+          alert(`✅ ${result.suggestions} sugestões enviadas via WhatsApp!`)
+        } else {
+          alert('ℹ️ Nenhum imóvel compatível encontrado para este lead.')
+        }
+        fetchLeads(pagination.page) // Refresh a lista
+      } else {
+        alert(`❌ Erro: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao enviar sugestões:', error)
+      alert('❌ Erro ao enviar sugestões. Tente novamente.')
+    } finally {
+      setSendingSuggestions(null)
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -268,6 +296,23 @@ export default function AdminLeadsPage() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">{formatDate(lead.createdAt)}</span>
                   <div className="flex gap-2 items-center">
+                    {lead.status === 'perdido' && lead.phone && (
+                      <button
+                        onClick={() => sendSuggestions(lead.id)}
+                        disabled={sendingSuggestions === lead.id}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-orange-100 text-orange-800 hover:bg-orange-200 transition-colors disabled:opacity-50"
+                        title="Enviar sugestões de imóveis compatíveis"
+                      >
+                        {sendingSuggestions === lead.id ? (
+                          <div className="animate-spin w-3 h-3 border border-orange-600 border-t-transparent rounded-full"></div>
+                        ) : (
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        )}
+                        {sendingSuggestions === lead.id ? 'Enviando...' : 'Sugestões'}
+                      </button>
+                    )}
                     {lead.phone && (
                       <button
                         onClick={() => markAsContacted(lead.id, lead.phone!)}
@@ -386,6 +431,23 @@ export default function AdminLeadsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-3">
+                          {lead.status === 'perdido' && lead.phone && (
+                            <button
+                              onClick={() => sendSuggestions(lead.id)}
+                              disabled={sendingSuggestions === lead.id}
+                              className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 hover:bg-orange-200 transition-colors disabled:opacity-50 border border-orange-300"
+                              title="Enviar sugestões de imóveis compatíveis"
+                            >
+                              {sendingSuggestions === lead.id ? (
+                                <div className="animate-spin w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full"></div>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                              )}
+                              {sendingSuggestions === lead.id ? 'Enviando...' : 'Sugestões'}
+                            </button>
+                          )}
                           {lead.phone && (
                             <button
                               onClick={() => markAsContacted(lead.id, lead.phone!)}
