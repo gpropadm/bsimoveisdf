@@ -24,8 +24,6 @@ export async function GET(
       return NextResponse.json({ error: 'Imóvel não encontrado' }, { status: 404 })
     }
 
-    console.log('🏗️ Benfeitorias do banco (GET):', property.buildings)
-    console.log('🏗️ Tipo das benfeitorias do banco:', typeof property.buildings)
 
     return NextResponse.json(property)
   } catch (error) {
@@ -91,8 +89,6 @@ export async function PUT(
 
     console.log('🎬 Dados de vídeo recebidos na API:', video)
     console.log('🎬 Tipo do dado de vídeo:', typeof video)
-    console.log('🏗️ Benfeitorias recebidas na API:', buildings)
-    console.log('🏗️ Tipo das benfeitorias:', typeof buildings)
 
     // Verificar se o imóvel existe
     const { id } = await params

@@ -187,23 +187,7 @@ export default function EditProperty() {
         cultivatedArea: data.cultivatedArea ? data.cultivatedArea.toString() : '',
         pastures: data.pastures ? data.pastures.toString() : '',
         areaUnit: data.areaUnit || 'hectares',
-        buildings: (() => {
-          console.log('🏗️ Buildings do banco (frontend):', data.buildings)
-          console.log('🏗️ Tipo buildings (frontend):', typeof data.buildings)
-          if (!data.buildings) return []
-          if (Array.isArray(data.buildings)) {
-            console.log('🏗️ Buildings já é array:', data.buildings)
-            return data.buildings
-          }
-          try {
-            const parsed = JSON.parse(data.buildings)
-            console.log('🏗️ Buildings parseado:', parsed)
-            return Array.isArray(parsed) ? parsed : []
-          } catch {
-            console.log('🏗️ Erro no parse, retornando array vazio')
-            return []
-          }
-        })(),
+        buildings: data.buildings ? (Array.isArray(data.buildings) ? data.buildings : JSON.parse(data.buildings || '[]')) : [],
         waterSources: data.waterSources || '',
         // Campos específicos para casa
         houseType: data.houseType || '',
@@ -258,11 +242,7 @@ export default function EditProperty() {
       totalArea: formData.totalArea ? parseArea(formData.totalArea) : null,
       cultivatedArea: formData.cultivatedArea ? parseArea(formData.cultivatedArea) : null,
       pastures: formData.pastures ? parseArea(formData.pastures) : null,
-      buildings: (() => {
-        console.log('🏗️ Buildings no envio:', formData.buildings)
-        console.log('🏗️ Buildings length:', formData.buildings.length)
-        return formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null
-      })(),
+      buildings: formData.buildings.length > 0 ? JSON.stringify(formData.buildings) : null,
       // Campos específicos para comercial
       features: formData.features.length > 0 ? JSON.stringify(formData.features) : null,
     }
@@ -1399,11 +1379,7 @@ export default function EditProperty() {
                           <label key={building} className="flex items-center">
                             <input
                               type="checkbox"
-                              checked={(() => {
-                                const isChecked = (formData.buildings || []).includes(building)
-                                console.log(`🏗️ Checkbox ${building}: ${isChecked}, formData.buildings:`, formData.buildings)
-                                return isChecked
-                              })()}
+                              checked={(formData.buildings || []).includes(building)}
                               onChange={(e) => {
                                 const currentBuildings = formData.buildings || []
                                 if (e.target.checked) {
