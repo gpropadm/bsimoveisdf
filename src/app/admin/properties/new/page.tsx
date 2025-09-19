@@ -35,7 +35,6 @@ export default function NewProperty() {
     bedrooms: '',
     bathrooms: '',
     parking: '',
-    area: '',
     featured: false,
     // Campos específicos para apartamento
     floor: '',
@@ -126,7 +125,7 @@ export default function NewProperty() {
         ...prev,
         [name]: formattedValue
       }))
-    } else if (name === 'area' || name === 'totalArea' || name === 'cultivatedArea' || name === 'pastures' || name === 'frontage') {
+    } else if (name === 'totalArea' || name === 'cultivatedArea' || name === 'pastures' || name === 'frontage') {
       // Aplicar máscara para áreas (com decimais)
       const formattedValue = formatArea(value)
       setFormData(prev => ({
@@ -444,7 +443,6 @@ export default function NewProperty() {
           bedrooms: parseNumber(formData.bedrooms) || null,
           bathrooms: parseNumber(formData.bathrooms) || null,
           parking: parseNumber(formData.parking) || null,
-          area: parseArea(formData.area) || null,
           featured: formData.featured,
           // Campos específicos para apartamento
           floor: formData.floor ? parseNumber(formData.floor) : null,
@@ -725,7 +723,7 @@ export default function NewProperty() {
                 <p className="text-sm text-gray-500 mt-1">Informações gerais do imóvel</p>
               </div>
               <div className="p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Quartos
@@ -763,21 +761,6 @@ export default function NewProperty() {
                       name="parking"
                       value={formData.parking}
                       onChange={handleChange}
-                      min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Área (m²)
-                    </label>
-                    <input
-                      type="number"
-                      name="area"
-                      value={formData.area}
-                      onChange={handleChange}
-                      step="0.01"
                       min="0"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />

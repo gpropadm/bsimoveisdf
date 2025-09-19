@@ -74,7 +74,6 @@ export default function EditProperty() {
     bedrooms: '',
     bathrooms: '',
     parking: '',
-    area: '',
     video: '',
     featured: false,
     // Campos específicos para apartamento
@@ -171,7 +170,6 @@ export default function EditProperty() {
         bedrooms: data.bedrooms ? data.bedrooms.toString() : '',
         bathrooms: data.bathrooms ? data.bathrooms.toString() : '',
         parking: data.parking ? data.parking.toString() : '',
-        area: data.area ? data.area.toString() : '',
         video: data.video || '',
         featured: data.featured || false,
         // Campos específicos para apartamento
@@ -237,7 +235,6 @@ export default function EditProperty() {
       bedrooms: parseNumber(formData.bedrooms),
       bathrooms: parseNumber(formData.bathrooms),
       parking: parseNumber(formData.parking),
-      area: parseArea(formData.area),
       // Campos específicos para apartamento
       floor: formData.floor ? parseNumber(formData.floor) : null,
       condoFee: formData.condoFee ? parseCurrency(formData.condoFee) : null,
@@ -370,7 +367,7 @@ export default function EditProperty() {
         ...prev,
         [name]: formattedValue
       }))
-    } else if (name === 'area' || name === 'totalArea' || name === 'cultivatedArea' || name === 'pastures' || name === 'frontage') {
+    } else if (name === 'totalArea' || name === 'cultivatedArea' || name === 'pastures' || name === 'frontage') {
       // Aplicar máscara para áreas (com decimais)
       const formattedValue = formatArea(value)
       setFormData(prev => ({
@@ -948,7 +945,7 @@ export default function EditProperty() {
                 </div>
 
                 <div className="p-4 sm:p-6">
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Quartos *
@@ -993,57 +990,11 @@ export default function EditProperty() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                       />
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Área (m²) *
-                      </label>
-                      <input
-                        type="number"
-                        name="area"
-                        value={formData.area}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                        step="0.01"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Área para Terrenos e Fazendas */}
-            {(formData.category === 'terreno' || formData.category === 'fazenda') && (
-              <div className="bg-white shadow rounded-lg mt-6">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Área</h3>
-                  <p className="text-sm text-gray-600 mt-1">Informações de área do imóvel</p>
-                </div>
-
-                <div className="p-4 sm:p-6">
-                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {formData.category === 'fazenda' ? 'Área Construída (m²)' : 'Área (m²)'} *
-                      </label>
-                      <input
-                        type="number"
-                        name="area"
-                        value={formData.area}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                        step="0.01"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                      />
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Seções dinâmicas por categoria */}
             {/* Casa */}
