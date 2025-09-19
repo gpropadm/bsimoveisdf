@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import PropertyVideoModal from './PropertyVideoModal'
 import FavoriteButton from './FavoriteButton'
+import { formatAreaSmart } from '@/lib/maskUtils'
 
 interface Property {
   id: string
@@ -19,6 +20,7 @@ interface Property {
   bedrooms?: number
   bathrooms?: number
   area?: number
+  totalArea?: number
   parking?: number
   video?: string
 }
@@ -337,8 +339,14 @@ function PropertyCard({ property, onViewDetails, formatPrice, onOpenVideo, hasVi
               {property.parking && property.parking > 0 ? property.parking : ""} {property.parking === 1 ? 'Vaga' : 'Vagas'}
             </div>
           )}
+          {formatAreaSmart(property) && (
+            <div className="flex items-center">
+              <Image src="/icons/icons8-measure-32.png" alt="Ícone de área" width={16} height={16} className="opacity-60 mr-1" />
+              {formatAreaSmart(property)}
+            </div>
+          )}
         </div>
-        
+
         {/* Action Button */}
         <button
           onClick={() => onViewDetails(property.slug)}

@@ -231,3 +231,23 @@ export function formatAreaHectares(value: number | string | null | undefined): s
 
   return `${formatted} hectares`
 }
+
+/**
+ * Format area intelligently based on property category
+ */
+export function formatAreaSmart(property: any): string {
+  // Para fazendas, usa totalArea em hectares
+  if (property.category === 'fazenda') {
+    if (property.totalArea && property.totalArea > 0) {
+      return formatAreaHectares(property.totalArea)
+    }
+    return ''
+  }
+
+  // Para casas, apartamentos, terrenos usa area em m²
+  if (property.area && property.area > 0) {
+    return formatAreaDisplay(property.area)
+  }
+
+  return ''
+}

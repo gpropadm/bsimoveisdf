@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
       bathrooms: property.bathrooms,
       parking: property.parking,
       area: property.area,
+      totalArea: property.totalArea,
       video: property.video,
       featured: property.featured,
       status: property.status,
