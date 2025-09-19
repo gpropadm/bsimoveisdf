@@ -50,7 +50,6 @@ export async function PUT(
       address,
       city,
       state,
-      zipcode,
       price,
       type,
       category,
@@ -60,7 +59,31 @@ export async function PUT(
       area,
       video,
       featured,
-      images
+      images,
+      // Campos específicos para fazenda
+      totalArea,
+      cultivatedArea,
+      pastures,
+      areaUnit,
+      buildings,
+      waterSources,
+      // Campos específicos para apartamento
+      floor,
+      condoFee,
+      amenities,
+      // Campos específicos para terreno
+      zoning,
+      slope,
+      frontage,
+      // Campos específicos para casa
+      houseType,
+      yard,
+      garage,
+      // Campos específicos para comercial
+      commercialType,
+      floor_commercial,
+      businessCenter,
+      features
     } = body
 
     console.log('🎬 Dados de vídeo recebidos na API:', video)
@@ -119,7 +142,31 @@ export async function PUT(
         video,
         featured,
         images,
-        slug
+        slug,
+        // Campos específicos para fazenda
+        totalArea,
+        cultivatedArea,
+        pastures,
+        areaUnit,
+        buildings,
+        waterSources,
+        // Campos específicos para apartamento
+        floor,
+        condoFee,
+        amenities,
+        // Campos específicos para terreno
+        zoning,
+        slope,
+        frontage,
+        // Campos específicos para casa
+        houseType,
+        yard,
+        garage,
+        // Campos específicos para comercial
+        commercialType,
+        floor_commercial,
+        businessCenter,
+        features
       }
     })
 
