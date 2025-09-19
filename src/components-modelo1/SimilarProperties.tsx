@@ -190,7 +190,7 @@ export default function SimilarProperties({
                             {property.area && property.area > 0 && (
                               <span className="flex items-center gap-1">
                                 <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
-                                {property.area && property.area > 0 ? `${property.area}m²` : ''}
+                                {property.area && property.area > 0 ? `${property.area && property.area > 0 ? property.area : ""}m²` : ''}
                               </span>
                             )}
                           </div>
@@ -288,7 +288,7 @@ export default function SimilarProperties({
                       {property.area && property.area > 0 && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-4 h-4" width={16} height={16} />
-                          {property.area && property.area > 0 ? `${property.area}m²` : ''}
+                          {property.area && property.area > 0 ? `${property.area && property.area > 0 ? property.area : ""}m²` : ''}
                         </span>
                       )}
                     </div>
@@ -395,7 +395,7 @@ export default function SimilarProperties({
                       {property.area && property.area > 0 && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-measure-32.png" alt="Área" className="w-3 h-3" width={12} height={12} />
-                          {property.area && property.area > 0 ? `${property.area}m²` : ''}
+                          {property.area && property.area > 0 ? `${property.area && property.area > 0 ? property.area : ""}m²` : ''}
                         </span>
                       )}
                     </div>

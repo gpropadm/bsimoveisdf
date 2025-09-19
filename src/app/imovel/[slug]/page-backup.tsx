@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
   
   const title = `${property.title} - ${formatPrice(property.price)} - ${property.city}`
   const description = property.description || 
-    `${property.category} para ${property.type} em ${property.city}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area}m²` : ''}.`
+    `${property.category} para ${property.type} em ${property.city}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area && property.area > 0 ? property.area : ""}m²` : ''}.`
 
   return {
     title,

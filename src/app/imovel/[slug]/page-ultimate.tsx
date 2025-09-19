@@ -63,7 +63,7 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
         )}
         {property.area && (
           <div style={{ textAlign: 'center', padding: '15px', backgroundColor: '#e9f7fe', borderRadius: '8px' }}>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.area}</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.area && property.area > 0 ? property.area : ""}</div>
             <div style={{ fontSize: '14px', color: '#666' }}>m²</div>
           </div>
         )}

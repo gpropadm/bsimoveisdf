@@ -150,7 +150,7 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
                 {property.area && (
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
                     <div className="text-2xl mb-2">📐</div>
-                    <div className="text-2xl font-bold text-gray-900">{property.area}</div>
+                    <div className="text-2xl font-bold text-gray-900">{property.area && property.area > 0 ? property.area : ""}</div>
                     <div className="text-sm text-gray-600">m²</div>
                   </div>
                 )}

@@ -318,7 +318,7 @@ ${formData.message}
                     <div className="flex justify-center mb-1">
                       <img src="/icons/icons8-measure-32.png" alt="Área" className="w-5 h-5 opacity-60" />
                     </div>
-                    <div className="text-xl font-bold text-gray-800">{property.area}</div>
+                    <div className="text-xl font-bold text-gray-800">{property.area && property.area > 0 ? property.area : ""}</div>
                     <div className="text-xs text-gray-600">m²</div>
                   </div>
                 )}
@@ -486,7 +486,7 @@ ${formData.message}
                   <li>• Finalidade: {property.type}</li>
                   {property.bedrooms && <li>• Quartos: {property.bedrooms}</li>}
                   {property.bathrooms && <li>• Banheiros: {property.bathrooms}</li>}
-                  {property.area && <li>• Área: {property.area}m²</li>}
+                  {property.area && <li>• Área: {property.area && property.area > 0 ? property.area : ""}m²</li>}
                 </ul>
               </div>
             </div>
