@@ -197,26 +197,29 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           
           {/* Property Header */}
           <div className="mb-8">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                  {property.title}
-                </h1>
-                <p className="text-base text-gray-600 mb-2">
-                  {property.address}, {property.city} - {property.state}
-                </p>
-                <div className="flex items-center gap-4">
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
-                  }`}>
-                    {property.type === 'venda' ? 'VENDA' : 'ALUGUEL'}
-                  </span>
-                  <span className="text-sm text-gray-500 capitalize">
-                    {property.category}
-                  </span>
-                </div>
+            <div className="mb-4">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                {property.title}
+              </h1>
+              <p className="text-base text-gray-600 mb-2">
+                {property.address}, {property.city} - {property.state}
+              </p>
+              <div className="flex items-center gap-4">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
+                }`}>
+                  {property.type === 'venda' ? 'VENDA' : 'ALUGUEL'}
+                </span>
+                <span className="text-sm text-gray-500 capitalize">
+                  {property.category}
+                </span>
               </div>
+            </div>
 
+            <div className="flex justify-between items-center">
+              <div className="text-3xl font-bold text-gray-900">
+                {formatPrice(property.price)}
+              </div>
               <div className="flex items-center gap-4">
                 <FavoriteButton propertyId={property.id} size="large" />
                 <button
@@ -229,10 +232,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                   Compartilhar
                 </button>
               </div>
-            </div>
-
-            <div className="text-3xl font-bold text-gray-900">
-              {formatPrice(property.price)}
             </div>
           </div>
 
