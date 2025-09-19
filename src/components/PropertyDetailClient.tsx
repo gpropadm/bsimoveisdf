@@ -205,7 +205,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <p className="text-base text-gray-600 mb-2">
                   {property.address}, {property.city} - {property.state}
                 </p>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 mb-4">
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                     property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
                   }`}>
@@ -215,24 +215,41 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     {property.category}
                   </span>
                 </div>
-              </div>
-              
-              <div className="flex items-center gap-4">
-                <FavoriteButton propertyId={property.id} size="large" />
+
+                {/* Botão Tenho Interesse movido para cá */}
                 <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    const interestForm = document.getElementById('interest-form')
+                    if (interestForm) {
+                      interestForm.scrollIntoView({ behavior: 'smooth' })
+                    }
+                  }}
+                  className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors font-semibold flex items-center gap-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
-                  Compartilhar
+                  Tenho Interesse
                 </button>
               </div>
-            </div>
-            
-            <div className="text-3xl font-bold text-gray-900">
-              {formatPrice(property.price)}
+
+              <div className="text-right">
+                <div className="text-3xl font-bold text-gray-900 mb-4">
+                  {formatPrice(property.price)}
+                </div>
+                <div className="flex items-center gap-4">
+                  <FavoriteButton propertyId={property.id} size="large" />
+                  <button
+                    onClick={handleShare}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                    </svg>
+                    Compartilhar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -326,7 +343,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             <div className="lg:col-span-1">
               <div className="sticky top-24">
                 {/* Interest Form */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+                <div id="interest-form" className="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Tenho Interesse
                   </h3>
