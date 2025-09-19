@@ -243,7 +243,7 @@ BS Imóveis DF`
     console.error(`⚠️ Erro ao enviar sugestões para ${lead.name}:`, error)
     return {
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Erro desconhecido'
     }
   }
 }
