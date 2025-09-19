@@ -113,7 +113,11 @@ function VendaPageContent() {
       filtered = filtered.filter(p => p.category === filters.category)
     }
     if (filters.city) {
-      filtered = filtered.filter(p => p.city.toLowerCase().includes(filters.city.toLowerCase()))
+      // Quando filtrar por cidade, excluir fazendas (que ficam na zona rural)
+      filtered = filtered.filter(p =>
+        p.city.toLowerCase().includes(filters.city.toLowerCase()) &&
+        p.category !== 'fazenda'
+      )
     }
     if (filters.priceMin) {
       filtered = filtered.filter(p => p.price >= parseInt(filters.priceMin))
@@ -265,6 +269,7 @@ function VendaPageContent() {
                     <option value="casa">Casa</option>
                     <option value="cobertura">Cobertura</option>
                     <option value="terreno">Terreno</option>
+                    <option value="comercial">Comercial</option>
                   </select>
                 </div>
 
