@@ -271,7 +271,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <div className="text-xs text-gray-600">{property.parking === 1 ? 'Vaga' : 'Vagas'}</div>
                     </div>
                   )}
-                  {property.area && property.area > 0 && (
+                  {property.area && property.area > 0 && property.category !== 'fazenda' && (
                     <div className="bg-white p-3 rounded-lg text-center">
                       <svg className="w-6 h-6 mx-auto mb-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
