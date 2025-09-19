@@ -130,7 +130,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   } catch (error) {
     console.error('❌ Erro ao enviar sugestões:', error)
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido'
+      },
       { status: 500 }
     )
   }
