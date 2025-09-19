@@ -73,38 +73,67 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
 
   const videos = getVideos(property?.video || null)
 
-  // Controle de progresso e navegação automática
+  // Controle de progresso e navegação automática baseado na duração real
   useEffect(() => {
     console.log('📊 Progress effect:', { isOpen, isPlaying, videoIndex: currentVideoIndex })
 
     if (!isOpen || !isPlaying || !videoRef.current) return
 
     const video = videoRef.current
-    const duration = video.duration || 8 // 8 segundos para teste
 
-    console.log('⏱️ Starting timer:', { duration, currentVideoIndex, totalVideos: videos.length })
+    // Aguardar carregamento do vídeo para obter duração real
+    const startTimer = () => {
+      const duration = video.duration
 
-    // Limpar intervalo anterior
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current)
+      if (!duration || isNaN(duration)) {
+        console.log('⏳ Waiting for video to load...')
+        return
+      }
+
+      console.log('⏱️ Starting timer with REAL duration:', { duration, currentVideoIndex, totalVideos: videos.length })
+
+      // Limpar intervalo anterior
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current)
+      }
+
+      // Iniciar progresso
+      setProgress(0)
+      const startTime = Date.now()
+
+      progressIntervalRef.current = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000
+        const newProgress = Math.min((elapsed / duration) * 100, 100)
+
+        setProgress(newProgress)
+
+        // Avançar para próximo vídeo quando terminar
+        if (newProgress >= 100) {
+          console.log('✅ Video finished, going to next')
+          goToNextVideo()
+        }
+      }, 100)
     }
 
-    // Iniciar progresso
-    setProgress(0)
-    const startTime = Date.now()
-
-    progressIntervalRef.current = setInterval(() => {
-      const elapsed = (Date.now() - startTime) / 1000
-      const newProgress = Math.min((elapsed / duration) * 100, 100)
-
-      setProgress(newProgress)
-
-      // Avançar para próximo vídeo quando terminar
-      if (newProgress >= 100) {
-        console.log('✅ Video finished, going to next')
-        goToNextVideo()
+    // Se o vídeo já carregou, iniciar imediatamente
+    if (video.duration && !isNaN(video.duration)) {
+      startTimer()
+    } else {
+      // Se não carregou ainda, aguardar evento loadedmetadata
+      const handleLoadedMetadata = () => {
+        console.log('📽️ Video metadata loaded, duration:', video.duration)
+        startTimer()
       }
-    }, 100)
+
+      video.addEventListener('loadedmetadata', handleLoadedMetadata)
+
+      return () => {
+        video.removeEventListener('loadedmetadata', handleLoadedMetadata)
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current)
+        }
+      }
+    }
 
     return () => {
       if (progressIntervalRef.current) {
@@ -192,9 +221,6 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
     }
   }
 
-  const goToVideo = (index: number) => {
-    setCurrentVideoIndex(index)
-  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
