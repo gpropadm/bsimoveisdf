@@ -258,13 +258,22 @@ export default function AdminLeadsPage() {
               <div key={lead.id} className="bg-white border border-gray-200 rounded-lg p-4">
                 <div className="flex items-start gap-4 mb-3">
                   {/* Foto do Imóvel */}
-                  {lead.property && (
+                  {lead.property ? (
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                       <img
                         src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
                         alt={lead.property.title}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.jpg'
+                        }}
                       />
+                    </div>
+                  ) : (
+                    <div className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                      </svg>
                     </div>
                   )}
 
@@ -373,13 +382,13 @@ export default function AdminLeadsPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Foto
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Cliente
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Contato
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Foto
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
@@ -396,14 +405,34 @@ export default function AdminLeadsPage() {
                   {leads.map((lead) => (
                     <tr key={lead.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
+                        {lead.property ? (
+                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
+                            <img
+                              src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
+                              alt={lead.property.title}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = '/placeholder.jpg'
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
                             {lead.name}
                           </div>
                           {lead.message && (
                             <div className="text-sm text-gray-500 truncate max-w-xs">
-                              {lead.message.length > 50 
-                                ? `${lead.message.substring(0, 50)}...` 
+                              {lead.message.length > 50
+                                ? `${lead.message.substring(0, 50)}...`
                                 : lead.message
                               }
                             </div>
@@ -430,23 +459,6 @@ export default function AdminLeadsPage() {
                             </div>
                           )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {lead.property ? (
-                          <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
-                            <img
-                              src={lead.property.images ? JSON.parse(lead.property.images)[0] : '/placeholder.jpg'}
-                              alt={lead.property.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <select
