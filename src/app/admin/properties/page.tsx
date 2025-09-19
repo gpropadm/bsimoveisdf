@@ -76,7 +76,6 @@ export default function AdminPropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState<string | null>(null)
-  const [matching, setMatching] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -126,37 +125,6 @@ export default function AdminPropertiesPage() {
     }
   }
 
-  const handleMatchLeads = async (propertyId: string) => {
-    setMatching(propertyId)
-    try {
-      const response = await fetch('/api/admin/properties/match-leads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ propertyId })
-      })
-
-      if (!response.ok) {
-        throw new Error('Erro ao buscar leads')
-      }
-
-      const result = await response.json()
-
-      if (result.matches > 0) {
-        toast.success(`🎯 ${result.matches} leads encontrados! ${result.whatsappSent} WhatsApps enviados.`)
-      } else {
-        toast.info('Nenhum lead compatível encontrado para este imóvel.')
-      }
-
-      console.log('Resultado do matching:', result)
-    } catch (error) {
-      console.error('Erro no matching:', error)
-      toast.error('Erro ao buscar leads. Tente novamente.')
-    } finally {
-      setMatching(null)
-    }
-  }
 
   if (status === 'loading' || loading) {
     return (
@@ -233,25 +201,29 @@ export default function AdminPropertiesPage() {
               </div>
 
               <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => handleMatchLeads(property.id)}
-                  disabled={matching === property.id}
-                  className="text-green-600 hover:text-green-900 text-sm disabled:opacity-50"
-                >
-                  {matching === property.id ? '🔍 Buscando...' : '🎯 Buscar Leads'}
-                </button>
                 <Link
                   href={`/admin/properties/${property.id}/edit`}
-                  className="text-[#7360ee] hover:text-[#7360ee]/80 text-sm"
+                  className="text-gray-400 hover:text-gray-600"
+                  title="Editar imóvel"
                 >
-                  Editar
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
                 </Link>
                 <button
                   onClick={() => handleDelete(property.id)}
                   disabled={deleting === property.id}
-                  className="text-red-600 hover:text-red-900 text-sm disabled:opacity-50"
+                  className="text-gray-400 hover:text-red-600 disabled:opacity-50"
+                  title="Excluir imóvel"
                 >
-                  {deleting === property.id ? 'Excluindo...' : 'Excluir'}
+                  {deleting === property.id ? (
+                    <div className="animate-spin w-4 h-4 border border-red-600 border-t-transparent rounded-full"></div>
+                  ) : (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clipRule="evenodd" />
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v4a1 1 0 11-2 0V7zM12 7a1 1 0 10-2 0v4a1 1 0 102 0V7z" clipRule="evenodd" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>
@@ -376,25 +348,29 @@ export default function AdminPropertiesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-3">
-                        <button
-                          onClick={() => handleMatchLeads(property.id)}
-                          disabled={matching === property.id}
-                          className="text-green-600 hover:text-green-900 disabled:opacity-50"
-                        >
-                          {matching === property.id ? '🔍 Buscando...' : '🎯 Buscar Leads'}
-                        </button>
                         <Link
                           href={`/admin/properties/${property.id}/edit`}
-                          className="text-[#7360ee] hover:text-[#7360ee]/80"
+                          className="text-gray-400 hover:text-gray-600"
+                          title="Editar imóvel"
                         >
-                          Editar
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                          </svg>
                         </Link>
                         <button
                           onClick={() => handleDelete(property.id)}
                           disabled={deleting === property.id}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                          className="text-gray-400 hover:text-red-600 disabled:opacity-50"
+                          title="Excluir imóvel"
                         >
-                          {deleting === property.id ? 'Excluindo...' : 'Excluir'}
+                          {deleting === property.id ? (
+                            <div className="animate-spin w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full"></div>
+                          ) : (
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clipRule="evenodd" />
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 012 0v4a1 1 0 11-2 0V7zM12 7a1 1 0 10-2 0v4a1 1 0 102 0V7z" clipRule="evenodd" />
+                            </svg>
+                          )}
                         </button>
                       </div>
                     </td>
