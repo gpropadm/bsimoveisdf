@@ -193,8 +193,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <Header settings={settings} />
       
       <main className="pt-20">
-        {/* Nova Galeria WiImóveis - Largura completa */}
-        <div className="max-w-7xl mx-auto mb-8">
+        {/* Nova Galeria WiImóveis - Largura completa da tela */}
+        <div className="w-full mb-8 px-4">
           <PropertyGalleryWi
             images={images}
             propertyTitle={property.title}
