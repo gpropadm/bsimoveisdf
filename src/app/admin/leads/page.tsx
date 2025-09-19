@@ -425,11 +425,11 @@ export default function AdminLeadsPage() {
                               src={lead.property.images ? (() => {
                                 try {
                                   const images = JSON.parse(lead.property.images);
-                                  return Array.isArray(images) && images.length > 0 ? images[0] : '/placeholder.jpg';
+                                  return Array.isArray(images) && images.length > 0 ? images[0] : 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
                                 } catch {
-                                  return '/placeholder.jpg';
+                                  return 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto';
                                 }
-                              })() : '/placeholder.jpg'}
+                              })() : 'https://via.placeholder.com/200x200/e5e7eb/9ca3af?text=Sem+Foto'}
                               alt={lead.property.title}
                               className="w-full h-full object-cover"
                               onError={(e) => {
