@@ -262,8 +262,8 @@ export default function AdminPropertiesPage() {
 
               <div className="flex justify-between items-center text-sm text-gray-500 mb-3">
                 <div className="flex space-x-4">
-                  <span>{property.bedrooms}🛏️</span>
-                  <span>{property.bathrooms}🚿</span>
+                  <span>{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}🛏️</span>
+                  <span>{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}🚿</span>
                   <span>{formatAreaDisplay(property.area)}</span>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -408,8 +408,8 @@ export default function AdminPropertiesPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div>{property.bedrooms} quartos</div>
-                      <div>{property.bathrooms} banheiros</div>
+                      <div>{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""} quartos</div>
+                      <div>{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""} banheiros</div>
                       <div>{formatAreaDisplay(property.area)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

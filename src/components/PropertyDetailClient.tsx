@@ -263,21 +263,21 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                   {property.bedrooms && (
                     <div className="bg-white p-3 rounded-lg text-center">
                       <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.bedrooms}</div>
+                      <div className="text-lg font-semibold text-gray-900">{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}</div>
                       <div className="text-xs text-gray-600">{property.bedrooms === 1 ? 'Quarto' : 'Quartos'}</div>
                     </div>
                   )}
                   {property.bathrooms && (
                     <div className="bg-white p-3 rounded-lg text-center">
                       <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.bathrooms}</div>
+                      <div className="text-lg font-semibold text-gray-900">{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}</div>
                       <div className="text-xs text-gray-600">{property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}</div>
                     </div>
                   )}
                   {property.parking && (
                     <div className="bg-white p-3 rounded-lg text-center">
                       <img src="/icons/icons8-hennessey-venom-30.png" alt="Garagem" className="w-6 h-6 mx-auto mb-1 opacity-60" />
-                      <div className="text-lg font-semibold text-gray-900">{property.parking}</div>
+                      <div className="text-lg font-semibold text-gray-900">{property.parking && property.parking > 0 ? property.parking : ""}</div>
                       <div className="text-xs text-gray-600">{property.parking === 1 ? 'Vaga' : 'Vagas'}</div>
                     </div>
                   )}

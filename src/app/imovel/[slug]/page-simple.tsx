@@ -87,19 +87,19 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {property.bedrooms && (
               <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.bedrooms}</div>
+                <div className="text-2xl font-bold text-gray-900">{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}</div>
                 <div className="text-sm text-gray-600">Quartos</div>
               </div>
             )}
             {property.bathrooms && (
               <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.bathrooms}</div>
+                <div className="text-2xl font-bold text-gray-900">{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}</div>
                 <div className="text-sm text-gray-600">Banheiros</div>
               </div>
             )}
             {property.parking && (
               <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-gray-900">{property.parking}</div>
+                <div className="text-2xl font-bold text-gray-900">{property.parking && property.parking > 0 ? property.parking : ""}</div>
                 <div className="text-sm text-gray-600">Vagas</div>
               </div>
             )}

@@ -459,19 +459,19 @@ function PropertyCard({ property, onViewDetails, formatPrice, onOpenVideo }: {
           {property.bedrooms && (
             <div className="flex items-center">
               <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4 opacity-60 mr-1" />
-              {property.bedrooms} {property.bedrooms === 1 ? 'Quarto' : 'Quartos'}
+              {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""} {property.bedrooms === 1 ? 'Quarto' : 'Quartos'}
             </div>
           )}
           {property.bathrooms && (
             <div className="flex items-center">
               <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4 opacity-60 mr-1" />
-              {property.bathrooms} {property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}
+              {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""} {property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}
             </div>
           )}
           {property.parking && (
             <div className="flex items-center">
               <img src="/icons/icons8-hennessey-venom-30.png" alt="Garagem" className="w-4 h-4 opacity-60 mr-1" />
-              {property.parking} {property.parking === 1 ? 'Vaga' : 'Vagas'}
+              {property.parking && property.parking > 0 ? property.parking : ""} {property.parking === 1 ? 'Vaga' : 'Vagas'}
             </div>
           )}
         </div>

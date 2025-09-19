@@ -74,8 +74,8 @@ export default async function Properties() {
                   <span className="text-sm text-gray-500 capitalize">{property.type}</span>
                 </div>
                 <div className="mt-4 flex gap-4 text-sm text-gray-500">
-                  {property.bedrooms && <span>{property.bedrooms} quartos</span>}
-                  {property.bathrooms && <span>{property.bathrooms} banheiros</span>}
+                  {property.bedrooms && <span>{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""} quartos</span>}
+                  {property.bathrooms && <span>{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""} banheiros</span>}
                   {property.area && property.area > 0 && <span>{property.area && property.area > 0 ? property.area : ""}m²</span>}
                 </div>
                 <div className="mt-4">

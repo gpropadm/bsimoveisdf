@@ -45,19 +45,19 @@ export default async function PropertyDetail({ params }: PropertyDetailProps) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px', marginBottom: '30px' }}>
         {property.bedrooms && (
           <div style={{ textAlign: 'center', padding: '15px', backgroundColor: '#e9f7fe', borderRadius: '8px' }}>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.bedrooms}</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ''}</div>
             <div style={{ fontSize: '14px', color: '#666' }}>Quartos</div>
           </div>
         )}
         {property.bathrooms && (
           <div style={{ textAlign: 'center', padding: '15px', backgroundColor: '#e9f7fe', borderRadius: '8px' }}>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.bathrooms}</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ''}</div>
             <div style={{ fontSize: '14px', color: '#666' }}>Banheiros</div>
           </div>
         )}
         {property.parking && (
           <div style={{ textAlign: 'center', padding: '15px', backgroundColor: '#e9f7fe', borderRadius: '8px' }}>
-            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.parking}</div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{property.parking && property.parking > 0 ? property.parking : ''}</div>
             <div style={{ fontSize: '14px', color: '#666' }}>Vagas</div>
           </div>
         )}

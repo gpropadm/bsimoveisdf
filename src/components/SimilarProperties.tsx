@@ -234,13 +234,13 @@ export default function SimilarProperties({
                             {property.bedrooms && (
                               <span className="flex items-center gap-1">
                                 <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4" width={16} height={16} />
-                                {property.bedrooms}
+                                {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}
                               </span>
                             )}
                             {property.bathrooms && (
                               <span className="flex items-center gap-1">
                                 <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4" width={16} height={16} />
-                                {property.bathrooms}
+                                {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}
                               </span>
                             )}
                             {property.area && property.area > 0 && (
@@ -332,13 +332,13 @@ export default function SimilarProperties({
                       {property.bedrooms && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-4 h-4" width={16} height={16} />
-                          {property.bedrooms}
+                          {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}
                         </span>
                       )}
                       {property.bathrooms && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-4 h-4" width={16} height={16} />
-                          {property.bathrooms}
+                          {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}
                         </span>
                       )}
                       {property.area && property.area > 0 && (
@@ -436,13 +436,13 @@ export default function SimilarProperties({
                       {property.bedrooms && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-3 h-3" width={12} height={12} />
-                          {property.bedrooms}
+                          {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}
                         </span>
                       )}
                       {property.bathrooms && (
                         <span className="flex items-center gap-1">
                           <Image src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-3 h-3" width={12} height={12} />
-                          {property.bathrooms}
+                          {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}
                         </span>
                       )}
                       {property.area && property.area > 0 && (

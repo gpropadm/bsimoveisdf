@@ -291,7 +291,7 @@ ${formData.message}
                     <div className="flex justify-center mb-1">
                       <img src="/icons/icons8-sleeping-in-bed-50.png" alt="Quartos" className="w-5 h-5 opacity-60" />
                     </div>
-                    <div className="text-xl font-bold text-gray-800">{property.bedrooms}</div>
+                    <div className="text-xl font-bold text-gray-800">{property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}</div>
                     <div className="text-xs text-gray-600">Quartos</div>
                   </div>
                 )}
@@ -300,7 +300,7 @@ ${formData.message}
                     <div className="flex justify-center mb-1">
                       <img src="/icons/icons8-bathroom-32.png" alt="Banheiros" className="w-5 h-5 opacity-60" />
                     </div>
-                    <div className="text-xl font-bold text-gray-800">{property.bathrooms}</div>
+                    <div className="text-xl font-bold text-gray-800">{property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}</div>
                     <div className="text-xs text-gray-600">Banheiros</div>
                   </div>
                 )}
@@ -309,7 +309,7 @@ ${formData.message}
                     <div className="flex justify-center mb-1">
                       <img src="/icons/icons8-hennessey-venom-30.png" alt="Vagas" className="w-5 h-5 opacity-60" />
                     </div>
-                    <div className="text-xl font-bold text-gray-800">{property.parking}</div>
+                    <div className="text-xl font-bold text-gray-800">{property.parking && property.parking > 0 ? property.parking : ""}</div>
                     <div className="text-xs text-gray-600">Vagas</div>
                   </div>
                 )}
@@ -484,8 +484,8 @@ ${formData.message}
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li>• Tipo: {property.category}</li>
                   <li>• Finalidade: {property.type}</li>
-                  {property.bedrooms && <li>• Quartos: {property.bedrooms}</li>}
-                  {property.bathrooms && <li>• Banheiros: {property.bathrooms}</li>}
+                  {property.bedrooms && <li>• Quartos: {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""}</li>}
+                  {property.bathrooms && <li>• Banheiros: {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""}</li>}
                   {property.area && <li>• Área: {property.area && property.area > 0 ? property.area : ""}m²</li>}
                 </ul>
               </div>
