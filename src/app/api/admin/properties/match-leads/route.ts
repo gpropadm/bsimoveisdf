@@ -216,52 +216,92 @@ async function sendPropertyWhatsApp(lead: any, property: any, matchReasons: stri
     }
 
     const propertyUrl = `${process.env.NEXTAUTH_URL}/imovel/${property.slug}`
+    const optOutUrl = `${process.env.NEXTAUTH_URL}/opt-out/${lead.id}`
 
-    const whatsappMessage = `🏠 *NOVA OPORTUNIDADE PARA VOCÊ!*
+    // Buscar foto principal do imóvel
+    let propertyImage = null
+    if (property.images) {
+      try {
+        const images = JSON.parse(property.images)
+        if (Array.isArray(images) && images.length > 0) {
+          propertyImage = images[0] // Primeira imagem (principal)
+        }
+      } catch (error) {
+        console.log('⚠️ Erro ao parse images:', error)
+      }
+    }
 
-Olá *${lead.name}*! 👋
+    const whatsappMessage = `*NOVA OPORTUNIDADE PARA VOCÊ*
+
+Olá *${lead.name}*!
 
 Encontramos um imóvel que pode te interessar:
 
-🏠 *${property.title}*
-💰 *Preço:* R$ ${property.price.toLocaleString('pt-BR')}
-📍 *Local:* ${property.city}, ${property.state}
-🏘️ *Categoria:* ${property.category}
-${property.bedrooms ? `🛏️ *Quartos:* ${property.bedrooms}` : ''}
-${property.bathrooms ? `🚿 *Banheiros:* ${property.bathrooms}` : ''}
-${property.area ? `📐 *Área:* ${property.area}m²` : ''}
+*${property.title}*
+*Preço:* R$ ${property.price.toLocaleString('pt-BR')}
+*Local:* ${property.city}, ${property.state}
+*Categoria:* ${property.category}
+${property.bedrooms ? `*Quartos:* ${property.bedrooms}` : ''}
+${property.bathrooms ? `*Banheiros:* ${property.bathrooms}` : ''}
+${property.area ? `*Área:* ${property.area}m²` : ''}
 
 *Por que este imóvel é perfeito para você:*
 ${matchReasons.map(reason => `✅ ${reason}`).join('\n')}
 
-👀 *Veja mais fotos e detalhes:*
-${propertyUrl}
+*Ver detalhes:* ${propertyUrl}
 
-📞 *Quer agendar uma visita?*
+*Quer agendar uma visita?*
 Responda esta mensagem ou ligue para nós!
 
 ---
-BS Imóveis DF - Realizando sonhos! 🏡`
+Para não receber mais sugestões: ${optOutUrl}
+
+BS Imóveis DF`
 
     const normalizedPhone = normalizePhoneNumber(lead.phone)
     console.log(`📱 Enviando WhatsApp para ${lead.name}:`, {
       original: lead.phone,
-      normalizado: normalizedPhone
+      normalizado: normalizedPhone,
+      comImagem: !!propertyImage
     })
 
-    const ultraMsgUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
-    const payload = {
-      token: token,
-      to: normalizedPhone,
-      body: whatsappMessage,
-      priority: 'high'
+    let response
+
+    // Enviar com imagem se disponível
+    if (propertyImage) {
+      console.log('📸 Enviando com foto do imóvel:', propertyImage)
+
+      const mediaUrl = `https://api.ultramsg.com/${instanceId}/messages/image`
+      const mediaPayload = {
+        token: token,
+        to: normalizedPhone,
+        image: propertyImage,
+        caption: whatsappMessage,
+        priority: 'high'
+      }
+
+      response = await fetch(mediaUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mediaPayload)
+      })
+    } else {
+      console.log('📝 Enviando sem imagem (só texto)')
+
+      const textUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
+      const textPayload = {
+        token: token,
+        to: normalizedPhone,
+        body: whatsappMessage,
+        priority: 'high'
+      }
+
+      response = await fetch(textUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(textPayload)
+      })
     }
-
-    const response = await fetch(ultraMsgUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
 
     const responseData = await response.json()
 
