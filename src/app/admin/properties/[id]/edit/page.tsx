@@ -187,23 +187,13 @@ export default function EditProperty() {
         cultivatedArea: data.cultivatedArea ? data.cultivatedArea.toString() : '',
         pastures: data.pastures ? data.pastures.toString() : '',
         areaUnit: data.areaUnit || 'hectares',
-        buildings: (() => {
-          console.log('🏗️ DEBUG: data.buildings do banco:', data.buildings)
-          console.log('🏗️ DEBUG: tipo:', typeof data.buildings)
-          if (!data.buildings) return []
-          if (Array.isArray(data.buildings)) {
-            console.log('🏗️ DEBUG: é array, retornando:', data.buildings)
-            return data.buildings
-          }
+        buildings: data.buildings ? (Array.isArray(data.buildings) ? data.buildings : (() => {
           try {
-            const parsed = JSON.parse(data.buildings)
-            console.log('🏗️ DEBUG: parseado:', parsed)
-            return Array.isArray(parsed) ? parsed : []
-          } catch (error) {
-            console.log('🏗️ DEBUG: erro no parse:', error)
+            return JSON.parse(data.buildings) || []
+          } catch {
             return []
           }
-        })(),
+        })()) : [],
         waterSources: data.waterSources || '',
         // Campos específicos para casa
         houseType: data.houseType || '',
@@ -1411,17 +1401,7 @@ export default function EditProperty() {
                           <label key={building} className="flex items-center">
                             <input
                               type="checkbox"
-                              checked={(() => {
-                                const isChecked = (formData.buildings || []).includes(building)
-                                if (building === 'Casa Sede') {
-                                  console.log('🏗️ DEBUG Casa Sede:', {
-                                    building,
-                                    formDataBuildings: formData.buildings,
-                                    isChecked
-                                  })
-                                }
-                                return isChecked
-                              })()}
+                              checked={(formData.buildings || []).includes(building)}
                               onChange={(e) => {
                                 const currentBuildings = formData.buildings || []
                                 if (e.target.checked) {
