@@ -51,34 +51,36 @@ function PlaceholderIcon() {
   )
 }
 
-// Toggle Switch Component (Simple)
-function ToggleSwitch({ enabled, onChange, label, description }: {
-  enabled: boolean;
-  onChange: () => void;
-  label: string;
-  description?: string;
-}) {
+function getStatusBadge(status: string) {
+  const statusConfig = {
+    'disponivel': {
+      color: 'bg-green-100 text-green-800',
+      label: 'Disponível'
+    },
+    'vendido': {
+      color: 'bg-red-100 text-red-800',
+      label: 'Vendido'
+    },
+    'alugado': {
+      color: 'bg-blue-100 text-blue-800',
+      label: 'Alugado'
+    },
+    'reservado': {
+      color: 'bg-yellow-100 text-yellow-800',
+      label: 'Reservado'
+    },
+    'indisponivel': {
+      color: 'bg-gray-100 text-gray-800',
+      label: 'Indisponível'
+    }
+  }
+
+  const config = statusConfig[status as keyof typeof statusConfig] || statusConfig['disponivel']
+
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex-1">
-        <div className="text-sm font-medium text-gray-900">{label}</div>
-        {description && (
-          <div className="text-sm text-gray-500">{description}</div>
-        )}
-      </div>
-      <button
-        onClick={onChange}
-        className={`relative inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-          enabled ? 'bg-blue-600' : 'bg-gray-200'
-        }`}
-      >
-        <span
-          className={`inline-block w-4 h-4 transform rounded-full bg-white transition-transform ${
-            enabled ? 'translate-x-6' : 'translate-x-1'
-          }`}
-        />
-      </button>
-    </div>
+    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${config.color}`}>
+      {config.label}
+    </span>
   )
 }
 
@@ -264,25 +266,20 @@ export default function AdminPropertiesPage() {
                   <span>{property.bathrooms}🚿</span>
                   <span>{formatAreaDisplay(property.area)}</span>
                 </div>
-                <div className="space-y-3">
-                  <ToggleSwitch
-                    enabled={property.status === 'disponivel'}
-                    onChange={() => updatePropertyStatus(
-                      property.id,
-                      property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
-                    )}
-                    label="Disponível"
-                    description="Imóvel aparece no site público"
-                  />
-                  <ToggleSwitch
-                    enabled={property.featured}
-                    onChange={() => updatePropertyFeatured(property.id, !property.featured)}
-                    label="Destaque"
-                    description="Aparece na seção de destaques"
-                  />
-                  <div className="text-sm text-gray-900 capitalize font-medium">
-                    Finalidade: {property.type}
-                  </div>
+                <div className="flex items-center space-x-2">
+                  {getStatusBadge(property.status)}
+                  <span className={`px-2 py-1 text-xs rounded-full ${
+                    property.type === 'venda'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-blue-100 text-blue-800'
+                  }`}>
+                    {property.type}
+                  </span>
+                  {property.featured && (
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
+                      ⭐ Destaque
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -416,25 +413,20 @@ export default function AdminPropertiesPage() {
                       <div>{formatAreaDisplay(property.area)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="space-y-4">
-                        <ToggleSwitch
-                          enabled={property.status === 'disponivel'}
-                          onChange={() => updatePropertyStatus(
-                            property.id,
-                            property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
-                          )}
-                          label="Disponível"
-                          description="Imóvel aparece no site público"
-                        />
-                        <ToggleSwitch
-                          enabled={property.featured}
-                          onChange={() => updatePropertyFeatured(property.id, !property.featured)}
-                          label="Destaque"
-                          description="Aparece na seção de destaques"
-                        />
-                        <div className="text-sm text-gray-900 capitalize font-medium">
+                      <div className="flex flex-col space-y-1">
+                        {getStatusBadge(property.status)}
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          property.type === 'venda'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
                           {property.type}
-                        </div>
+                        </span>
+                        {property.featured && (
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            ⭐ Destaque
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
