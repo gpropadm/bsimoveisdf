@@ -51,23 +51,30 @@ function PlaceholderIcon() {
   )
 }
 
-// Toggle Switch Component
-function ToggleSwitch({ enabled, onChange, label }: { enabled: boolean; onChange: () => void; label: string }) {
+// Toggle Switch Component (Flowbite style)
+function ToggleSwitch({ enabled, onChange, label, description }: {
+  enabled: boolean;
+  onChange: () => void;
+  label: string;
+  description?: string;
+}) {
   return (
-    <div className="flex flex-col items-center space-y-1">
-      <button
-        onClick={onChange}
-        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-          enabled ? 'bg-green-500' : 'bg-red-500'
-        }`}
-      >
-        <span
-          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-            enabled ? 'translate-x-6' : 'translate-x-1'
-          }`}
+    <div className="flex items-center justify-between">
+      <div className="flex-1">
+        <label className="text-sm font-medium text-gray-900">{label}</label>
+        {description && (
+          <p className="text-sm text-gray-500">{description}</p>
+        )}
+      </div>
+      <label className="relative inline-flex items-center cursor-pointer ml-4">
+        <input
+          type="checkbox"
+          checked={enabled}
+          onChange={onChange}
+          className="sr-only peer"
         />
-      </button>
-      <span className="text-xs text-gray-600">{label}</span>
+        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+      </label>
     </div>
   )
 }
@@ -254,25 +261,25 @@ export default function AdminPropertiesPage() {
                   <span>{property.bathrooms}🚿</span>
                   <span>{formatAreaDisplay(property.area)}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <ToggleSwitch
-                      enabled={property.status === 'disponivel'}
-                      onChange={() => updatePropertyStatus(
-                        property.id,
-                        property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
-                      )}
-                      label="Disponível"
-                    />
-                    <ToggleSwitch
-                      enabled={property.featured}
-                      onChange={() => updatePropertyFeatured(property.id, !property.featured)}
-                      label="Destaque"
-                    />
+                <div className="space-y-3">
+                  <ToggleSwitch
+                    enabled={property.status === 'disponivel'}
+                    onChange={() => updatePropertyStatus(
+                      property.id,
+                      property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
+                    )}
+                    label="Disponível"
+                    description="Imóvel aparece no site público"
+                  />
+                  <ToggleSwitch
+                    enabled={property.featured}
+                    onChange={() => updatePropertyFeatured(property.id, !property.featured)}
+                    label="Destaque"
+                    description="Aparece na seção de destaques"
+                  />
+                  <div className="text-sm text-gray-900 capitalize font-medium">
+                    Finalidade: {property.type}
                   </div>
-                  <span className="text-xs text-gray-600 capitalize font-medium">
-                    {property.type}
-                  </span>
                 </div>
               </div>
 
@@ -406,7 +413,7 @@ export default function AdminPropertiesPage() {
                       <div>{formatAreaDisplay(property.area)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-4">
+                      <div className="space-y-4">
                         <ToggleSwitch
                           enabled={property.status === 'disponivel'}
                           onChange={() => updatePropertyStatus(
@@ -414,15 +421,17 @@ export default function AdminPropertiesPage() {
                             property.status === 'disponivel' ? 'indisponivel' : 'disponivel'
                           )}
                           label="Disponível"
+                          description="Imóvel aparece no site público"
                         />
                         <ToggleSwitch
                           enabled={property.featured}
                           onChange={() => updatePropertyFeatured(property.id, !property.featured)}
                           label="Destaque"
+                          description="Aparece na seção de destaques"
                         />
-                        <span className="text-xs text-gray-600 capitalize">
+                        <div className="text-sm text-gray-900 capitalize font-medium">
                           {property.type}
-                        </span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
