@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         AND: [
           { enableMatching: true },
           { phone: { not: null } }, // Só leads com WhatsApp
-          { status: { in: ['novo', 'interessado'] } }, // Só leads ativos
+          { status: { in: ['novo', 'interessado', 'perdido'] } }, // Só leads ativos
           {
             OR: [
               // Matching por tipo (venda/aluguel)
@@ -363,7 +363,7 @@ BS Imóveis DF`
       success: false,
       leadName: lead.name,
       leadPhone: lead.phone,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }
