@@ -190,7 +190,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: property.type === 'venda' ? 'Venda' : 'Aluguel', href: `/${property.type}` },
-    { label: property.city, href: `/${property.type}?city=${encodeURIComponent(property.city)}` },
+    { label: property.city, href: '' },
     { label: property.title, href: '', current: true },
   ]
 
