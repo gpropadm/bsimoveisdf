@@ -405,7 +405,7 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z" />
                         </svg>
-                        {property.bedrooms && property.bedrooms > 0 ? property.bedrooms : ""} {property.bedrooms === 1 ? 'quarto' : 'quartos'}
+                        {property.bedrooms} {property.bedrooms === 1 ? 'quarto' : 'quartos'}
                       </div>
                     )}
                     {property.bathrooms && property.bathrooms > 0 && (
@@ -413,7 +413,7 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M8 16a3 3 0 01-3-3V6a1 1 0 011-1h1V3a1 1 0 112 0v2h2V3a1 1 0 112 0v2h1a1 1 0 011 1v7a3 3 0 01-3 3H8zM6 8v5a1 1 0 001 1h6a1 1 0 001-1V8H6z" />
                         </svg>
-                        {property.bathrooms && property.bathrooms > 0 ? property.bathrooms : ""} {property.bathrooms === 1 ? 'banheiro' : 'banheiros'}
+                        {property.bathrooms} {property.bathrooms === 1 ? 'banheiro' : 'banheiros'}
                       </div>
                     )}
                     {property.area && property.area > 0 && (
@@ -421,7 +421,7 @@ export default function PropertyVideoModal({ property, isOpen, onClose }: Proper
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clipRule="evenodd" />
                         </svg>
-                        {property.area && property.area > 0 ? `${property.area && property.area > 0 ? property.area : ""}m²` : ''}
+                        {property.area && property.area > 0 ? `${property.area}m²` : ''}
                       </div>
                     )}
                   </div>
