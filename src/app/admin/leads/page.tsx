@@ -49,6 +49,7 @@ export default function AdminLeadsPage() {
   })
   const [loading, setLoading] = useState(true)
   const [sendingSuggestions, setSendingSuggestions] = useState<string | null>(null)
+  const [fixingPreferences, setFixingPreferences] = useState<string | null>(null)
   const [filters, setFilters] = useState({
     status: 'all',
     search: ''
@@ -151,6 +152,29 @@ export default function AdminLeadsPage() {
       alert('❌ Erro ao enviar sugestões. Tente novamente.')
     } finally {
       setSendingSuggestions(null)
+    }
+  }
+
+  const fixPreferences = async (leadId: string) => {
+    setFixingPreferences(leadId)
+    try {
+      const response = await fetch(`/api/admin/leads/${leadId}/fix-preferences`, {
+        method: 'POST'
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        alert(`✅ Preferências corrigidas! Faixa: R$ ${Math.round(result.preferences.priceMin/1000)}k-${Math.round(result.preferences.priceMax/1000)}k`)
+        fetchLeads(pagination.page) // Refresh a lista
+      } else {
+        alert(`❌ Erro: ${result.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao corrigir preferências:', error)
+      alert('❌ Erro ao corrigir preferências. Tente novamente.')
+    } finally {
+      setFixingPreferences(null)
     }
   }
 
@@ -296,6 +320,22 @@ export default function AdminLeadsPage() {
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-500">{formatDate(lead.createdAt)}</span>
                   <div className="flex gap-2 items-center">
+                    <button
+                      onClick={() => fixPreferences(lead.id)}
+                      disabled={fixingPreferences === lead.id}
+                      className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors disabled:opacity-50"
+                      title="Corrigir preferências do lead"
+                    >
+                      {fixingPreferences === lead.id ? (
+                        <div className="animate-spin w-3 h-3 border border-blue-600 border-t-transparent rounded-full"></div>
+                      ) : (
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      )}
+                      {fixingPreferences === lead.id ? 'Corrigindo...' : 'Fix'}
+                    </button>
                     {lead.status === 'perdido' && lead.phone && (
                       <button
                         onClick={() => sendSuggestions(lead.id)}
@@ -431,6 +471,22 @@ export default function AdminLeadsPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => fixPreferences(lead.id)}
+                            disabled={fixingPreferences === lead.id}
+                            className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors disabled:opacity-50 border border-blue-300"
+                            title="Corrigir preferências do lead"
+                          >
+                            {fixingPreferences === lead.id ? (
+                              <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                            ) : (
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                            )}
+                            {fixingPreferences === lead.id ? 'Corrigindo...' : 'Fix'}
+                          </button>
                           {lead.status === 'perdido' && lead.phone && (
                             <button
                               onClick={() => sendSuggestions(lead.id)}
