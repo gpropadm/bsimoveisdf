@@ -60,7 +60,7 @@ interface PropertyDetailClientProps {
 
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const { settings } = useSettings()
-  
+
   // Estados do formulário de interesse
   const [formData, setFormData] = useState({
     name: '',
@@ -108,7 +108,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) {
       setSubmitMessage('❌ Por favor, preencha todos os campos obrigatórios.')
       return
@@ -140,15 +140,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         throw new Error(data.error || 'Erro ao enviar dados')
       }
 
-      // WhatsApp integration handled by API
-
-      // Abrir WhatsApp (funcionamento original) - REMOVIDO para usar apenas nossa integração automática
-      // const whatsappURL = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`
-      // window.open(whatsappURL, '_blank')
-
       setSubmitMessage('✅ Interesse enviado com sucesso! Em breve entraremos em contato.')
-      
-      // Limpar formulário após 3 segundos
+
       setTimeout(() => {
         setFormData({
           name: '',
@@ -186,52 +179,47 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     }
   }
 
-
   return (
     <ToastProvider>
       <div className="min-h-screen bg-white">
         <Header settings={settings} />
 
+        {/* Galeria - 100% da largura */}
         <div className="pt-16">
-          {/* Galeria - 100% da largura da tela */}
-          <div className="w-full mb-0">
-            <PropertyGalleryWi
-              images={images}
-              propertyTitle={property.title}
-            />
-          </div>
+          <PropertyGalleryWi
+            images={images}
+            propertyTitle={property.title}
+          />
+        </div>
 
-          {/* Container principal da página - Todas as informações abaixo da galeria */}
-          <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Conteúdo principal */}
+        <div className="max-w-6xl mx-auto px-4 py-8">
 
-            {/* Título e Informações Principais */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {property.title}
-              </h1>
-              <p className="text-gray-600 mb-4">
-                {property.address}, {property.city} - {property.state}
-              </p>
-
-              <div className="flex items-center justify-center gap-6 mb-6">
-                <div className="text-center">
-                  <div className="text-4xl font-bold text-gray-900 mb-1">
-                    {formatPrice(property.price)}
-                  </div>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium uppercase ${
-                      property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
-                    }`}>
-                      {property.type}
-                    </span>
-                    <span className="text-sm text-gray-600 capitalize">
-                      {property.category}
-                    </span>
-                  </div>
+          {/* Título e preço */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              {property.title}
+            </h1>
+            <p className="text-gray-600 mb-4">
+              {property.address}, {property.city} - {property.state}
+            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-3xl font-bold text-gray-900 mb-2">
+                  {formatPrice(property.price)}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium uppercase ${
+                    property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
+                  }`}>
+                    {property.type}
+                  </span>
+                  <span className="text-sm text-gray-600 capitalize">
+                    {property.category}
+                  </span>
                 </div>
               </div>
-
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center gap-3">
                 <FavoriteButton propertyId={property.id} size="large" />
                 <button
                   onClick={handleShare}
@@ -244,72 +232,111 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* Características principais */}
-            {(property.bedrooms || property.bathrooms || property.area) && (
-              <div className="mb-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-                  {property.bedrooms && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V5H1v11h2v3h2v-3h8v3h2v-3h2V5h-2v2z"/>
-                        </svg>
-                      </div>
-                      <div className="font-semibold text-gray-900 text-lg">{property.bedrooms}</div>
-                      <div className="text-sm text-gray-600">Dormitório{property.bedrooms > 1 ? 's' : ''}</div>
-                    </div>
-                  )}
+          {/* Grid principal: informações à esquerda, formulário à direita */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                  {property.bathrooms && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M9 2v1h6V2a1 1 0 0 1 2 0v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h1V2a1 1 0 0 1 2 0zm0 6v10h6V8H9z"/>
-                        </svg>
-                      </div>
-                      <div className="font-semibold text-gray-900 text-lg">{property.bathrooms}</div>
-                      <div className="text-sm text-gray-600">Banheiro{property.bathrooms > 1 ? 's' : ''}</div>
-                    </div>
-                  )}
+            {/* Coluna esquerda - Informações do imóvel */}
+            <div className="lg:col-span-2 space-y-6">
 
-                  {property.area && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
-                        </svg>
+              {/* Características */}
+              {(property.bedrooms || property.bathrooms || property.area || property.parking) && (
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Características</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {property.bedrooms && (
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V5H1v11h2v3h2v-3h8v3h2v-3h2V5h-2v2z"/>
+                          </svg>
+                        </div>
+                        <div className="font-semibold text-gray-900">{property.bedrooms}</div>
+                        <div className="text-sm text-gray-600">Dormitório{property.bedrooms > 1 ? 's' : ''}</div>
                       </div>
-                      <div className="font-semibold text-gray-900 text-lg">{formatAreaDisplay(property.area)}</div>
-                      <div className="text-sm text-gray-600">Área</div>
-                    </div>
-                  )}
-
-                  {property.parking && (
-                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                        </svg>
+                    )}
+                    {property.bathrooms && (
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-6 h-6 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 2v1h6V2a1 1 0 0 1 2 0v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h1V2a1 1 0 0 1 2 0zm0 6v10h6V8H9z"/>
+                          </svg>
+                        </div>
+                        <div className="font-semibold text-gray-900">{property.bathrooms}</div>
+                        <div className="text-sm text-gray-600">Banheiro{property.bathrooms > 1 ? 's' : ''}</div>
                       </div>
-                      <div className="font-semibold text-gray-900 text-lg">{property.parking}</div>
-                      <div className="text-sm text-gray-600">Vaga{property.parking > 1 ? 's' : ''}</div>
-                    </div>
-                  )}
+                    )}
+                    {property.area && (
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
+                          </svg>
+                        </div>
+                        <div className="font-semibold text-gray-900">{formatAreaDisplay(property.area)}</div>
+                        <div className="text-sm text-gray-600">Área</div>
+                      </div>
+                    )}
+                    {property.parking && (
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                          <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                          </svg>
+                        </div>
+                        <div className="font-semibold text-gray-900">{property.parking}</div>
+                        <div className="text-sm text-gray-600">Vaga{property.parking > 1 ? 's' : ''}</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Formulário Tenho Interesse - Centralizado */}
-            <div className="max-w-lg mx-auto mb-8">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
-                  Tenho Interesse
-                </h3>
+              {/* Descrição */}
+              {property.description && (
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Descrição</h3>
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                    {property.description}
+                  </p>
+                </div>
+              )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Informações específicas por categoria */}
+              {(property.category === 'apartamento' || property.category === 'cobertura') && (
+                <ApartmentInfo property={property} />
+              )}
+
+              {property.category === 'casa' && (
+                <HouseInfo property={property} />
+              )}
+
+              {property.category === 'terreno' && (
+                <LandInfo property={property} />
+              )}
+
+              {property.category === 'fazenda' && (
+                <FarmInfo property={property} />
+              )}
+
+              {(property.category === 'comercial' || property.category === 'loja' || property.category === 'sala') && (
+                <CommercialInfo property={property} />
+              )}
+            </div>
+
+            {/* Coluna direita - Formulário */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-6">
+
+                {/* Formulário Tenho Interesse */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    Tenho Interesse
+                  </h3>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Nome Completo
@@ -339,119 +366,77 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         required
                       />
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      E-mail
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                      placeholder="seu@email.com"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mensagem
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
-                      placeholder="Sua mensagem..."
-                    />
-                  </div>
-
-                  {submitMessage && (
-                    <div className={`p-3 rounded-lg text-sm ${
-                      submitMessage.includes('✅')
-                        ? 'bg-green-100 text-green-800 border border-green-200'
-                        : 'bg-red-100 text-red-800 border border-red-200'
-                    }`}>
-                      {submitMessage}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        E-mail
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        placeholder="seu@email.com"
+                        required
+                      />
                     </div>
-                  )}
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-teal-600 text-white py-3 px-6 rounded-lg hover:bg-teal-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
-                        Enviar Interesse
-                      </>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mensagem
+                      </label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
+                        placeholder="Sua mensagem..."
+                      />
+                    </div>
+
+                    {submitMessage && (
+                      <div className={`p-3 rounded-lg text-sm ${
+                        submitMessage.includes('✅')
+                          ? 'bg-green-100 text-green-800 border border-green-200'
+                          : 'bg-red-100 text-red-800 border border-red-200'
+                      }`}>
+                        {submitMessage}
+                      </div>
                     )}
-                  </button>
-                </form>
-              </div>
-            </div>
 
-          {/* Detalhes do Imóvel - Layout linear */}
-          <div className="space-y-8">
-
-            {/* Descrição */}
-            {property.description && (
-              <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">Descrição</h2>
-                <div className="prose prose-gray max-w-none text-center">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {property.description}
-                  </p>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-teal-600 text-white py-3 px-6 rounded-lg hover:bg-teal-700 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                          </svg>
+                          Enviar Interesse
+                        </>
+                      )}
+                    </button>
+                  </form>
                 </div>
+
+                {/* Agendamento */}
+                <AppointmentScheduler propertyId={property.id} propertyTitle={property.title} />
               </div>
-            )}
-
-            {/* Apartment/Condo Specific Info */}
-            {(property.category === 'apartamento' || property.category === 'cobertura') && (
-              <ApartmentInfo property={property} />
-            )}
-
-            {/* House Specific Info */}
-            {property.category === 'casa' && (
-              <HouseInfo property={property} />
-            )}
-
-            {/* Land Specific Info */}
-            {property.category === 'terreno' && (
-              <LandInfo property={property} />
-            )}
-
-            {/* Farm Specific Info */}
-            {property.category === 'fazenda' && (
-              <FarmInfo property={property} />
-            )}
-
-            {/* Commercial Specific Info */}
-            {(property.category === 'comercial' || property.category === 'loja' || property.category === 'sala') && (
-              <CommercialInfo property={property} />
-            )}
-
-            {/* Appointment Scheduler - Centralizado */}
-            <div className="max-w-lg mx-auto">
-              <AppointmentScheduler propertyId={property.id} propertyTitle={property.title} />
             </div>
           </div>
 
-          {/* Similar Properties */}
+          {/* Propriedades similares */}
           <SimilarProperties
             currentPropertyId={property.id}
             city={property.city}
@@ -462,7 +447,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
             category={property.category}
             bedrooms={property.bedrooms || undefined}
           />
-          </div>
         </div>
 
         <Footer />
@@ -498,38 +482,34 @@ function ApartmentInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Apartamento</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Informações do Apartamento</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {property.floor && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-gray-900">{property.floor}º Andar</div>
-                <div className="text-sm text-gray-600">Andar do apartamento</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">{property.floor}º Andar</div>
+              <div className="text-sm text-gray-600">Andar do apartamento</div>
             </div>
           </div>
         )}
-        
+
         {property.condoFee && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-gray-900">{formatPrice(property.condoFee)}</div>
-                <div className="text-sm text-gray-600">Taxa de condomínio</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-900">{formatPrice(property.condoFee)}</div>
+              <div className="text-sm text-gray-600">Taxa de condomínio</div>
             </div>
           </div>
         )}
@@ -537,11 +517,11 @@ function ApartmentInfo({ property }: { property: Property }) {
 
       {amenitiesList.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Comodidades do Condomínio</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <h4 className="font-semibold text-gray-900 mb-3">Comodidades do Condomínio</h4>
+          <div className="grid grid-cols-2 gap-2">
             {amenitiesList.map((amenity, index) => (
-              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 {amenity}
@@ -561,55 +541,49 @@ function HouseInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações da Casa</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Informações da Casa</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {property.houseType && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Tipo</div>
-                <div className="font-semibold text-gray-900 capitalize">{property.houseType}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Tipo</div>
+              <div className="font-semibold text-gray-900 capitalize">{property.houseType}</div>
             </div>
           </div>
         )}
 
         {property.yard !== null && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Quintal</div>
-                <div className="font-semibold text-gray-900">{property.yard ? 'Sim' : 'Não'}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Quintal</div>
+              <div className="font-semibold text-gray-900">{property.yard ? 'Sim' : 'Não'}</div>
             </div>
           </div>
         )}
 
         {property.garage && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Garagem</div>
-                <div className="font-semibold text-gray-900 capitalize">{property.garage}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Garagem</div>
+              <div className="font-semibold text-gray-900 capitalize">{property.garage}</div>
             </div>
           </div>
         )}
@@ -618,7 +592,6 @@ function HouseInfo({ property }: { property: Property }) {
   )
 }
 
-
 // Componente para informações específicas de terrenos
 function LandInfo({ property }: { property: Property }) {
   if (!property.zoning && !property.slope && !property.frontage) {
@@ -626,54 +599,48 @@ function LandInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações do Terreno</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Informações do Terreno</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {property.zoning && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Zoneamento</div>
-                <div className="font-semibold text-gray-900 capitalize">{property.zoning}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Zoneamento</div>
+              <div className="font-semibold text-gray-900 capitalize">{property.zoning}</div>
             </div>
           </div>
         )}
 
         {property.slope && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Topografia</div>
-                <div className="font-semibold text-gray-900 capitalize">{property.slope}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Topografia</div>
+              <div className="font-semibold text-gray-900 capitalize">{property.slope}</div>
             </div>
           </div>
         )}
 
         {property.frontage && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Frente</div>
-                <div className="font-semibold text-gray-900">{formatAreaDisplay(property.frontage)}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2M16 4h2a2 2 0 012 2v2M16 20h2a2 2 0 002-2v-2" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Frente</div>
+              <div className="font-semibold text-gray-900">{formatAreaDisplay(property.frontage)}</div>
             </div>
           </div>
         )}
@@ -700,54 +667,48 @@ function CommercialInfo({ property }: { property: Property }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Informações Comerciais</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Informações Comerciais</h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {property.commercialType && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Tipo</div>
-                <div className="font-semibold text-gray-900 capitalize">{property.commercialType}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Tipo</div>
+              <div className="font-semibold text-gray-900 capitalize">{property.commercialType}</div>
             </div>
           </div>
         )}
 
         {property.floor_commercial && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Andar</div>
-                <div className="font-semibold text-gray-900">{property.floor_commercial}º</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Andar</div>
+              <div className="font-semibold text-gray-900">{property.floor_commercial}º</div>
             </div>
           </div>
         )}
 
         {property.businessCenter && (
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <div>
-                <div className="text-sm text-gray-600">Empreendimento</div>
-                <div className="font-semibold text-gray-900">{property.businessCenter}</div>
-              </div>
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-sm text-gray-600">Empreendimento</div>
+              <div className="font-semibold text-gray-900">{property.businessCenter}</div>
             </div>
           </div>
         )}
@@ -755,10 +716,10 @@ function CommercialInfo({ property }: { property: Property }) {
 
       {featuresList.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Características Comerciais</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <h4 className="font-semibold text-gray-900 mb-3">Características Comerciais</h4>
+          <div className="grid grid-cols-2 gap-2">
             {featuresList.map((feature, index) => (
-              <div key={index} className="bg-white px-3 py-2 rounded-lg text-sm text-gray-700 flex items-center gap-2">
+              <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
                 <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
