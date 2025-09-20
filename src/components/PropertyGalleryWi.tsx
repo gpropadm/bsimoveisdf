@@ -14,8 +14,13 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
 
   if (!images || images.length === 0) {
     return (
-      <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">Nenhuma imagem disponível</p>
+      <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+        <div className="text-center">
+          <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p className="text-gray-500">Nenhuma imagem disponível</p>
+        </div>
       </div>
     )
   }
@@ -43,21 +48,12 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
 
   return (
     <>
-      {/* Galeria Principal - Quebra limites do container */}
-      <div
-        className="grid grid-cols-3 gap-3"
-        style={{
-          width: '100vw',
-          marginLeft: 'calc(-50vw + 50%)',
-          paddingLeft: '16px',
-          paddingRight: '16px',
-          height: '384px'
-        }}
-      >
+      {/* Galeria Principal */}
+      <div className="w-full max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-3 gap-3 h-96">
         {/* Imagem Principal - 2/3 da largura */}
         <div
-          className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden"
-          style={{ height: '384px' }}
+          className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden h-full"
           onClick={() => openModal(0)}
         >
           <Image
@@ -66,6 +62,10 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
             fill
             className="object-cover transition-transform group-hover:scale-105"
             priority
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xNjAgMTgwIDgwLTgwIDgwIDgwdjQwSDE2MHYtNDBaIiBmaWxsPSIjOWNhM2FmIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjEyMCIgcj0iMjAiIGZpbGw9IiM5Y2EzYWYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjMzYTgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZW0gaW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K';
+            }}
           />
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
         </div>
@@ -75,8 +75,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
           {thumbnailImages.map((image, index) => (
             <div
               key={index + 1}
-              className="relative cursor-pointer group rounded-lg overflow-hidden"
-              style={{ height: '185px' }}
+              className="relative cursor-pointer group rounded-lg overflow-hidden aspect-square"
               onClick={() => openModal(index + 1)}
             >
               <Image
@@ -84,6 +83,10 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
                 alt={`${propertyTitle} - Foto ${index + 2}`}
                 fill
                 className="object-cover transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xNjAgMTgwIDgwLTgwIDgwIDgwdjQwSDE2MHYtNDBaIiBmaWxsPSIjOWNhM2FmIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjEyMCIgcj0iMjAiIGZpbGw9IiM5Y2EzYWYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjMzYTgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZW0gaW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K';
+                }}
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
 
@@ -101,7 +104,11 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
 
           {/* Se houver menos de 4 thumbnails, preencher espaços vazios */}
           {thumbnailImages.length < 4 && Array.from({ length: 4 - thumbnailImages.length }).map((_, index) => (
-            <div key={`empty-${index}`} className="bg-gray-100" />
+            <div key={`empty-${index}`} className="bg-gray-100 rounded-lg aspect-square flex items-center justify-center">
+              <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
           ))}
         </div>
       </div>

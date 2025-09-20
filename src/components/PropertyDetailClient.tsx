@@ -193,7 +193,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <Header settings={settings} />
 
         <div className="pt-20">
-          {/* Galeria - Full Width */}
+          {/* Galeria */}
           <div className="mb-8">
             <PropertyGalleryWi
               images={images}
