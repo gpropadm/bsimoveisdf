@@ -500,20 +500,18 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Similar Properties */}
-        <SimilarProperties
-          currentPropertyId={property.id}
-          city={property.city}
-          state={property.state}
-          address={property.address}
-          price={property.price}
-          type={property.type}
-          category={property.category}
-          bedrooms={property.bedrooms || undefined}
-        />
-            </div>
+          {/* Similar Properties */}
+          <SimilarProperties
+            currentPropertyId={property.id}
+            city={property.city}
+            state={property.state}
+            address={property.address}
+            price={property.price}
+            type={property.type}
+            category={property.category}
+            bedrooms={property.bedrooms || undefined}
+          />
           </div>
         </div>
 
