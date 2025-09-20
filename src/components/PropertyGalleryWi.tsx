@@ -44,7 +44,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
   return (
     <>
       {/* Galeria Principal */}
-      <div className="w-full max-w-none grid grid-cols-3 gap-3 h-96 px-4">
+      <div className="w-screen grid grid-cols-3 gap-3 h-96 px-4">
         {/* Imagem Principal - 2/3 da largura */}
         <div className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden" onClick={() => openModal(0)}>
           <Image

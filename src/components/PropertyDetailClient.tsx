@@ -192,15 +192,15 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
       <div className="min-h-screen bg-white">
         <Header settings={settings} />
       
-      <main className="pt-20">
-        {/* Galeria WiImóveis - Largura completa */}
-        <div className="w-full mb-8">
-          <PropertyGalleryWi
-            images={images}
-            propertyTitle={property.title}
-          />
-        </div>
+      {/* Galeria WiImóveis - Largura completa */}
+      <div className="w-screen pt-20 mb-8">
+        <PropertyGalleryWi
+          images={images}
+          propertyTitle={property.title}
+        />
+      </div>
 
+      <main>
         <div className="max-w-6xl mx-auto px-4">
           {/* Layout WiImóveis: Info à esquerda + Formulário à direita */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
