@@ -50,7 +50,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-3 gap-3 h-96 px-4">
+      <div className="grid grid-cols-3 gap-1 h-96">
         {/* Imagem Principal */}
         <div
           className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden h-full"
