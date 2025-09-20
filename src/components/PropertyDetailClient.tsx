@@ -194,7 +194,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
         <div className="pt-20">
           {/* Galeria */}
-          <div className="mb-8">
+          <div className="mb-8 w-full">
             <PropertyGalleryWi
               images={images}
               propertyTitle={property.title}
