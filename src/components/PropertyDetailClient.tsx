@@ -290,7 +290,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                           </svg>
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900">{formatAreaDisplay(property.area, property.category)}</div>
+                          <div className="font-semibold text-gray-900">{formatAreaDisplay(property.area)}</div>
                           <div className="text-xs text-gray-600">Área</div>
                         </div>
                       </div>
