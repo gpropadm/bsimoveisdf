@@ -45,16 +45,21 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
     <>
       {/* Galeria Principal - Quebra limites do container */}
       <div
-        className="grid grid-cols-3 gap-3 h-96"
+        className="grid grid-cols-3 gap-3"
         style={{
           width: '100vw',
           marginLeft: 'calc(-50vw + 50%)',
           paddingLeft: '16px',
-          paddingRight: '16px'
+          paddingRight: '16px',
+          height: '384px'
         }}
       >
         {/* Imagem Principal - 2/3 da largura */}
-        <div className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden" onClick={() => openModal(0)}>
+        <div
+          className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden"
+          style={{ height: '384px' }}
+          onClick={() => openModal(0)}
+        >
           <Image
             src={mainImage}
             alt={propertyTitle}
@@ -66,11 +71,12 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
         </div>
 
         {/* Grid de Thumbnails - 1/3 da largura */}
-        <div className="grid grid-rows-2 grid-cols-2 gap-2">
+        <div className="grid grid-rows-2 grid-cols-2 gap-2 h-full">
           {thumbnailImages.map((image, index) => (
             <div
               key={index + 1}
-              className="relative cursor-pointer group h-full"
+              className="relative cursor-pointer group rounded-lg overflow-hidden"
+              style={{ height: '185px' }}
               onClick={() => openModal(index + 1)}
             >
               <Image
