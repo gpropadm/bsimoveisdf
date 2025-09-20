@@ -191,19 +191,21 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
     <ToastProvider>
       <div className="min-h-screen bg-white">
         <Header settings={settings} />
-      
-      {/* Galeria WiImóveis - Largura completa */}
-      <div className="w-screen pt-20 mb-8">
-        <PropertyGalleryWi
-          images={images}
-          propertyTitle={property.title}
-        />
-      </div>
 
-      <main>
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Layout WiImóveis: Info à esquerda + Formulário à direita */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="pt-20">
+          {/* Container principal da página */}
+          <div className="max-w-7xl mx-auto px-4">
+
+            {/* Galeria */}
+            <div className="mb-8">
+              <PropertyGalleryWi
+                images={images}
+                propertyTitle={property.title}
+              />
+            </div>
+
+            {/* Conteúdo: Info + Formulário */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Informações do Imóvel - 2/3 da largura */}
             <div className="lg:col-span-2">
               {/* Título e Localização */}
@@ -511,7 +513,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           category={property.category}
           bedrooms={property.bedrooms || undefined}
         />
-      </main>
+            </div>
+          </div>
+        </div>
 
         <Footer />
       </div>
