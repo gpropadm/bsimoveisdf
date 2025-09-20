@@ -193,16 +193,16 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <Header settings={settings} />
 
         <div className="pt-20">
+          {/* Galeria - Full Width */}
+          <div className="mb-8">
+            <PropertyGalleryWi
+              images={images}
+              propertyTitle={property.title}
+            />
+          </div>
+
           {/* Container principal da página */}
           <div className="max-w-7xl mx-auto px-4">
-
-            {/* Galeria */}
-            <div className="mb-8">
-              <PropertyGalleryWi
-                images={images}
-                propertyTitle={property.title}
-              />
-            </div>
 
             {/* Conteúdo: Info + Formulário */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

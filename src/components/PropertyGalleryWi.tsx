@@ -44,7 +44,8 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
   return (
     <>
       {/* Galeria Principal */}
-      <div className="w-full grid grid-cols-3 gap-3 h-96">
+      <div className="w-full max-w-7xl mx-auto px-4">
+        <div className="w-full grid grid-cols-3 gap-3 h-96">
         {/* Imagem Principal - 2/3 da largura */}
         <div className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden" onClick={() => openModal(0)}>
           <Image
@@ -89,6 +90,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
           {thumbnailImages.length < 4 && Array.from({ length: 4 - thumbnailImages.length }).map((_, index) => (
             <div key={`empty-${index}`} className="bg-gray-100" />
           ))}
+        </div>
         </div>
       </div>
 
