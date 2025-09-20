@@ -26,7 +26,7 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
   }
 
   const mainImage = images[0]
-  const thumbnailImages = images.slice(1, 5) // Próximas 4 imagens
+  const thumbnailImages = images.slice(1, 5)
   const remainingCount = Math.max(0, images.length - 5)
 
   const openModal = (index: number = 0) => {
@@ -46,12 +46,12 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
+  const placeholderSvg = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xNjAgMTgwIDgwLTgwIDgwIDgwdjQwSDE2MHYtNDBaIiBmaWxsPSIjOWNhM2FmIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjEyMCIgcj0iMjAiIGZpbGw9IiM5Y2EzYWYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjMzYTgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZW0gaW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K'
+
   return (
-    <>
-      {/* Galeria Principal */}
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-3 gap-3 h-96">
-        {/* Imagem Principal - 2/3 da largura */}
+    <div className="w-full max-w-7xl mx-auto px-4">
+      <div className="grid grid-cols-3 gap-3 h-96">
+        {/* Imagem Principal */}
         <div
           className="col-span-2 relative cursor-pointer group rounded-lg overflow-hidden h-full"
           onClick={() => openModal(0)}
@@ -64,13 +64,13 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
             priority
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xNjAgMTgwIDgwLTgwIDgwIDgwdjQwSDE2MHYtNDBaIiBmaWxsPSIjOWNhM2FmIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjEyMCIgcj0iMjAiIGZpbGw9IiM5Y2EzYWYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjMzYTgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZW0gaW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K';
+              target.src = placeholderSvg;
             }}
           />
           <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
         </div>
 
-        {/* Grid de Thumbnails - 1/3 da largura */}
+        {/* Grid de Thumbnails */}
         <div className="grid grid-rows-2 grid-cols-2 gap-2 h-full">
           {thumbnailImages.map((image, index) => (
             <div
@@ -85,24 +85,22 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
                 className="object-cover transition-transform group-hover:scale-105"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xNjAgMTgwIDgwLTgwIDgwIDgwdjQwSDE2MHYtNDBaIiBmaWxsPSIjOWNhM2FmIi8+CjxjaXJjbGUgY3g9IjE4MCIgY3k9IjEyMCIgcj0iMjAiIGZpbGw9IiM5Y2EzYWYiLz4KPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjMzYTgyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TZW0gaW1hZ2VtPC90ZXh0Pgo8L3N2Zz4K';
+                  target.src = placeholderSvg;
                 }}
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all" />
 
-              {/* "Ver mais fotos" na última thumbnail */}
               {index === thumbnailImages.length - 1 && images.length > 5 && (
                 <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
                   <div className="text-white text-center">
                     <div className="text-lg font-bold">+{remainingCount}</div>
-                    <div className="text-sm">Ver mais fotos</div>
+                    <div className="text-sm">Ver mais</div>
                   </div>
                 </div>
               )}
             </div>
           ))}
 
-          {/* Se houver menos de 4 thumbnails, preencher espaços vazios */}
           {thumbnailImages.length < 4 && Array.from({ length: 4 - thumbnailImages.length }).map((_, index) => (
             <div key={`empty-${index}`} className="bg-gray-100 rounded-lg aspect-square flex items-center justify-center">
               <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,7 +115,6 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
           <div className="relative w-full h-full max-w-6xl max-h-screen p-4">
-            {/* Botão Fechar */}
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 text-white hover:text-gray-300 transition-colors"
@@ -127,7 +124,6 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
               </svg>
             </button>
 
-            {/* Imagem Principal */}
             <div className="relative w-full h-full flex items-center justify-center">
               <Image
                 src={images[currentImageIndex]}
@@ -137,7 +133,6 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
                 priority
               />
 
-              {/* Navegação Anterior */}
               {images.length > 1 && (
                 <button
                   onClick={prevImage}
@@ -149,7 +144,6 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
                 </button>
               )}
 
-              {/* Navegação Próxima */}
               {images.length > 1 && (
                 <button
                   onClick={nextImage}
@@ -162,12 +156,10 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
               )}
             </div>
 
-            {/* Contador de Imagens */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-3 py-1 rounded">
               {currentImageIndex + 1} / {images.length}
             </div>
 
-            {/* Thumbnails na parte inferior */}
             <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex gap-2 max-w-full overflow-x-auto px-4">
               {images.map((image, index) => (
                 <button
@@ -189,6 +181,6 @@ export default function PropertyGalleryWi({ images, propertyTitle }: PropertyGal
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
