@@ -193,58 +193,123 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         <Header settings={settings} />
       
       <main className="pt-20">
-        {/* Nova Galeria WiImóveis - Largura completa da tela */}
-        <PropertyGalleryWi
-          images={images}
-          propertyTitle={property.title}
-        />
+        <div className="max-w-6xl mx-auto px-4">
+          {/* Galeria WiImóveis */}
+          <div className="mb-6">
+            <PropertyGalleryWi
+              images={images}
+              propertyTitle={property.title}
+            />
+          </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-8">
-          {/* Informações do Imóvel + Formulário */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Layout WiImóveis: Info à esquerda + Formulário à direita */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Informações do Imóvel - 2/3 da largura */}
             <div className="lg:col-span-2">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {property.title}
-              </h1>
-              <p className="text-lg text-gray-600 mb-4">
-                {property.address}, {property.city} - {property.state}
-              </p>
-
-              <div className="flex items-center gap-4 mb-6">
-                <span className={`px-4 py-2 rounded-full text-sm font-medium uppercase ${
-                  property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
-                }`}>
-                  {property.type}
-                </span>
-                <span className="text-lg text-gray-600 capitalize font-medium">
-                  {property.category}
-                </span>
+              {/* Título e Localização */}
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  {property.title}
+                </h1>
+                <p className="text-gray-600">
+                  {property.address}, {property.city} - {property.state}
+                </p>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="text-4xl font-bold text-gray-900">
-                  {formatPrice(property.price)}
+              {/* Preço e Ações */}
+              <div className="flex items-center justify-between mb-6 pb-6 border-b">
+                <div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">
+                    {formatPrice(property.price)}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase ${
+                      property.type === 'venda' ? 'bg-teal-100 text-teal-800' : 'bg-orange-100 text-orange-800'
+                    }`}>
+                      {property.type}
+                    </span>
+                    <span className="text-sm text-gray-600 capitalize">
+                      {property.category}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <FavoriteButton propertyId={property.id} size="large" />
                   <button
                     onClick={handleShare}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                     </svg>
                     Compartilhar
                   </button>
                 </div>
               </div>
+
+              {/* Características principais */}
+              {(property.bedrooms || property.bathrooms || property.area) && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Características</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {property.bedrooms && (
+                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M7 14c1.66 0 3-1.34 3-3S8.66 8 7 8s-3 1.34-3 3 1.34 3 3 3zm0-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm12-3h-8v8H3V5H1v11h2v3h2v-3h8v3h2v-3h2V5h-2v2z"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{property.bedrooms}</div>
+                          <div className="text-xs text-gray-600">Dormitório{property.bedrooms > 1 ? 's' : ''}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {property.bathrooms && (
+                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+                          <svg className="w-4 h-4 text-teal-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 2v1h6V2a1 1 0 0 1 2 0v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h1V2a1 1 0 0 1 2 0zm0 6v10h6V8H9z"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{property.bathrooms}</div>
+                          <div className="text-xs text-gray-600">Banheiro{property.bathrooms > 1 ? 's' : ''}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {property.area && (
+                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <svg className="w-4 h-4 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{formatAreaDisplay(property.area, property.category)}</div>
+                          <div className="text-xs text-gray-600">Área</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Descrição */}
+              {property.description && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Descrição</h3>
+                  <p className="text-gray-700 leading-relaxed">{property.description}</p>
+                </div>
+              )}
             </div>
 
             {/* Formulário Tenho Interesse - 1/3 da largura */}
             <div className="lg:col-span-1">
-              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-24">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm sticky top-24">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
                   Tenho Interesse
                 </h3>
 
