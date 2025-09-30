@@ -203,63 +203,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Erro ao buscar propriedades:', error)
-
-    // FALLBACK ESTÁTICO para caso de erro no banco
-    const fallbackProperties = [
-      {
-        id: '1',
-        title: 'Casa Moderna em Águas Claras',
-        slug: 'casa-moderna-aguas-claras',
-        price: 1250000,
-        type: 'venda',
-        category: 'casa',
-        address: 'Rua das Aroeiras, 450',
-        city: 'Águas Claras',
-        state: 'DF',
-        bedrooms: 4,
-        bathrooms: 4,
-        area: 320,
-        images: ['/placeholder-house.jpg'],
-        featured: true,
-        condoFee: 0,
-        latitude: -15.8351,
-        longitude: -48.0208,
-        description: 'Casa moderna com área gourmet.',
-        createdAt: new Date().toISOString(),
-        // Campos para casas (nulos para apartamentos)
-        suites: null,
-        apartmentTotalArea: null,
-        apartmentUsefulArea: null,
-        parking: 2
-      },
-      {
-        id: '2',
-        title: 'Apartamento de Luxo no Sudoeste',
-        slug: 'apartamento-luxo-sudoeste',
-        price: 890000,
-        type: 'venda',
-        category: 'apartamento',
-        address: 'CLSW 304, Bloco A',
-        city: 'Sudoeste',
-        state: 'DF',
-        bedrooms: 3,
-        bathrooms: 3,
-        area: 145,
-        images: ['/placeholder-house.jpg'],
-        featured: true,
-        condoFee: 500,
-        latitude: -15.8020,
-        longitude: -47.9292,
-        description: 'Apartamento sofisticado com vista.',
-        createdAt: new Date().toISOString(),
-        // Campos específicos para apartamentos
-        suites: 1,
-        apartmentTotalArea: 165,
-        apartmentUsefulArea: 145,
-        parking: 2
-      }
-    ]
-
-    return NextResponse.json(fallbackProperties)
+    return NextResponse.json([])
   }
 }
