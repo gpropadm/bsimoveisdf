@@ -1,0 +1,117 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+interface SearchFilters {
+  types: string[]
+  categoriesByType: Record<string, string[]>
+}
+
+export default function SearchForm() {
+  const router = useRouter()
+  const [filters, setFilters] = useState<SearchFilters>({ types: [], categoriesByType: {} })
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [location, setLocation] = useState<string>('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchFilters()
+  }, [])
+
+  const fetchFilters = async () => {
+    try {
+      const response = await fetch('/api/search-filters')
+      if (response.ok) {
+        const data = await response.json()
+        setFilters(data)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar filtros:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const searchParams = new URLSearchParams()
+
+    if (selectedCategory) searchParams.set('category', selectedCategory)
+    if (location.trim()) {
+      const locationParts = location.trim().split(' - ')
+      if (locationParts.length === 2) {
+        searchParams.set('city', locationParts[0])
+        searchParams.set('state', locationParts[1])
+      } else {
+        searchParams.set('city', location.trim())
+      }
+    }
+
+    router.push(`/imoveis?${searchParams.toString()}`)
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-10 bg-white rounded mb-6"></div>
+          <div className="h-14 bg-white rounded-full"></div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-5xl mx-auto px-4">
+      {/* Formulário de Busca Melhorado */}
+      <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-3">
+        <form onSubmit={handleSearch}>
+          <div className="flex flex-col md:flex-row items-center gap-3">
+
+            {/* Tipo de Imóvel - Compacto */}
+            <div className="w-full md:w-auto">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full md:w-[160px] h-12 px-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7162f0] focus:border-transparent text-gray-700 font-medium"
+              >
+                <option value="">Tipo</option>
+                {filters.categoriesByType && Object.values(filters.categoriesByType).flat().filter((v, i, a) => a.indexOf(v) === i).map((category) => (
+                  <option key={category} value={category}>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Localização - Grande */}
+            <div className="w-full md:flex-1">
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Onde você quer morar? (cidade, bairro...)"
+                className="w-full h-12 px-5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7162f0] focus:border-transparent text-gray-700 placeholder:text-gray-400"
+              />
+            </div>
+
+            {/* Botão Buscar - Destaque */}
+            <div className="w-full md:w-auto">
+              <button
+                type="submit"
+                className="w-full md:w-auto h-12 px-8 bg-[#7162f0] hover:bg-[#5a4dcf] text-white rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#7162f0]/30"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span>Buscar</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import PropertyVideoModal from './PropertyVideoModal'
 import FavoriteButton from './FavoriteButton'
-import { formatAreaSmart } from '@/lib/maskUtils'
 
 interface Property {
   id: string
   title: string
   slug: string
   city: string
+  state: string
   price: number
   type: string
   images?: string[] | string
@@ -23,6 +23,10 @@ interface Property {
   totalArea?: number
   parking?: number
   video?: string
+  // Campos específicos para apartamentos
+  suites?: number
+  apartmentTotalArea?: number
+  apartmentUsefulArea?: number
 }
 
 interface PropertyStoriesSectionProps {
@@ -74,7 +78,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
   if (loading) {
     return (
-      <div className="py-8 px-4 bg-gray-50">
+      <div className="py-8 px-4 bg-[#f9f3ea]">
         <div className="max-w-6xl mx-auto">
           <SkeletonCards />
         </div>
@@ -121,7 +125,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   }
 
   return (
-    <div className="pt-2 pb-8 px-4 bg-gray-50">
+    <div className="pt-2 pb-8 px-4 bg-[#f9f3ea]">
       <div className="max-w-6xl mx-auto">
 
 
@@ -130,7 +134,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
           <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-left">Descubra seu novo Lar</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} onViewDetails={handlePropertyClick} formatPrice={formatPrice} onOpenVideo={handleStoryClick} hasVideos={hasVideos} />
+              <ArboPropertyCard key={property.id} property={property} onViewDetails={handlePropertyClick} formatPrice={formatPrice} />
             ))}
           </div>
         </div>
@@ -157,30 +161,308 @@ export default function PropertyStoriesSection({ properties, loading }: Property
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
+
+        /* Arbo Property Card Styles */
+        .CarouselDefault_card__I_nK6 {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+
+        .ImovelCard_card__2FVbS {
+          background: #fff;
+          border-radius: 4px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+
+
+        .rec.rec-carousel-wrapper {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .rec.rec-carousel {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .ImovelCard_leftArrow__SY2Vj,
+        .ImovelCard_rightArrow__wzdqx {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+          cursor: pointer;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .ImovelCard_card__2FVbS:hover .ImovelCard_leftArrow__SY2Vj,
+        .ImovelCard_card__2FVbS:hover .ImovelCard_rightArrow__wzdqx {
+          opacity: 1;
+        }
+
+        .ImovelCard_leftArrow__SY2Vj {
+          left: 10px;
+        }
+
+        .ImovelCard_rightArrow__wzdqx {
+          right: 10px;
+        }
+
+        .ImovelCard_leftArrow__SY2Vj > div,
+        .ImovelCard_rightArrow__wzdqx > div {
+          width: 32px;
+          height: 32px;
+          background: rgba(255,255,255,0.9);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+          transition: all 0.2s ease;
+        }
+
+        .ImovelCard_leftArrow__SY2Vj > div:hover,
+        .ImovelCard_rightArrow__wzdqx > div:hover {
+          background: white;
+          transform: scale(1.1);
+        }
+
+        .rec.rec-slider-container {
+          overflow: hidden;
+          width: 100%;
+        }
+
+        .rec.rec-slider {
+          display: flex;
+          will-change: transform;
+        }
+
+        .rec.rec-carousel-item {
+          flex-shrink: 0;
+          width: 100%;
+          height: 100%;
+        }
+
+        .rec.rec-pagination {
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          gap: 6px;
+          z-index: 10;
+        }
+
+        .rec.rec-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          border: none;
+          background: rgba(255,255,255,0.6);
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .rec.rec-dot_active {
+          background: white;
+          transform: scale(1.2);
+        }
+
+        .ImovelCardInfo_info__QFwnz {
+          padding: 16px;
+        }
+
+        .ImovelCardInfo_paddingTopTypeOfPropertie__fiRBi {
+          padding-top: 8px;
+        }
+
+        .ImovelCardInfo_paddingBottomForTypeOfPropertie__XCT9C {
+          padding-bottom: 8px;
+        }
+
+        .ImovelCardInfo_colorOfTypePropertie__OWVB6 {
+          color: #666;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .ImovelCard_heartContent__U2wHd {
+          color: #ddd;
+          cursor: pointer;
+          transition: color 0.2s ease;
+        }
+
+        .ImovelCard_heartContent__U2wHd:hover {
+          color: #ff4757;
+        }
+
+        .ImovelCardInfo_colorOfTitleCondominium__IfTu_ {
+          color: #333;
+          font-size: 16px;
+          font-weight: 600;
+          line-height: 1.3;
+        }
+
+        .ImovelCardInfo_ellipsisOneLine__ryU_Q {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .ImovelCardInfo_colorOfLocalization__frnmZ {
+          color: #666;
+          font-size: 14px;
+          line-height: 1.4;
+        }
+
+        .ImovelCardInfo_addLineBottom___ASjw {
+          border-bottom: 1px solid #eee;
+          padding-bottom: 12px;
+          margin-bottom: 12px;
+        }
+
+        .Icons_list__SlDEy {
+          display: flex;
+          flex-direction: row;
+          gap: 20px;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          justify-content: space-between;
+        }
+
+        .Icons_list__SlDEy li {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 4px;
+          font-size: 12px;
+          color: #666;
+          flex: 1;
+          text-align: center;
+        }
+
+        .Icons_list__SlDEy li span:first-child {
+          font-size: 14px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 2px;
+        }
+
+        .Icons_list__SlDEy li span:last-child {
+          font-size: 13px;
+          font-weight: 400;
+          color: #666;
+        }
+
+        .ImovelCardInfo_prices__ArwZg {
+          width: 100%;
+        }
+
+        .ImovelCardInfo_sizeOfPrices__SyQDF {
+          width: 100%;
+        }
+
+        .ImovelCardInfo_sizeOfPriceSale__KE1ms {
+          font-size: 16px;
+          font-weight: 700;
+          color: #555;
+        }
+
+        .property-type-label {
+          color: #666;
+        }
+
+        .position-relative {
+          position: relative;
+        }
+
+        .d-flex {
+          display: flex;
+        }
+
+        .flex-row {
+          flex-direction: row;
+        }
+
+        .flex-column {
+          flex-direction: column;
+        }
+
+        .justify-content-center {
+          justify-content: center;
+        }
+
+        .justify-content-between {
+          justify-content: space-between;
+        }
+
+        .justify-content-start {
+          justify-content: flex-start;
+        }
+
+        .align-items-center {
+          align-items: center;
+        }
+
+        .align-self-end {
+          align-self: flex-end;
+        }
+
+        .c-pointer {
+          cursor: pointer;
+        }
+
+        .rounded-circle {
+          border-radius: 50%;
+        }
+
+        .bg-white {
+          background-color: white;
+        }
+
+        .text-truncate {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .col-12 {
+          width: 100%;
+        }
+
+        .p-0 {
+          padding: 0;
+        }
+
+        .mb-0 {
+          margin-bottom: 0;
+        }
+
+        .text-primitive-4 {
+          color: #666;
+        }
       `}</style>
     </div>
   )
 }
 
-// Componente PropertyCard com carrossel de imagens
-function PropertyCard({ property, onViewDetails, formatPrice, onOpenVideo, hasVideos }: {
+// Componente ArboPropertyCard - fiel ao código da Arbo
+function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
   property: Property
   onViewDetails: (slug: string) => void
   formatPrice: (price: number) => string
-  onOpenVideo?: (property: Property) => void
-  hasVideos: (property: Property) => boolean
 }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
+
   const getImages = (images: string[] | string | undefined): string[] => {
     if (!images) return ['/placeholder-house.jpg']
-    
-    // Se já é um array, usar diretamente
+
     if (Array.isArray(images)) {
       return images.length > 0 ? images : ['/placeholder-house.jpg']
     }
-    
-    // Se é string, tentar fazer parse
+
     try {
       const imageArray = JSON.parse(images)
       return Array.isArray(imageArray) && imageArray.length > 0 ? imageArray : ['/placeholder-house.jpg']
@@ -188,173 +470,246 @@ function PropertyCard({ property, onViewDetails, formatPrice, onOpenVideo, hasVi
       return ['/placeholder-house.jpg']
     }
   }
-  
+
   const images = getImages(property.images)
-  
-  const nextImage = () => {
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setCurrentImageIndex((prev) => (prev + 1) % images.length)
   }
-  
-  const prevImage = () => {
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
-  
-  const goToImage = (index: number) => {
+
+  const goToImage = (index: number, e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setCurrentImageIndex(index)
   }
 
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      {/* Image Carousel */}
-      <div className="relative h-64 bg-gray-200">
-        <Image
-          src={images[currentImageIndex]}
-          alt={`${property.title} - ${property.category} em ${property.city}`}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/placeholder-house.jpg'
-          }}
-        />
-        
-        {/* Image Navigation */}
-        {images.length > 1 && (
-          <>
-            {/* Previous Button */}
-            <button
-              onClick={prevImage}
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            
-            {/* Next Button */}
-            <button
-              onClick={nextImage}
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            
-            {/* Image Indicators */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
-              {images.map((_, index: number) => (
-                <button
-                  key={index}
-                  onClick={() => goToImage(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentImageIndex ? 'bg-white' : 'bg-white/50'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            {/* Image Counter */}
-            <div className="absolute top-3 right-3 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
-              {currentImageIndex + 1} / {images.length}
-            </div>
-          </>
-        )}
-        
-        {/* Favorite Button and Badge */}
-        <div className="absolute top-3 left-3 flex items-center gap-2 z-50">
-          <div className="bg-white rounded-full p-0.5">
-            <FavoriteButton propertyId={property.id} size="small" variant="card" />
-          </div>
-          <div className={`px-2 py-1 rounded-full flex items-center justify-center text-white ${
-            property.type === 'venda' ? 'bg-teal-500' : 'bg-orange-500'
-          }`}>
-            <span className="text-xs font-medium">
-              {property.type === 'venda' ? 'VENDA' : 'ALUGUEL'}
-            </span>
-          </div>
-        </div>
-
-        {/* Ícone de Shorts no canto inferior direito da foto */}
-        {onOpenVideo && hasVideos(property) && (
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              onOpenVideo(property)
-            }}
-            className="absolute bottom-3 right-3 transition-all duration-300 group z-40 cursor-pointer"
-            title="Ver vídeo do imóvel"
-          >
-            <svg className="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none">
-              <rect x="-1" y="4" width="20" height="8" rx="4" fill="#FF0000" transform="rotate(120 12 12)"/>
-              <rect x="2" y="12" width="20" height="8" rx="4" fill="#FF0000" transform="rotate(120 12 12)"/>
-              <polygon points="9,8 9,16 17,12" fill="#FFFFFF" stroke="#000000" strokeWidth="0.5"/>
-            </svg>
-          </button>
-        )}
-      </div>
-      
-      {/* Property Details */}
-      <div className="p-4">
-        {/* Título da propriedade */}
-        <h3 className="font-raleway font-semibold text-base text-gray-700 line-clamp-2 mb-1">
-          {property.title}
-        </h3>
-        
-        {/* Tipo do imóvel - texto menor, lado esquerdo */}
-        <p className="font-montserrat text-gray-600 text-sm capitalize mb-0.5">
-          {property.category || 'Casa'}
-        </p>
-        
-        {/* Preço */}
-        <div className="mb-0.5">
-          <span className="font-roboto font-bold text-lg text-gray-700">
-            {formatPrice(property.price)}
-          </span>
-        </div>
-        
-        {/* Cidade - mesmo tamanho do tipo */}
-        <p className="font-montserrat text-gray-600 text-sm mb-1.5">
-          {property.city}
-        </p>
-        
-        {/* Property Features - quartos, banheiros, garagem */}
-        <div className="font-roboto flex items-center space-x-4 text-sm text-gray-500 mb-4">
-          {property.bedrooms && property.bedrooms > 0 && (
-            <div className="flex items-center">
-              <Image src="/icons/icons8-sleeping-in-bed-50.png" alt="Ícone de quartos" width={16} height={16} className="opacity-60 mr-1" />
-              {property.bedrooms} {property.bedrooms === 1 ? 'Quarto' : 'Quartos'}
-            </div>
-          )}
-          {property.bathrooms && property.bathrooms > 0 && (
-            <div className="flex items-center">
-              <Image src="/icons/icons8-bathroom-32.png" alt="Ícone de banheiros" width={16} height={16} className="opacity-60 mr-1" />
-              {property.bathrooms} {property.bathrooms === 1 ? 'Banheiro' : 'Banheiros'}
-            </div>
-          )}
-          {property.parking && property.parking > 0 && (
-            <div className="flex items-center">
-              <Image src="/icons/icons8-hennessey-venom-30.png" alt="Ícone de garagem" width={16} height={16} className="opacity-60 mr-1" />
-              {property.parking} {property.parking === 1 ? 'Vaga' : 'Vagas'}
-            </div>
-          )}
-          {formatAreaSmart(property) && (
-            <div className="flex items-center">
-              <Image src="/icons/icons8-measure-32.png" alt="Ícone de área" width={16} height={16} className="opacity-60 mr-1" />
-              {formatAreaSmart(property)}
-            </div>
-          )}
-        </div>
-
-        {/* Action Button */}
-        <button
-          onClick={() => onViewDetails(property.slug)}
-          className="font-raleway w-full border border-gray-400 hover:border-gray-600 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all duration-300 bg-transparent cursor-pointer"
+    <li className="CarouselDefault_card__I_nK6">
+      <div className="ImovelCard_card__2FVbS">
+        <a
+          href={`/imovel/${property.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cursor-pointer"
         >
-          Ver Detalhes
-        </button>
+          <div className="position-relative">
+            <div style={{ width: '100%', height: '100%' }}>
+              <picture>
+                <div className="sc-jSUZER gvZxJM rec rec-carousel-wrapper">
+                  <div className="sc-eDvSVe eTfUIS rec rec-carousel" style={{ height: '180px' }}>
+
+                    {/* Left Arrow */}
+                    {images.length > 1 && (
+                      <div style={{ color: 'black' }}>
+                        <div className="ImovelCard_leftArrow__SY2Vj">
+                          <div
+                            className="d-flex justify-content-center align-items-center c-pointer rounded-circle bg-white"
+                            onClick={prevImage}
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="15,18 9,12 15,6"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Slider Container */}
+                    <div className="sc-dkrFOg itwfLR rec rec-slider-container">
+                      <div
+                        className="sc-hLBbgP gpusub rec rec-slider"
+                        style={{
+                          transition: '200ms ease',
+                          display: 'flex',
+                          transform: `translateX(-${currentImageIndex * 100}%)`
+                        }}
+                      >
+                          {images.map((imageUrl, index) => (
+                            <div
+                              key={index}
+                              className="rec rec-carousel-item"
+                              style={{
+                                width: '100%',
+                                flexShrink: 0,
+                                height: '180px'
+                              }}
+                            >
+                              <div
+                                style={{ width: '100%', height: '180px', padding: '0px' }}
+                                className="sc-gswNZR fUcWbd rec rec-item-wrapper"
+                              >
+                                <Image
+                                  alt={`Foto do ${property.category || 'Imóvel'} - ${property.title}`}
+                                  src={imageUrl}
+                                  width={408}
+                                  height={180}
+                                  className="object-cover w-full h-full"
+                                  loading="lazy"
+                                  unoptimized
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/placeholder-house.jpg'
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* Right Arrow */}
+                    {images.length > 1 && (
+                      <div style={{ color: 'black' }}>
+                        <div className="ImovelCard_rightArrow__wzdqx">
+                          <div
+                            className="d-flex justify-content-center align-items-center c-pointer rounded-circle bg-white"
+                            onClick={nextImage}
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="9,18 15,12 9,6"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Pagination Dots */}
+                  {images.length > 1 && (
+                    <div className="sc-iBYQkv gnDOZy rec rec-pagination">
+                      {images.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={(e) => goToImage(index, e)}
+                          className={`sc-gKPRtg ${
+                            index === currentImageIndex ? 'goodpl rec rec-dot rec rec-dot_active' : 'hrBmXS rec rec-dot'
+                          }`}
+                          type="button"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </picture>
+            </div>
+
+            {/* Card Info */}
+            <div className="ImovelCardInfo_info__QFwnz">
+              <div className="ImovelCardInfo_paddingTopTypeOfPropertie__fiRBi">
+                <div className="col-12 p-0">
+                  <h2 className="col-12 p-0">
+                    <div className="ImovelCardInfo_paddingBottomForTypeOfPropertie__XCT9C d-flex flex-row justify-content-between align-items-center">
+                      <span className="ImovelCardInfo_colorOfTypePropertie__OWVB6 text-primitive-4">
+                        {property.category || 'Casa'}
+                      </span>
+                      <FavoriteButton
+                        propertyId={property.id}
+                        size="small"
+                        variant="card"
+                      />
+                    </div>
+                    <span className="ImovelCardInfo_colorOfTitleCondominium__IfTu_ ImovelCardInfo_ellipsisOneLine__ryU_Q d-flex flex-row justify-content-start">
+                      {property.title}
+                    </span>
+                  </h2>
+                  <p className="ImovelCardInfo_colorOfLocalization__frnmZ mb-0">
+                    <span className="ImovelCardInfo_colorOfLocalization__frnmZ">
+                      {property.address && `${property.address} - `}
+                    </span>
+                    <span className="ImovelCardInfo_colorOfLocalization__frnmZ">
+                      {property.city}
+                    </span>
+                    <br />
+                    <span className="ImovelCardInfo_colorOfLocalization__frnmZ">
+                      {property.city} - {property.state}
+                    </span>
+                  </p>
+                </div>
+
+                <div className="col-12 align-self-end p-0">
+                  <div className="ImovelCardInfo_addLineBottom___ASjw">
+                    <ul className="Icons_list__SlDEy">
+                      {property.category === 'apartamento' ? (
+                        <>
+                          {/* Para apartamentos, mostrar área do apartamento */}
+                          {(property.apartmentUsefulArea || property.area) && (
+                            <li>
+                              <span>{property.apartmentUsefulArea || property.area} m²</span>
+                              <span></span>
+                            </li>
+                          )}
+                          {property.bedrooms && (
+                            <li>
+                              <span>{property.bedrooms}</span>
+                              <span>Quartos</span>
+                            </li>
+                          )}
+                          {property.suites && (
+                            <li>
+                              <span>{property.suites}</span>
+                              <span>Suítes</span>
+                            </li>
+                          )}
+                          {property.bathrooms && (
+                            <li>
+                              <span>{property.bathrooms}</span>
+                              <span>Banheiros</span>
+                            </li>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {/* Para casas e outros imóveis */}
+                          {property.area && (
+                            <li>
+                              <span>{property.area} m²</span>
+                              <span></span>
+                            </li>
+                          )}
+                          {property.bedrooms && (
+                            <li>
+                              <span>{property.bedrooms}</span>
+                              <span>Quartos</span>
+                            </li>
+                          )}
+                          {property.bathrooms && (
+                            <li>
+                              <span>{property.bathrooms}</span>
+                              <span>Banheiros</span>
+                            </li>
+                          )}
+                        </>
+                      )}
+                    </ul>
+                  </div>
+
+                  <h3 className="d-flex flex-row justify-content-start align-items-center">
+                    <div className="ImovelCardInfo_prices__ArwZg ImovelCardInfo_widthSpace__o4SMY">
+                      <div className="ImovelCardInfo_sizeOfPrices__SyQDF d-flex flex-column">
+                        <div className="d-flex flex-row justify-content-between text-truncate">
+                          <span className="property-type-label">{property.type === 'venda' ? 'Venda' : 'Aluguel'}</span>
+                          <span className="ImovelCardInfo_sizeOfPriceSale__KE1ms d-flex flex-row text-truncate">
+                            {formatPrice(property.price)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
       </div>
-    </div>
+    </li>
   )
 }
+

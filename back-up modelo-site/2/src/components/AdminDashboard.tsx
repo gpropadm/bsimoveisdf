@@ -1,0 +1,295 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useSession, signOut } from 'next-auth/react'
+import { Session } from 'next-auth'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+interface AdminDashboardProps {
+  session: Session
+}
+
+interface DashboardStats {
+  totalProperties: number
+  saleProperties: number
+  rentalProperties: number
+  featuredProperties: number
+}
+
+const navigationItems = [
+  { name: 'Dashboard', href: '/admin', icon: 'dashboard', current: true },
+  { name: 'Propriedades', href: '/admin/properties', icon: 'properties', current: false },
+  { name: 'Adicionar Imóvel', href: '/admin/properties/new', icon: 'add', current: false },
+  { name: 'Configurações', href: '/admin/settings', icon: 'settings', current: false },
+]
+
+export default function AdminDashboard({ session }: AdminDashboardProps) {
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [stats, setStats] = useState<DashboardStats>({
+    totalProperties: 0,
+    saleProperties: 0,
+    rentalProperties: 0,
+    featuredProperties: 0
+  })
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/admin/stats')
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error)
+    }
+  }
+
+  const getIcon = (iconName: string, className: string = '') => {
+    const icons = {
+      dashboard: (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+        </svg>
+      ),
+      properties: (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+        </svg>
+      ),
+      add: (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+        </svg>
+      ),
+      settings: (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
+        </svg>
+      )
+    }
+    return icons[iconName as keyof typeof icons] || icons.dashboard
+  }
+
+  return (
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Layout com Flexbox - Sidebar fixo e conteúdo ao lado */}
+      <div className="flex">
+
+        {/* Sidebar - Largura fixa */}
+        <div className={`w-64 min-h-screen ${isDarkMode ? 'bg-gray-800' : 'bg-white'} border-r ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+
+          {/* Logo/Header do Sidebar */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-[#7360ee] rounded-lg flex items-center justify-center mr-3">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+              </div>
+              <span className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Faimoveis
+              </span>
+            </div>
+          </div>
+
+          {/* Menu de Navegação */}
+          <nav className="p-4">
+            <ul className="space-y-2">
+              {navigationItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className={`flex items-center p-3 rounded-lg transition-colors ${
+                      item.current
+                        ? `${isDarkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'}`
+                        : `${isDarkMode ? 'text-gray-300 hover:bg-gray-700 hover:text-white' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`
+                    }`}
+                  >
+                    {getIcon(item.icon, `w-5 h-5 mr-3 ${item.current ? (isDarkMode ? 'text-white' : 'text-gray-900') : (isDarkMode ? 'text-gray-400' : 'text-gray-500')}`)}
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        {/* Área Principal - Ocupa o restante da tela */}
+        <div className="flex-1">
+
+          {/* Header/Navbar do conteúdo */}
+          <header className={`${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b p-4`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  Dashboard
+                </h1>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Bem-vindo de volta, {session.user?.name}
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                {/* Botão Dark Mode */}
+                <button
+                  onClick={() => setIsDarkMode(!isDarkMode)}
+                  className={`p-2 rounded-lg ${isDarkMode ? 'text-gray-400 hover:bg-gray-700' : 'text-gray-500 hover:bg-gray-100'}`}
+                >
+                  {isDarkMode ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"></path>
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                  )}
+                </button>
+
+                {/* Ver Site */}
+                <Link
+                  href="/"
+                  className={`px-3 py-2 text-sm font-medium rounded-lg border ${isDarkMode ? 'text-white bg-gray-800 border-gray-600 hover:bg-gray-700' : 'text-gray-900 bg-white border-gray-200 hover:bg-gray-100'}`}
+                >
+                  Ver Site
+                </Link>
+
+                {/* User Menu */}
+                <button
+                  onClick={() => signOut({ callbackUrl: '/admin/login' })}
+                  className="flex items-center space-x-2 text-sm"
+                >
+                  <div className="w-8 h-8 bg-[#7360ee] text-white rounded-full flex items-center justify-center">
+                    {session.user?.name?.charAt(0)?.toUpperCase()}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* Conteúdo Principal */}
+          <main className="p-6">
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+              {/* Total Imóveis */}
+              <div className={`p-6 rounded-lg shadow ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-[#7360ee]/10">
+                    <svg className="w-6 h-6 text-[#7360ee]" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Imóveis</p>
+                    <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{stats.totalProperties}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Imóveis à Venda */}
+              <div className={`p-6 rounded-lg shadow ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-green-100">
+                    <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>À Venda</p>
+                    <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{stats.saleProperties}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Imóveis para Aluguel */}
+              <div className={`p-6 rounded-lg shadow ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-blue-100">
+                    <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Para Aluguel</p>
+                    <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{stats.rentalProperties}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Imóveis em Destaque */}
+              <div className={`p-6 rounded-lg shadow ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                <div className="flex items-center">
+                  <div className="p-3 rounded-full bg-yellow-100">
+                    <svg className="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Em Destaque</p>
+                    <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{stats.featuredProperties}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Ações Rápidas */}
+            <div className={`p-6 rounded-lg shadow ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h3 className={`text-lg font-medium mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Ações Rápidas
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Link
+                  href="/admin/properties/new"
+                  className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#7360ee] hover:bg-[#7360ee]/5 transition-colors"
+                >
+                  <svg className="w-8 h-8 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"></path>
+                  </svg>
+                  <div>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Adicionar Imóvel</p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Cadastrar novo imóvel</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/admin/properties"
+                  className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#7360ee] hover:bg-[#7360ee]/5 transition-colors"
+                >
+                  <svg className="w-8 h-8 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3z" clipRule="evenodd"></path>
+                  </svg>
+                  <div>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Gerenciar Imóveis</p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Ver todos os imóveis</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/admin/settings"
+                  className="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#7360ee] hover:bg-[#7360ee]/5 transition-colors"
+                >
+                  <svg className="w-8 h-8 text-gray-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path>
+                  </svg>
+                  <div>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Configurações</p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Configurar sistema</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+          </main>
+        </div>
+      </div>
+    </div>
+  )
+}
