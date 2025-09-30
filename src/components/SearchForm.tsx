@@ -102,14 +102,14 @@ export default function SearchForm() {
             </div>
 
             {/* Botão Buscar - Apenas Lupa */}
-            <div className="w-full md:w-auto pr-2">
+            <div className="w-full md:w-auto pr-4">
               <button
                 type="submit"
-                className="w-full md:w-auto h-12 w-12 bg-[#7162f0] hover:bg-[#5a4dcf] text-white rounded-full font-bold transition-all duration-200 flex items-center justify-center shadow-lg shadow-[#7162f0]/30"
+                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-full transition-all duration-200 flex items-center justify-center"
                 title="Buscar"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
             </div>
