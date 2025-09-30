@@ -102,10 +102,10 @@ export default function SearchForm() {
             </div>
 
             {/* Botão Buscar - Apenas Lupa */}
-            <div className="w-full md:w-auto pr-4">
+            <div className="w-full md:w-auto pr-6">
               <button
                 type="submit"
-                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-full transition-all duration-200 flex items-center justify-center"
+                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
                 title="Buscar"
               >
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
