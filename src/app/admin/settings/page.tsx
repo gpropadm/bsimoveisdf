@@ -23,7 +23,6 @@ interface SiteSettings {
   featuredLimit: number
   enableRegistrations: boolean
   enableComments: boolean
-  headerImageUrl: string
   headerTitle: string
   headerSubtitle: string
 }
@@ -57,7 +56,6 @@ export default function AdminSettings() {
     featuredLimit: 6,
     enableRegistrations: true,
     enableComments: false,
-    headerImageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80',
     headerTitle: 'Encontre o Imóvel Perfeito',
     headerSubtitle: 'Casas, apartamentos e terrenos dos seus sonhos'
   })
@@ -122,7 +120,7 @@ export default function AdminSettings() {
       }))
     } else {
       // Se for o campo de URL da imagem, converter automaticamente
-      const finalValue = name === 'headerImageUrl' ? convertUnsplashUrl(value) : value
+      const finalValue = value
 
       setSiteSettings(prev => ({
         ...prev,
@@ -359,23 +357,6 @@ export default function AdminSettings() {
               </div>
 
               <div className="p-6 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    🖼️ URL da Imagem de Fundo
-                  </label>
-                  <input
-                    type="url"
-                    name="headerImageUrl"
-                    value={siteSettings.headerImageUrl}
-                    onChange={handleSiteSettingsChange}
-                    placeholder="https://images.unsplash.com/photo-..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Cole aqui o link da imagem que você quer usar como fundo do header
-                  </p>
-                </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -405,41 +386,6 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
-
-                {/* Preview da imagem */}
-                {siteSettings.headerImageUrl && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      👁️ Preview da Imagem
-                    </label>
-                    <div className="relative h-48 rounded-lg overflow-hidden border border-gray-300">
-                      <img
-                        src={siteSettings.headerImageUrl}
-                        alt="Preview do header"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none'
-                          const nextElement = e.currentTarget.nextElementSibling as HTMLElement
-                          if (nextElement) {
-                            nextElement.style.display = 'flex'
-                          }
-                        }}
-                      />
-                      <div
-                        className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-500 hidden"
-                        style={{ display: 'none' }}
-                      >
-                        Erro ao carregar a imagem
-                      </div>
-                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <h2 className="text-2xl font-bold mb-2">{siteSettings.headerTitle}</h2>
-                          <p className="text-lg">{siteSettings.headerSubtitle}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
