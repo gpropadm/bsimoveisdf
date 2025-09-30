@@ -66,16 +66,17 @@ export default function SearchForm() {
   return (
     <div className="max-w-5xl mx-auto px-4">
       {/* Formulário de Busca Melhorado */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-3">
+      <div className="bg-white/95 backdrop-blur-sm rounded-full shadow-2xl">
         <form onSubmit={handleSearch}>
-          <div className="flex flex-col md:flex-row items-center gap-3">
+          <div className="flex flex-col md:flex-row items-center">
 
-            {/* Tipo de Imóvel - Compacto */}
+            {/* Tipo de Imóvel - Sem borda */}
             <div className="w-full md:w-auto">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full md:w-[160px] h-12 px-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7162f0] focus:border-transparent text-gray-700 font-medium"
+                className="w-full md:w-[160px] h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium appearance-none cursor-pointer"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23666\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
               >
                 <option value="">Tipo</option>
                 {filters.categoriesByType && Object.values(filters.categoriesByType).flat().filter((v, i, a) => a.indexOf(v) === i).map((category) => (
@@ -86,6 +87,9 @@ export default function SearchForm() {
               </select>
             </div>
 
+            {/* Divisor vertical */}
+            <div className="hidden md:block h-8 w-px bg-gray-300"></div>
+
             {/* Localização - Grande */}
             <div className="w-full md:flex-1">
               <input
@@ -93,20 +97,20 @@ export default function SearchForm() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Onde você quer morar? (cidade, bairro...)"
-                className="w-full h-12 px-5 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7162f0] focus:border-transparent text-gray-700 placeholder:text-gray-400"
+                className="w-full h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 placeholder:text-gray-400"
               />
             </div>
 
-            {/* Botão Buscar - Destaque */}
-            <div className="w-full md:w-auto">
+            {/* Botão Buscar - Apenas Lupa */}
+            <div className="w-full md:w-auto pr-2">
               <button
                 type="submit"
-                className="w-full md:w-auto h-12 px-8 bg-[#7162f0] hover:bg-[#5a4dcf] text-white rounded-full font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-[#7162f0]/30"
+                className="w-full md:w-auto h-12 w-12 bg-[#7162f0] hover:bg-[#5a4dcf] text-white rounded-full font-bold transition-all duration-200 flex items-center justify-center shadow-lg shadow-[#7162f0]/30"
+                title="Buscar"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <span>Buscar</span>
               </button>
             </div>
           </div>
