@@ -18,13 +18,13 @@ export default function Footer() {
             <h5 className="text-lg font-semibold mb-4">Conheça</h5>
             <ul className="space-y-2 text-sm">
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Sobre Nós</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Blog</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Trabalhe Conosco</span>
               </li>
             </ul>
           </div>
@@ -34,19 +34,19 @@ export default function Footer() {
             <h5 className="text-lg font-semibold mb-4">Produtos</h5>
             <ul className="space-y-2 text-sm">
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">CRM Imobiliário</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Site Imobiliário</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Gestão de Imóveis</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Portal do Cliente</span>
               </li>
               <li>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Financiamento</span>
               </li>
             </ul>
           </div>
@@ -55,14 +55,15 @@ export default function Footer() {
           <div>
             <h5 className="text-lg font-semibold mb-4">Contato</h5>
             <div className="space-y-3 text-sm">
-              <div>
-                <span className="text-gray-500">*</span>
+              <div className="flex items-center">
+                <i className="fab fa-whatsapp mr-2 text-gray-500" style={{ fontSize: '14px' }}></i>
+                <span className="text-gray-500 cursor-default">(61) 9999-9999</span>
               </div>
               <div>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Fale Conosco</span>
               </div>
               <div>
-                <span className="text-gray-500">*</span>
+                <span className="text-gray-500 cursor-default">Central de Ajuda</span>
               </div>
             </div>
 
@@ -70,7 +71,15 @@ export default function Footer() {
             <div className="mt-6">
               <h6 className="text-base font-semibold mb-3">Acompanhe nossas redes</h6>
               <div className="flex space-x-3">
-                <span className="text-gray-500">*</span>
+                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                  <i className="fa-brands fa-facebook-f text-white" style={{ fontSize: '16px' }}></i>
+                </span>
+                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                  <i className="fa-brands fa-instagram text-white" style={{ fontSize: '16px' }}></i>
+                </span>
+                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                  <i className="fa-brands fa-linkedin-in text-white" style={{ fontSize: '16px' }}></i>
+                </span>
               </div>
             </div>
           </div>
@@ -84,13 +93,13 @@ export default function Footer() {
               <span className="ml-2">Todos os direitos reservados.</span>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-400">
-              <span>*</span>
+              <span className="cursor-default">Termos de Uso</span>
               <span>·</span>
-              <span>*</span>
+              <span className="cursor-default">Política de Privacidade</span>
               <span>·</span>
-              <span>*</span>
+              <span className="cursor-default">Código de Conduta</span>
               <span>·</span>
-              <span>*</span>
+              <span className="cursor-default">Canal de Denúncia</span>
             </div>
           </div>
         </div>
