@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface SearchFilters {
   types: string[]
@@ -10,6 +11,7 @@ interface SearchFilters {
 
 export default function SearchForm() {
   const router = useRouter()
+  const { primaryColor } = useTheme()
   const [filters, setFilters] = useState<SearchFilters>({ types: [], categoriesByType: {} })
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [location, setLocation] = useState<string>('')
@@ -105,7 +107,8 @@ export default function SearchForm() {
             <div className="w-full md:w-auto flex justify-center md:pr-6">
               <button
                 type="submit"
-                className="w-full md:w-auto h-16 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-b-3xl md:rounded-r-full md:rounded-b-none transition-all duration-200 flex items-center justify-center cursor-pointer"
+                className="w-full md:w-auto h-16 px-4 bg-transparent hover:bg-gray-50 rounded-b-3xl md:rounded-r-full md:rounded-b-none transition-all duration-200 flex items-center justify-center cursor-pointer"
+                style={{ color: primaryColor }}
                 title="Buscar"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

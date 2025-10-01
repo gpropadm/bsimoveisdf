@@ -4,12 +4,16 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useTheme } from '@/contexts/ThemeContext'
+import ThemeSelector from './ThemeSelector'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [showMoreMenu, setShowMoreMenu] = useState(false)
   const pathname = usePathname()
   const { favoritesCount } = useFavorites()
+  const { primaryColor } = useTheme()
 
   // Determinar se estamos numa página que não tem hero section (fundo escuro)
   const isOnPageWithoutHero = pathname !== '/'
@@ -29,7 +33,10 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <span className={`text-3xl font-bold transition-colors ${(isScrolled || isOnPageWithoutHero) ? 'text-[#7162f0]' : 'text-white'}`}>
+            <span
+              className={`text-3xl font-bold transition-colors ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white'}`}
+              style={{ color: (isScrolled || isOnPageWithoutHero) ? primaryColor : '' }}
+            >
               All
             </span>
           </Link>
@@ -45,13 +52,13 @@ export default function Header() {
               href="/financiamento-imobiliario"
               className={`transition-colors font-medium ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
               style={{
-                color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : ''
+                color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
               }}
               onMouseEnter={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#5240f7'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
               onMouseLeave={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#7162f0'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
             >
               Financiamento imobiliário
@@ -60,35 +67,45 @@ export default function Header() {
               <button
                 className={`transition-colors font-medium flex items-center ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
                 style={{
-                  color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : ''
+                  color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
                 }}
                 onMouseEnter={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#5f4fea'
+                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
                 }}
                 onMouseLeave={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#7162f0'
+                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
                 }}
               >
                 Ajuda
                 <i className="fas fa-chevron-down ml-1 text-xs"></i>
               </button>
             </div>
-            <div className="relative group">
+            <div className="relative">
               <button
+                onClick={() => setShowMoreMenu(!showMoreMenu)}
                 className={`transition-colors font-medium flex items-center ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
                 style={{
-                  color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : ''
+                  color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
                 }}
                 onMouseEnter={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#5f4fea'
+                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
                 }}
                 onMouseLeave={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#7162f0'
+                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
                 }}
               >
                 Mais
-                <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                <i className={`fas fa-chevron-down ml-1 text-xs transition-transform ${showMoreMenu ? 'rotate-180' : ''}`}></i>
               </button>
+
+              {showMoreMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
+                  <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-2 z-50 min-w-[200px]">
+                    <ThemeSelector />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -98,16 +115,16 @@ export default function Header() {
               href="/anunciar"
               className="px-6 py-2.5 border rounded-full font-semibold text-sm transition-all duration-300 hover:bg-opacity-20"
               style={{
-                color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'white',
-                borderColor: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'white'
+                color: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white',
+                borderColor: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'rgba(255,255,255,0.2)'
+                e.currentTarget.style.backgroundColor = (isScrolled || isOnPageWithoutHero) ? primaryColor : 'rgba(255,255,255,0.2)'
                 e.currentTarget.style.color = (isScrolled || isOnPageWithoutHero) ? 'white' : 'white'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'white'
+                e.currentTarget.style.color = (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white'
               }}
             >
               Anuncie seu Imóvel
@@ -118,13 +135,13 @@ export default function Header() {
               href="/meus-favoritos"
               className="relative font-medium transition-colors flex items-center space-x-1"
               style={{
-                color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'white'
+                color: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white'
               }}
               onMouseEnter={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#5f4fea'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
               onMouseLeave={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#7162f0'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -144,13 +161,13 @@ export default function Header() {
               rel="noopener noreferrer"
               className="font-medium transition-colors"
               style={{
-                color: (isScrolled || isOnPageWithoutHero) ? '#7162f0' : 'white'
+                color: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white'
               }}
               onMouseEnter={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#5f4fea'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
               onMouseLeave={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = '#7162f0'
+                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
               }}
             >
               Entrar
