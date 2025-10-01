@@ -75,7 +75,7 @@ export default function SearchForm() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full md:w-[160px] h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium appearance-none cursor-pointer rounded-t-3xl md:rounded-l-full md:rounded-t-none"
+                className="w-full md:w-[180px] h-16 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium text-base appearance-none cursor-pointer rounded-t-3xl md:rounded-l-full md:rounded-t-none"
                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23666\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center' }}
               >
                 <option value="">Tipo</option>
@@ -88,7 +88,7 @@ export default function SearchForm() {
             </div>
 
             {/* Divisor vertical - apenas desktop */}
-            <div className="hidden md:block h-8 w-px bg-gray-300"></div>
+            <div className="hidden md:block h-10 w-px bg-gray-300"></div>
 
             {/* Localização - Grande */}
             <div className="w-full md:flex-1 border-b md:border-b-0 border-gray-200">
@@ -97,7 +97,7 @@ export default function SearchForm() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Onde você quer morar? (cidade, bairro...)"
-                className="w-full h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 placeholder:text-gray-400"
+                className="w-full h-16 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 text-base placeholder:text-gray-400"
               />
             </div>
 
@@ -105,10 +105,10 @@ export default function SearchForm() {
             <div className="w-full md:w-auto flex justify-center md:pr-6">
               <button
                 type="submit"
-                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-b-3xl md:rounded-r-full md:rounded-b-none transition-all duration-200 flex items-center justify-center cursor-pointer"
+                className="w-full md:w-auto h-16 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-b-3xl md:rounded-r-full md:rounded-b-none transition-all duration-200 flex items-center justify-center cursor-pointer"
                 title="Buscar"
               >
-                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
