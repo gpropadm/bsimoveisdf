@@ -24,8 +24,8 @@ export default function Header() {
   }, [])
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent`}>
-      <nav className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? 'py-6' : 'py-6'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${(isScrolled || isOnPageWithoutHero) ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+      <nav className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? 'py-4' : 'py-6'}`}>
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
