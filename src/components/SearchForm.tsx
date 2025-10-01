@@ -66,17 +66,17 @@ export default function SearchForm() {
   return (
     <div className="max-w-5xl mx-auto px-4">
       {/* Formulário de Busca Melhorado */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-full shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm rounded-3xl md:rounded-full shadow-2xl">
         <form onSubmit={handleSearch}>
-          <div className="flex flex-col md:flex-row items-center">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center">
 
             {/* Tipo de Imóvel - Sem borda */}
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto border-b md:border-b-0 border-gray-200">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full md:w-[160px] h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium appearance-none cursor-pointer"
-                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23666\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center' }}
+                className="w-full md:w-[160px] h-14 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium appearance-none cursor-pointer rounded-t-3xl md:rounded-l-full md:rounded-t-none"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23666\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center' }}
               >
                 <option value="">Tipo</option>
                 {filters.categoriesByType && Object.values(filters.categoriesByType).flat().filter((v, i, a) => a.indexOf(v) === i).map((category) => (
@@ -87,11 +87,11 @@ export default function SearchForm() {
               </select>
             </div>
 
-            {/* Divisor vertical */}
+            {/* Divisor vertical - apenas desktop */}
             <div className="hidden md:block h-8 w-px bg-gray-300"></div>
 
             {/* Localização - Grande */}
-            <div className="w-full md:flex-1">
+            <div className="w-full md:flex-1 border-b md:border-b-0 border-gray-200">
               <input
                 type="text"
                 value={location}
@@ -102,10 +102,10 @@ export default function SearchForm() {
             </div>
 
             {/* Botão Buscar - Apenas Lupa */}
-            <div className="w-full md:w-auto pr-6">
+            <div className="w-full md:w-auto flex justify-center md:pr-6">
               <button
                 type="submit"
-                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer"
+                className="w-full md:w-auto h-14 px-4 bg-transparent hover:bg-gray-50 text-[#7162f0] rounded-b-3xl md:rounded-r-full md:rounded-b-none transition-all duration-200 flex items-center justify-center cursor-pointer"
                 title="Buscar"
               >
                 <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
