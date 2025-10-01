@@ -96,6 +96,7 @@ const MapEventHandler = dynamic(() =>
 )
 
 export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, onBoundsChange }: MapaImoveisProps) {
+  const { primaryColor } = useTheme()
   const [isClient, setIsClient] = useState(false)
   const [mapKey, setMapKey] = useState(0)
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
