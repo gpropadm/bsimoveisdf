@@ -94,7 +94,7 @@ export default function Header() {
                   if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
                 }}
               >
-                Mais
+                Escolha Cor
                 <i className={`fas fa-chevron-down ml-1 text-xs transition-transform ${showMoreMenu ? 'rotate-180' : ''}`}></i>
               </button>
 
