@@ -78,7 +78,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
   if (loading) {
     return (
-      <div className="py-8 px-4 bg-[#f9f3ea]">
+      <div className="py-8 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <SkeletonCards />
         </div>
@@ -125,7 +125,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   }
 
   return (
-    <div className="pt-2 pb-8 px-4 bg-[#f9f3ea]">
+    <div className="pt-2 pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
 
 
