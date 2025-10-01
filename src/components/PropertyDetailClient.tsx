@@ -566,7 +566,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                             color: '#212529'
                           }}
                         >
-                          Arbo Imóveis
+                          All Imóveis
                         </div>
                         <div
                           className="font-sora"
