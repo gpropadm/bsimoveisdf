@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
-// Cache estático para desenvolvimento - muito mais rápido
+// Cache estático para desenvolvimento
 let cachedData: any = null
 let cacheTimestamp = 0
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutos
@@ -12,12 +13,31 @@ export async function GET() {
       return NextResponse.json(cachedData)
     }
 
-    // Para desenvolvimento, usar dados estáticos baseados nos imóveis existentes
+    // Buscar categorias únicas do banco de dados
+    const categories = await prisma.property.findMany({
+      where: {
+        status: 'disponivel'
+      },
+      select: {
+        category: true,
+        type: true
+      },
+      distinct: ['category']
+    })
+
+    // Extrair categorias únicas
+    const uniqueCategories = [...new Set(categories.map(p => p.category).filter(Boolean))]
+    const uniqueTypes = [...new Set(categories.map(p => p.type).filter(Boolean))]
+
+    // Organizar por tipo
+    const categoriesByType: Record<string, string[]> = {}
+    uniqueTypes.forEach(type => {
+      categoriesByType[type] = uniqueCategories
+    })
+
     const result = {
-      types: ['venda'],
-      categoriesByType: {
-        'venda': ['apartamento']
-      }
+      types: uniqueTypes,
+      categoriesByType
     }
 
     // Atualizar cache
@@ -33,8 +53,8 @@ export async function GET() {
     return NextResponse.json({
       types: ['venda', 'aluguel'],
       categoriesByType: {
-        'venda': ['apartamento', 'casa'],
-        'aluguel': ['apartamento', 'casa']
+        'venda': ['apartamento', 'casa', 'terreno', 'cobertura'],
+        'aluguel': ['apartamento', 'casa', 'terreno', 'cobertura']
       }
     })
   }
