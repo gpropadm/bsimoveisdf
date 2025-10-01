@@ -690,11 +690,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           </div>
         </div>
 
-        {/* Seção de Imóveis Relacionados */}
+        {/* Seção de Imóveis que Poderá Gostar */}
         {relatedProperties.length > 0 && (
           <div className="pb-8">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-center">Imóveis Relacionados</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-center">Imóveis que Poderá Gostar</h2>
             </div>
             <PropertyStoriesSection
               properties={relatedProperties}
