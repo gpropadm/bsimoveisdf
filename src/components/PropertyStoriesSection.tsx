@@ -302,7 +302,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
         .ImovelCardInfo_colorOfTitleCondominium__IfTu_ {
           color: #333;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           line-height: 1.3;
         }
