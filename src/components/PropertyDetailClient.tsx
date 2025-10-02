@@ -211,7 +211,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
               {/* Características */}
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 flex items-center">
                   <BuildingOfficeIcon className="w-6 h-6 mr-2" />
                   Características
                 </h2>
@@ -315,9 +315,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               {property.description && (
                 <div className="bg-white rounded-3 border p-4 p-md-5" style={{ borderColor: '#e9ecef' }}>
                   <h2
-                    className="fw-bold mb-4 font-sora"
+                    className="fw-bold mb-4 font-sora text-2xl md:text-3xl"
                     style={{
-                      fontSize: '24px',
                       color: '#212529',
                       lineHeight: '1.3'
                     }}
@@ -341,7 +340,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               {/* Comodidades do Condomínio - Separado apenas para apartamentos */}
               {property.category === 'apartamento' && property.amenities && (
                 <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                     Comodidades do Condomínio
                   </h2>
 
@@ -369,9 +368,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <div className="bg-white rounded-3 border p-4 mb-4" style={{ borderColor: '#e9ecef' }}>
                   <div className="mb-4">
                     <div
-                      className="fw-bold mb-2 font-sora"
+                      className="fw-bold mb-2 font-sora text-2xl md:text-3xl"
                       style={{
-                        fontSize: '28px',
                         color: '#212529',
                         lineHeight: '1.2'
                       }}
