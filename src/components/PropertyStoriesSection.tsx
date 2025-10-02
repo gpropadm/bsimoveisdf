@@ -38,6 +38,8 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   const router = useRouter()
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null)
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
 
 
 
@@ -124,6 +126,25 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     setSelectedProperty(null)
   }
 
+  const handleVideoClick = (property: Property) => {
+    if (property.video) {
+      try {
+        const videos = JSON.parse(property.video)
+        const videoUrl = Array.isArray(videos) ? videos[0] : property.video
+        setSelectedVideo(videoUrl)
+        setIsVideoModalOpen(true)
+      } catch {
+        setSelectedVideo(property.video)
+        setIsVideoModalOpen(true)
+      }
+    }
+  }
+
+  const handleVideoModalClose = () => {
+    setIsVideoModalOpen(false)
+    setSelectedVideo(null)
+  }
+
   return (
     <div className="pt-8 pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
@@ -137,18 +158,47 @@ export default function PropertyStoriesSection({ properties, loading }: Property
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
-              <ArboPropertyCard key={property.id} property={property} onViewDetails={handlePropertyClick} formatPrice={formatPrice} />
+              <ArboPropertyCard
+                key={property.id}
+                property={property}
+                onViewDetails={handlePropertyClick}
+                onVideoClick={handleVideoClick}
+                formatPrice={formatPrice}
+              />
             ))}
           </div>
         </div>
       </div>
 
       {/* Video Modal */}
-      <PropertyVideoModal 
+      <PropertyVideoModal
         property={selectedProperty}
         isOpen={isModalOpen}
         onClose={handleModalClose}
       />
+
+      {/* Modal de Vídeo Shorts */}
+      {isVideoModalOpen && selectedVideo && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          onClick={handleVideoModalClose}
+        >
+          <div className="relative w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={handleVideoModalClose}
+              className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
+            >
+              ✕
+            </button>
+            <video
+              src={selectedVideo}
+              controls
+              autoPlay
+              className="w-full rounded-lg"
+            />
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         .scrollbar-hide {
@@ -453,9 +503,10 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 }
 
 // Componente ArboPropertyCard - fiel ao código da Arbo
-function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
+function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }: {
   property: Property
   onViewDetails: (slug: string) => void
+  onVideoClick: (property: Property) => void
   formatPrice: (price: number) => string
 }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -625,6 +676,11 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
             {hasVideos() && (
               <div
                 className="position-absolute"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onVideoClick(property)
+                }}
                 style={{
                   top: '10px',
                   right: '10px',
