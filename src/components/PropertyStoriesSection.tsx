@@ -503,7 +503,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
         .Icons_list__SlDEy li span:first-child {
           font-size: 13px;
-          font-weight: 600;
+          font-weight: 400;
           color: #333;
           line-height: 1;
         }
