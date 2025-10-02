@@ -349,6 +349,8 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
               <a
                 href={`/imovel/${previewProperty.slug || previewProperty.id}`}
                 className="preview-button"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={(e) => {
                   e.stopPropagation()
                 }}
