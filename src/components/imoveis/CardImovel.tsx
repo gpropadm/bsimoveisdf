@@ -207,4 +207,4 @@ export default function CardImovel({ imovel, isSelected, onClick }: CardImovelPr
       </div>
     </div>
   )
-}
+}// Cache bust 1759449090
