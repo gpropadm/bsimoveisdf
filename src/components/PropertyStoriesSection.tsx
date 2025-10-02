@@ -605,6 +605,35 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
               </picture>
             </div>
 
+            {/* Ícone de vídeo - aparece se tiver vídeo */}
+            {property.video && (
+              <div
+                className="position-absolute"
+                style={{
+                  top: '10px',
+                  right: '10px',
+                  zIndex: 20,
+                  background: 'rgba(0, 0, 0, 0.7)',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="white"
+                >
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            )}
+
             {/* Card Info */}
             <div className="ImovelCardInfo_info__QFwnz">
               <div className="ImovelCardInfo_paddingTopTypeOfPropertie__fiRBi">
