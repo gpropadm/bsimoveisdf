@@ -160,36 +160,38 @@ export default function CardImovel({ imovel, isSelected, onClick }: CardImovelPr
         </div>
 
         {/* Título */}
-        <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+        <h3 className="text-gray-800 mb-2 line-clamp-2" style={{ fontSize: '15px', fontWeight: 600 }}>
           {imovel.title}
         </h3>
 
         {/* Localização */}
         <div className="flex items-center text-gray-600 mb-3">
           <MapPin className="w-4 h-4 mr-1" />
-          <span className="text-sm">
+          <span style={{ fontSize: '13px' }}>
             {imovel.address}, {imovel.city} - {imovel.state}
           </span>
         </div>
 
         {/* Características */}
-        <div className="flex items-center gap-4 text-gray-600 text-sm mb-4">
+        <div className="flex items-center gap-4 text-gray-600 mb-4" style={{ fontSize: '12px' }}>
           {imovel.bedrooms && (
             <div className="flex items-center">
               <Home className="w-4 h-4 mr-1" />
-              <span>{imovel.bedrooms} quartos</span>
+              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.bedrooms}</span>
+              <span style={{ fontSize: '12px', marginLeft: '4px' }}>quartos</span>
             </div>
           )}
           {imovel.bathrooms && (
             <div className="flex items-center">
               <Bath className="w-4 h-4 mr-1" />
-              <span>{imovel.bathrooms} banheiros</span>
+              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.bathrooms}</span>
+              <span style={{ fontSize: '12px', marginLeft: '4px' }}>banheiros</span>
             </div>
           )}
           {imovel.area && (
             <div className="flex items-center">
               <Square className="w-4 h-4 mr-1" />
-              <span>{imovel.area}m²</span>
+              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.area}m²</span>
             </div>
           )}
         </div>
