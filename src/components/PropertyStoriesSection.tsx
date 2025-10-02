@@ -683,6 +683,12 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
                               <span>Quartos</span>
                             </li>
                           )}
+                          {property.suites && (
+                            <li>
+                              <span>{property.suites}</span>
+                              <span>Suítes</span>
+                            </li>
+                          )}
                           {property.bathrooms && (
                             <li>
                               <span>{property.bathrooms}</span>
