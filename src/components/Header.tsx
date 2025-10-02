@@ -188,9 +188,9 @@ export default function Header() {
             className="lg:hidden flex flex-col justify-center items-center w-6 h-6 cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <span className={`block h-0.5 w-6 transition-all duration-200 ${(isScrolled || isOnPageWithoutHero) ? 'bg-gray-700' : 'bg-white'} ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-            <span className={`block h-0.5 w-6 my-1 transition-all duration-200 ${isScrolled ? 'bg-gray-700' : 'bg-white'} ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-            <span className={`block h-0.5 w-6 transition-all duration-200 ${(isScrolled || isOnPageWithoutHero) ? 'bg-gray-700' : 'bg-white'} ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+            <span className={`block h-0.5 w-6 transition-all duration-200 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} style={{ backgroundColor: (isScrolled || isOnPageWithoutHero) ? '#e0e0e0' : 'white' }}></span>
+            <span className={`block h-0.5 w-6 my-1 transition-all duration-200 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} style={{ backgroundColor: isScrolled ? '#e0e0e0' : 'white' }}></span>
+            <span className={`block h-0.5 w-6 transition-all duration-200 ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} style={{ backgroundColor: (isScrolled || isOnPageWithoutHero) ? '#e0e0e0' : 'white' }}></span>
           </div>
 
           {/* Mobile Navigation */}

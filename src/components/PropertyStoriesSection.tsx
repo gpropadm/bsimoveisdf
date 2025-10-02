@@ -44,37 +44,8 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
 
   const SkeletonCards = () => (
-    <div>
-      <div className="w-64 h-8 bg-gray-200 rounded animate-pulse mb-6"></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array(6).fill(0).map((_, i) => (
-          <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="h-64 bg-gray-200 animate-pulse"></div>
-            <div className="p-4">
-              {/* Título */}
-              <div className="w-48 h-4 bg-gray-200 rounded animate-pulse mb-0.5"></div>
-              <div className="w-32 h-4 bg-gray-200 rounded animate-pulse mb-1"></div>
-              {/* Tipo do imóvel */}
-              <div className="w-16 h-3 bg-gray-200 rounded animate-pulse mb-0.5"></div>
-              {/* Preço e Favorito */}
-              <div className="flex justify-between items-center mb-0.5">
-                <div className="w-24 h-5 bg-gray-200 rounded animate-pulse"></div>
-                <div className="w-5 h-5 bg-gray-200 rounded-full animate-pulse"></div>
-              </div>
-              {/* Cidade */}
-              <div className="w-20 h-3 bg-gray-200 rounded animate-pulse mb-1.5"></div>
-              {/* Features */}
-              <div className="flex space-x-4 mb-4">
-                <div className="w-16 h-3 bg-gray-200 rounded animate-pulse"></div>
-                <div className="w-20 h-3 bg-gray-200 rounded animate-pulse"></div>
-                <div className="w-14 h-3 bg-gray-200 rounded animate-pulse"></div>
-              </div>
-              {/* Botão */}
-              <div className="w-full h-10 bg-gray-200 rounded animate-pulse"></div>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="text-center py-12">
+      <p className="text-gray-500">Carregando imóveis...</p>
     </div>
   )
 

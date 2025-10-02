@@ -164,9 +164,19 @@ export default function ImoveisContent() {
   return (
     <>
       <ArboCardStyleInjector />
+
+      {/* CSS inline para esconder lista no mobile */}
+      <style jsx>{`
+        @media (max-width: 767px) {
+          .lista-imoveis-mobile-hidden {
+            display: none !important;
+          }
+        }
+      `}</style>
+
       <div className="flex h-[calc(100vh-120px)]">
       {/* Lista de Imóveis - Lado Esquerdo */}
-      <div className={`${showMap ? 'w-1/2' : 'w-full'} overflow-y-auto bg-white transition-all duration-300`}>
+      <div className={`${showMap ? 'w-full md:w-1/2 lista-imoveis-mobile-hidden' : 'w-full'} overflow-y-auto bg-white transition-all duration-300`}>
         <div className="p-6">
           <div className="mb-6">
             <h1 className="text-2xl font-bold" style={{ color: '#333333' }}>
@@ -203,9 +213,9 @@ export default function ImoveisContent() {
         </div>
       </div>
 
-      {/* Mapa - Lado Direito */}
+      {/* Mapa - Lado Direito - FULL WIDTH NO MOBILE */}
       {showMap && (
-        <div className="w-1/2 relative sticky top-0 h-[calc(100vh-120px)] bg-gray-200 transition-all duration-300">
+        <div className="w-full md:w-1/2 relative sticky top-0 h-[calc(100vh-120px)] bg-gray-200 transition-all duration-300">
           {properties.length > 0 ? (
             <MapaImoveis
               imoveis={adaptPropertiesForMap(properties)}

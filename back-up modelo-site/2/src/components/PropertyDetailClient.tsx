@@ -10,6 +10,8 @@ import PropertyStoriesSection from '@/components/PropertyStoriesSection'
 import FavoriteButton from '@/components/FavoriteButton'
 import PriceAlertButton from '@/components/PriceAlertButton'
 import PriceReducedBadge from '@/components/PriceReducedBadge'
+import LeadForm from '@/components/LeadForm'
+import AppointmentModal from '@/components/AppointmentModal'
 import { ToastProvider } from '@/contexts/ToastContext'
 import {
   MapPinIcon,
@@ -58,6 +60,7 @@ interface PropertyDetailClientProps {
 export default function PropertyDetailClient({ property }: PropertyDetailClientProps) {
   const [relatedProperties, setRelatedProperties] = useState<any[]>([])
   const [loadingRelated, setLoadingRelated] = useState(true)
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
 
   // Breadcrumbs baseados na propriedade
   const breadcrumbItems = [
@@ -177,12 +180,12 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 mb-1">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                       {property.title}
                     </h1>
                     <div className="flex items-center" style={{ color: '#5a5a5a' }}>
                       <MapPinIcon className="w-5 h-5 mr-2" />
-                      <span className="text-lg">{property.address}, {property.city} - {property.state}</span>
+                      <span className="text-base">{property.address}, {property.city} - {property.state}</span>
                     </div>
                   </div>
 
@@ -208,7 +211,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
               {/* Características */}
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <BuildingOfficeIcon className="w-6 h-6 mr-2" />
                   Características
                 </h2>
@@ -312,9 +315,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               {property.description && (
                 <div className="bg-white rounded-3 border p-4 p-md-5" style={{ borderColor: '#e9ecef' }}>
                   <h2
-                    className="fw-bold mb-4 font-sora"
+                    className="fw-bold mb-4 font-sora text-lg md:text-xl"
                     style={{
-                      fontSize: '24px',
                       color: '#212529',
                       lineHeight: '1.3'
                     }}
@@ -338,7 +340,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               {/* Comodidades do Condomínio - Separado apenas para apartamentos */}
               {property.category === 'apartamento' && property.amenities && (
                 <div className="bg-white rounded-xl shadow-sm p-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6">
                     Comodidades do Condomínio
                   </h2>
 
@@ -366,9 +368,8 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                 <div className="bg-white rounded-3 border p-4 mb-4" style={{ borderColor: '#e9ecef' }}>
                   <div className="mb-4">
                     <div
-                      className="fw-bold mb-2 font-sora"
+                      className="fw-bold mb-2 font-sora text-lg md:text-xl"
                       style={{
-                        fontSize: '28px',
                         color: '#212529',
                         lineHeight: '1.2'
                       }}
@@ -461,17 +462,33 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       Interessado neste imóvel?
                     </h3>
 
+                    {/* Formulário de Contato/Interesse */}
+                    <div className="mb-3">
+                      <LeadForm propertyId={property.id} propertyTitle={property.title} propertyPrice={property.price} propertyType={property.type} />
+                    </div>
+
                     <div className="d-grid gap-2">
+                      <button
+                        onClick={() => setIsAppointmentModalOpen(true)}
+                        className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
+                        style={{
+                          fontSize: '14px'
+                        }}
+                      >
+                        <i className="fas fa-calendar" style={{ fontSize: '14px' }}></i>
+                        Agendar Visita
+                      </button>
+
                       <button
                         onClick={handleWhatsApp}
                         className="btn btn-success d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
                           backgroundColor: '#25d366',
                           borderColor: '#25d366',
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fab fa-whatsapp" style={{ fontSize: '18px' }}></i>
+                        <i className="fab fa-whatsapp" style={{ fontSize: '16px' }}></i>
                         WhatsApp
                       </button>
 
@@ -480,20 +497,20 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         style={{
                           borderColor: '#4f2de8',
                           color: '#4f2de8',
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fas fa-phone" style={{ fontSize: '16px' }}></i>
+                        <i className="fas fa-phone" style={{ fontSize: '14px' }}></i>
                         Ligar Agora
                       </button>
 
                       <button
                         className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fas fa-envelope" style={{ fontSize: '16px' }}></i>
+                        <i className="fas fa-envelope" style={{ fontSize: '14px' }}></i>
                         Enviar E-mail
                       </button>
 
@@ -535,7 +552,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                             color: '#212529'
                           }}
                         >
-                          Arbo Imóveis
+                          All Imóveis
                         </div>
                         <div
                           className="font-sora"
@@ -659,11 +676,11 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
           </div>
         </div>
 
-        {/* Seção de Imóveis Relacionados */}
+        {/* Seção de Imóveis que Poderá Gostar */}
         {relatedProperties.length > 0 && (
           <div className="pb-8">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-center">Imóveis Relacionados</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-center">Imóveis que Poderá Gostar</h2>
             </div>
             <PropertyStoriesSection
               properties={relatedProperties}
@@ -673,6 +690,19 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
         )}
 
         <Footer />
+
+        {/* Modal de Agendamento */}
+        <AppointmentModal
+          isOpen={isAppointmentModalOpen}
+          onClose={() => setIsAppointmentModalOpen(false)}
+          property={{
+            id: property.id,
+            title: property.title,
+            address: property.address,
+            price: property.price,
+            type: property.type
+          }}
+        />
       </div>
     </ToastProvider>
   )

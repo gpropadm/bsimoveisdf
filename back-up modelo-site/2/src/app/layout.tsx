@@ -16,14 +16,14 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Arbo - Plataforma Imobiliária",
-    template: "%s - Arbo"
+    default: "All - Plataforma Imobiliária",
+    template: "%s - All"
   },
-  description: "Encontre seu novo lar através das imobiliárias que anunciam no site Arbo. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
-  keywords: ["imóveis", "casas", "apartamentos", "venda", "aluguel", "imobiliária", "arbo", "plataforma imobiliária"],
-  authors: [{ name: "Arbo Imóveis" }],
-  creator: "Arbo Imóveis",
-  publisher: "Arbo Imóveis",
+  description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+  keywords: ["imóveis", "casas", "apartamentos", "venda", "aluguel", "imobiliária", "all", "plataforma imobiliária"],
+  authors: [{ name: "All Imóveis" }],
+  creator: "All Imóveis",
+  publisher: "All Imóveis",
   robots: {
     index: true,
     follow: true,
@@ -31,15 +31,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://www.arboimoveis.com.br",
-    siteName: "Arbo Imóveis",
-    title: "Arbo - Plataforma Imobiliária",
-    description: "Encontre seu novo lar através das imobiliárias que anunciam no site Arbo. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+    url: "https://www.allimobiliaria.com.br",
+    siteName: "All Imóveis",
+    title: "All - Plataforma Imobiliária",
+    description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arbo - Plataforma Imobiliária",
-    description: "Encontre seu novo lar através das imobiliárias que anunciam no site Arbo. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+    title: "All - Plataforma Imobiliária",
+    description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
   },
 };
 
@@ -52,26 +52,26 @@ export default function RootLayout({
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Arbo Imóveis",
-    "description": "Encontre seu novo lar através das imobiliárias que anunciam no site Arbo. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
-    "url": "https://www.arboimoveis.com.br",
-    "logo": "https://www.arboimoveis.com.br/static/logo_arbo.svg",
-    "image": "https://static.arboimoveis.com.br/white-label-assets/arbo/metadata-arbo-imoveis.png",
+    "name": "All Imóveis",
+    "description": "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+    "url": "https://www.allimobiliaria.com.br",
+    "logo": "https://www.allimobiliaria.com.br/static/logo_all.svg",
+    "image": "https://static.allimobiliaria.com.br/white-label-assets/all/metadata-all-imoveis.png",
     "telephone": "+55-11-4040-3939",
-    "email": "contato@arboimoveis.com",
+    "email": "contato@allimobiliaria.com",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "BR",
-      "addressRegion": "PR",
-      "addressLocality": "Londrina",
-      "postalCode": "86060-000",
-      "streetAddress": "R. Lima, 302 - Vitoria"
+      "addressRegion": "DF",
+      "addressLocality": "Brasília",
+      "postalCode": "70000-000",
+      "streetAddress": "Setor Comercial Sul"
     },
     "sameAs": [
-      "https://www.facebook.com/arboimoveis",
-      "https://www.instagram.com/arboimoveis",
-      "https://br.linkedin.com/company/arboimoveis",
-      "https://blog.arboimoveis.com.br/"
+      "https://www.facebook.com/allimobiliaria",
+      "https://www.instagram.com/allimobiliaria",
+      "https://br.linkedin.com/company/allimobiliaria",
+      "https://blog.allimobiliaria.com.br/"
     ],
     "serviceType": ["Venda de Imóveis", "Aluguel de Imóveis", "Plataforma Imobiliária", "Financiamento Imobiliário"]
   }

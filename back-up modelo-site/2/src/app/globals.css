@@ -9,7 +9,7 @@
 
 body {
   font-family: var(--font-sora), system-ui, sans-serif;
-  background-color: #ffffff;
+  background-color: #f9f3ea;
   color: #1a1a1a;
   line-height: 1.6;
 }
@@ -149,8 +149,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline-secondary:hover {
-  color: #fff;
-  background-color: #6c757d;
+  color: #6c757d;
+  background-color: #eeeeee;
   border-color: #6c757d;
 }
 
@@ -409,5 +409,25 @@ h1, h2, h3, h4, h5, h6 {
   }
   50% {
     opacity: 0.8;
+  }
+}
+
+/* Header bottom border animation */
+.bottom-border-slide {
+  animation: borderSlide 0.7s ease-in-out forwards;
+}
+
+@keyframes borderSlide {
+  0% {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 1;
   }
 }

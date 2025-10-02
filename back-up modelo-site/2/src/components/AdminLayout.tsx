@@ -20,6 +20,7 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
     { name: 'Dashboard', href: '/admin', icon: 'dashboard', current: currentPage === 'dashboard' },
     { name: 'Imóveis', href: '/admin/properties', icon: 'home', current: currentPage === 'properties' },
     { name: 'Leads', href: '/admin/leads', icon: 'users', current: currentPage === 'leads' },
+    { name: 'Agendamentos', href: '/admin/appointments', icon: 'calendar', current: currentPage === 'appointments' },
     { name: 'Usuários', href: '/admin/users', icon: 'users', current: currentPage === 'users' },
     { name: 'Central de Mídia', href: '/admin/cloudinary-usage', icon: 'cloud', current: currentPage === 'media' },
     { name: 'Configurações', href: '/admin/settings', icon: 'settings', current: currentPage === 'settings' },
@@ -46,6 +47,11 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
       cloud: (
         <svg className={className} fill="currentColor" viewBox="0 0 20 20">
           <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z"/>
+        </svg>
+      ),
+      calendar: (
+        <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
         </svg>
       ),
       settings: (

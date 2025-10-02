@@ -125,13 +125,16 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   }
 
   return (
-    <div className="pt-2 pb-8 px-4 bg-white">
+    <div className="pt-8 pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
 
+        {/* Título da Seção */}
+        <h2 className="text-2xl md:text-3xl font-bold text-left mb-6 text-gray-800">
+          Descubra seu novo Lar
+        </h2>
 
         {/* Properties by City Grid */}
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6 mt-2 text-left">Descubra seu novo Lar</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map((property) => (
               <ArboPropertyCard key={property.id} property={property} onViewDetails={handlePropertyClick} formatPrice={formatPrice} />
@@ -299,7 +302,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
         .ImovelCardInfo_colorOfTitleCondominium__IfTu_ {
           color: #333;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
           line-height: 1.3;
         }
@@ -344,16 +347,17 @@ export default function PropertyStoriesSection({ properties, loading }: Property
         }
 
         .Icons_list__SlDEy li span:first-child {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 600;
           color: #333;
-          margin-bottom: 2px;
+          line-height: 1;
         }
 
         .Icons_list__SlDEy li span:last-child {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 400;
           color: #666;
+          line-height: 1;
         }
 
         .ImovelCardInfo_prices__ArwZg {
@@ -678,6 +682,12 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
                             <li>
                               <span>{property.bedrooms}</span>
                               <span>Quartos</span>
+                            </li>
+                          )}
+                          {property.suites && (
+                            <li>
+                              <span>{property.suites}</span>
+                              <span>Suítes</span>
                             </li>
                           )}
                           {property.bathrooms && (

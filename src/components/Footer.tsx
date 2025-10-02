@@ -71,13 +71,13 @@ export default function Footer() {
             <div className="mt-6">
               <h6 className="text-base font-semibold mb-3">Acompanhe nossas redes</h6>
               <div className="flex space-x-3">
-                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                <span className="w-8 h-8 rounded-full flex items-center justify-center cursor-default" style={{ backgroundColor: '#e0e0e0' }}>
                   <i className="fa-brands fa-facebook-f text-white" style={{ fontSize: '16px' }}></i>
                 </span>
-                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                <span className="w-8 h-8 rounded-full flex items-center justify-center cursor-default" style={{ backgroundColor: '#e0e0e0' }}>
                   <i className="fa-brands fa-instagram text-white" style={{ fontSize: '16px' }}></i>
                 </span>
-                <span className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center cursor-default">
+                <span className="w-8 h-8 rounded-full flex items-center justify-center cursor-default" style={{ backgroundColor: '#e0e0e0' }}>
                   <i className="fa-brands fa-linkedin-in text-white" style={{ fontSize: '16px' }}></i>
                 </span>
               </div>

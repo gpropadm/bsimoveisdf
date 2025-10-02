@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import { useTheme } from '@/contexts/ThemeContext'
 
 // Importação dinâmica para evitar problemas de SSR
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
@@ -95,6 +96,7 @@ const MapEventHandler = dynamic(() =>
 )
 
 export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, onBoundsChange }: MapaImoveisProps) {
+  const { primaryColor } = useTheme()
   const [isClient, setIsClient] = useState(false)
   const [mapKey, setMapKey] = useState(0)
   const [shouldUpdateMap, setShouldUpdateMap] = useState(false)
@@ -421,7 +423,7 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
           display: block;
           width: 100%;
           padding: 8px 12px;
-          background: #7162f0;
+          background: ${primaryColor};
           color: white;
           text-align: center;
           border-radius: 6px;
@@ -432,7 +434,7 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
         }
 
         .preview-button:hover {
-          background: #5a4dcf;
+          opacity: 0.9;
         }
       `}</style>
     </div>
