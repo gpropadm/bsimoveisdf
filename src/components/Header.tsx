@@ -27,7 +27,7 @@ export default function Header() {
       // Ativar animação sempre que rolar
       if (scrolled) {
         setShowBorderAnimation(true)
-        setTimeout(() => setShowBorderAnimation(false), 1000)
+        setTimeout(() => setShowBorderAnimation(false), 700)
       }
     }
 
