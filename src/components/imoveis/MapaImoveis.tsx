@@ -104,6 +104,7 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
   const [previewProperty, setPreviewProperty] = useState<Imovel | null>(null)
   const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 })
   const prevImoveisRef = useRef<Imovel[]>([])
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setIsClient(true)
@@ -202,6 +203,12 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
   }
 
   const handleMarkerMouseEnter = (imovel: Imovel, event: any) => {
+    // Cancela qualquer timeout pendente
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+
     const containerPoint = event.target.getElement()
     const rect = containerPoint.getBoundingClientRect()
 
@@ -214,6 +221,23 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
   }
 
   const handleMarkerMouseLeave = () => {
+    // Delay antes de fechar para permitir mover mouse para o tooltip
+    hideTimeoutRef.current = setTimeout(() => {
+      setShowPreview(false)
+      setPreviewProperty(null)
+    }, 300)
+  }
+
+  const handlePreviewMouseEnter = () => {
+    // Cancela o fechamento quando mouse entra no preview
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current)
+      hideTimeoutRef.current = null
+    }
+  }
+
+  const handlePreviewMouseLeave = () => {
+    // Fecha imediatamente quando mouse sai do preview
     setShowPreview(false)
     setPreviewProperty(null)
   }
@@ -300,6 +324,8 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
             zIndex: 10000,
             pointerEvents: 'auto'
           }}
+          onMouseEnter={handlePreviewMouseEnter}
+          onMouseLeave={handlePreviewMouseLeave}
         >
           <div className="preview-content">
             <div className="preview-image">
