@@ -483,9 +483,13 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
 
     try {
       const videos = JSON.parse(property.video)
-      return Array.isArray(videos) && videos.length > 0
+      const hasVideo = Array.isArray(videos) && videos.length > 0
+      console.log('🎥 Verificando vídeo para:', property.title, '- Tem vídeo:', hasVideo, '- Videos:', videos)
+      return hasVideo
     } catch {
-      return property.video.trim() !== ''
+      const hasVideo = property.video.trim() !== ''
+      console.log('🎥 Verificando vídeo (string) para:', property.title, '- Tem vídeo:', hasVideo)
+      return hasVideo
     }
   }
 
