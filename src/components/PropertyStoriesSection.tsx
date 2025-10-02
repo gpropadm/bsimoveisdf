@@ -167,6 +167,33 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     setUserVote(null)
   }
 
+  const handleShare = async () => {
+    if (!selectedPropertyId) return
+
+    const property = properties.find(p => p.id === selectedPropertyId)
+    if (!property) return
+
+    const shareUrl = `${window.location.origin}/imovel/${property.slug}`
+    const shareText = `Confira este imóvel: ${property.title} - ${formatPrice(property.price)}`
+
+    try {
+      if (navigator.share) {
+        // Usa API nativa de compartilhamento (mobile)
+        await navigator.share({
+          title: property.title,
+          text: shareText,
+          url: shareUrl
+        })
+      } else {
+        // Fallback: copia para clipboard
+        await navigator.clipboard.writeText(shareUrl)
+        alert('Link copiado para área de transferência!')
+      }
+    } catch (error) {
+      console.error('Erro ao compartilhar:', error)
+    }
+  }
+
   return (
     <div className="pt-8 pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
@@ -259,25 +286,19 @@ export default function PropertyStoriesSection({ properties, loading }: Property
                 <span className="text-white text-xs mt-1">{likeStats?.dislikes || 0}</span>
               </div>
 
-              {/* Comentário */}
-              <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all cursor-pointer hover:scale-110" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                </button>
-                <span className="text-white text-xs mt-1">Comentar</span>
-              </div>
-
               {/* Compartilhar */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all cursor-pointer hover:scale-110" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
+                <button
+                  onClick={handleShare}
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all cursor-pointer hover:scale-110"
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+                >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 2L11 13"></path>
                     <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
                   </svg>
                 </button>
-                <span className="text-white text-xs mt-1">Compartilhar</span>
+                <span className="text-white text-xs mt-1">Enviar</span>
               </div>
             </div>
           </div>
