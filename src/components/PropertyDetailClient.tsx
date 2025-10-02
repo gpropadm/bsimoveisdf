@@ -483,8 +483,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         onClick={handleWhatsApp}
                         className="btn btn-success d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          backgroundColor: '#25d366',
-                          borderColor: '#25d366',
                           fontSize: '14px'
                         }}
                       >
@@ -495,8 +493,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       <button
                         className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          borderColor: '#4f2de8',
-                          color: '#4f2de8',
                           fontSize: '14px'
                         }}
                       >
