@@ -217,9 +217,9 @@ export default function LeadForm({ propertyId, propertyTitle, propertyPrice, pro
         className="btn btn-block w-100 my-3"
         disabled={loading}
         style={{
-          fontSize: '0.875rem',
+          fontSize: '16px',
           fontWeight: 600,
-          padding: '0.75rem',
+          padding: '0.75rem 1rem',
           borderRadius: '4px',
           backgroundColor: 'transparent',
           border: '1px solid #7162f0',
