@@ -411,3 +411,15 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
   }
 }
+
+/* Header slide down animation */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
