@@ -347,14 +347,14 @@ export default function PropertyStoriesSection({ properties, loading }: Property
         }
 
         .Icons_list__SlDEy li span:first-child {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 600;
           color: #333;
           margin-bottom: 2px;
         }
 
         .Icons_list__SlDEy li span:last-child {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 400;
           color: #666;
         }
