@@ -151,47 +151,47 @@ export default function CardImovel({ imovel, isSelected, onClick }: CardImovelPr
       <div className="p-4">
         {/* Preço */}
         <div className="mb-2">
-          <span className="text-2xl font-bold text-blue-600">
+          <span style={{ fontSize: '20px', fontWeight: 600, color: '#4f2de8' }}>
             {formatPrice(imovel.price)}
           </span>
           {imovel.type === 'aluguel' && (
-            <span className="text-gray-600 text-sm">/mês</span>
+            <span className="text-gray-600" style={{ fontSize: '14px' }}>/mês</span>
           )}
         </div>
 
         {/* Título */}
-        <h3 className="text-gray-800 mb-2 line-clamp-2" style={{ fontSize: '15px', fontWeight: 600 }}>
+        <h3 className="mb-2 line-clamp-2" style={{ fontSize: '15px', fontWeight: 600, color: '#333', lineHeight: '1.3' }}>
           {imovel.title}
         </h3>
 
         {/* Localização */}
-        <div className="flex items-center text-gray-600 mb-3">
+        <div className="flex items-center mb-3" style={{ color: '#666' }}>
           <MapPin className="w-4 h-4 mr-1" />
-          <span style={{ fontSize: '14px' }}>
+          <span style={{ fontSize: '14px', lineHeight: '1.4' }}>
             {imovel.address}, {imovel.city} - {imovel.state}
           </span>
         </div>
 
         {/* Características */}
-        <div className="flex items-center gap-4 text-gray-600 mb-4" style={{ fontSize: '12px' }}>
+        <div className="flex items-center gap-4 mb-4" style={{ fontSize: '12px', color: '#666' }}>
           {imovel.bedrooms && (
-            <div className="flex items-center">
-              <Home className="w-4 h-4 mr-1" />
-              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.bedrooms}</span>
-              <span style={{ fontSize: '12px', marginLeft: '4px' }}>quartos</span>
+            <div className="flex items-center gap-1">
+              <Home className="w-4 h-4" style={{ color: '#666' }} />
+              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.bedrooms}</span>
+              <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>quartos</span>
             </div>
           )}
           {imovel.bathrooms && (
-            <div className="flex items-center">
-              <Bath className="w-4 h-4 mr-1" />
-              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.bathrooms}</span>
-              <span style={{ fontSize: '12px', marginLeft: '4px' }}>banheiros</span>
+            <div className="flex items-center gap-1">
+              <Bath className="w-4 h-4" style={{ color: '#666' }} />
+              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.bathrooms}</span>
+              <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>banheiros</span>
             </div>
           )}
           {imovel.area && (
-            <div className="flex items-center">
-              <Square className="w-4 h-4 mr-1" />
-              <span style={{ fontSize: '13px', fontWeight: 400, lineHeight: 1 }}>{imovel.area}m²</span>
+            <div className="flex items-center gap-1">
+              <Square className="w-4 h-4" style={{ color: '#666' }} />
+              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.area}m²</span>
             </div>
           )}
         </div>
