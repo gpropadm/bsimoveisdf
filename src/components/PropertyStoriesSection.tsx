@@ -691,34 +691,28 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                   top: '10px',
                   right: '10px',
                   zIndex: 20,
-                  background: 'linear-gradient(135deg, #FF0000 0%, #CC0000 100%)',
-                  borderRadius: '8px',
-                  padding: '6px 10px',
+                  background: '#FF0000',
+                  borderRadius: '6px',
+                  width: '45px',
+                  height: '45px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  gap: '4px'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
                 }}
               >
                 <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 48 48"
                   fill="white"
                 >
-                  <path d="M10 8.64L15 12l-5 3.36V8.64M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                  {/* Ícone Shorts do YouTube - S estilizado */}
+                  <path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-4 29V15l12 9-12 9z"/>
+                  <path d="M18 19.5v9l7.5-4.5z" fill="#FF0000"/>
+                  <text x="24" y="30" fontSize="22" fontWeight="900" fill="white" textAnchor="middle" fontFamily="Arial, sans-serif">S</text>
                 </svg>
-                <span style={{
-                  color: 'white',
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  letterSpacing: '0.5px',
-                  textTransform: 'uppercase'
-                }}>
-                  Shorts
-                </span>
               </div>
             )}
 
