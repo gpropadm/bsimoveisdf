@@ -181,7 +181,9 @@ export async function GET(request: NextRequest) {
         suites: true,
         apartmentTotalArea: true,
         apartmentUsefulArea: true,
-        parking: true
+        parking: true,
+        // Campo de vídeo
+        video: true
       }
     })
 
