@@ -605,7 +605,7 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
               </picture>
             </div>
 
-            {/* Ícone de vídeo - aparece se tiver vídeo */}
+            {/* Ícone de Shorts - aparece se tiver vídeo */}
             {property.video && (
               <div
                 className="position-absolute"
@@ -613,24 +613,34 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
                   top: '10px',
                   right: '10px',
                   zIndex: 20,
-                  background: 'rgba(0, 0, 0, 0.7)',
-                  borderRadius: '50%',
-                  width: '40px',
-                  height: '40px',
+                  background: 'linear-gradient(135deg, #FF0000 0%, #CC0000 100%)',
+                  borderRadius: '8px',
+                  padding: '6px 10px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  gap: '4px'
                 }}
               >
                 <svg
-                  width="20"
-                  height="20"
+                  width="16"
+                  height="16"
                   viewBox="0 0 24 24"
                   fill="white"
                 >
-                  <path d="M8 5v14l11-7z"/>
+                  <path d="M10 8.64L15 12l-5 3.36V8.64M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
                 </svg>
+                <span style={{
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase'
+                }}>
+                  Shorts
+                </span>
               </div>
             )}
 
