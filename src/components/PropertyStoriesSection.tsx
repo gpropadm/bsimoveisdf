@@ -699,8 +699,8 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                 <img
                   src="/youtube-shorts-icon.svg"
                   alt="Shorts"
-                  width="35"
-                  height="35"
+                  width="30"
+                  height="30"
                   style={{ display: 'block' }}
                 />
               </div>
