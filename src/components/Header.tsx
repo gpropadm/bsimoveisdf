@@ -229,7 +229,7 @@ export default function Header() {
           style={{
             top: isScrolled ? '72px' : '88px',
             background: `linear-gradient(90deg, transparent, ${primaryColor}, ${primaryColor}, transparent)`,
-            height: '2px',
+            height: '1px',
             zIndex: 49
           }}
         />
