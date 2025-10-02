@@ -350,13 +350,14 @@ export default function PropertyStoriesSection({ properties, loading }: Property
           font-size: 13px;
           font-weight: 600;
           color: #333;
-          margin-bottom: 2px;
+          line-height: 1;
         }
 
         .Icons_list__SlDEy li span:last-child {
           font-size: 12px;
           font-weight: 400;
           color: #666;
+          line-height: 1;
         }
 
         .ImovelCardInfo_prices__ArwZg {
