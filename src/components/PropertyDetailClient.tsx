@@ -324,16 +324,15 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     Sobre o imóvel
                   </h2>
                   <div
+                    className="font-sora"
                     style={{
                       fontSize: '16px',
                       color: '#495057',
-                      lineHeight: '1.6'
+                      lineHeight: '1.6',
+                      textAlign: 'justify'
                     }}
-                  >
-                    <p className="mb-0 font-sora" style={{ textAlign: 'justify' }}>
-                      {property.description}
-                    </p>
-                  </div>
+                    dangerouslySetInnerHTML={{ __html: property.description }}
+                  />
                 </div>
               )}
 

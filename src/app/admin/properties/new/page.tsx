@@ -619,15 +619,21 @@ export default function NewProperty() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Descrição
+                  <span className="text-xs text-gray-500 font-normal ml-2">
+                    (Use HTML: &lt;p&gt;, &lt;br&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, etc.)
+                  </span>
                 </label>
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
-                  placeholder="Descreva as características do imóvel..."
+                  rows={6}
+                  placeholder="<p>Exemplo de parágrafo.</p><br><p>Outro parágrafo com <strong>negrito</strong>.</p>"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee] font-mono text-sm"
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  💡 Dica: Use &lt;p&gt;&lt;/p&gt; para parágrafos, &lt;br&gt; para quebras de linha, &lt;strong&gt; para negrito
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
