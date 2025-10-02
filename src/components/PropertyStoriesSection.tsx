@@ -180,13 +180,13 @@ export default function PropertyStoriesSection({ properties, loading }: Property
       {/* Modal de Vídeo Shorts */}
       {isVideoModalOpen && selectedVideo && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
           onClick={handleVideoModalClose}
         >
-          <div className="relative w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
             <button
               onClick={handleVideoModalClose}
-              className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
+              className="absolute -top-12 right-0 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center"
             >
               ✕
             </button>
@@ -194,7 +194,13 @@ export default function PropertyStoriesSection({ properties, loading }: Property
               src={selectedVideo}
               controls
               autoPlay
-              className="w-full rounded-lg"
+              className="rounded-lg shadow-2xl"
+              style={{
+                maxHeight: '85vh',
+                maxWidth: '90vw',
+                width: 'auto',
+                height: 'auto'
+              }}
             />
           </div>
         </div>
