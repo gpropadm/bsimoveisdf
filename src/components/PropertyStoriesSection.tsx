@@ -40,6 +40,10 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
+  const [likeStats, setLikeStats] = useState<{ likes: number; dislikes: number } | null>(null)
+  const [userVote, setUserVote] = useState<{ liked: boolean } | null>(null)
+  const [isLoadingVote, setIsLoadingVote] = useState(false)
 
 
 
@@ -97,23 +101,70 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     setSelectedProperty(null)
   }
 
-  const handleVideoClick = (property: Property) => {
+  const handleVideoClick = async (property: Property) => {
     if (property.video) {
       try {
         const videos = JSON.parse(property.video)
         const videoUrl = Array.isArray(videos) ? videos[0] : property.video
         setSelectedVideo(videoUrl)
+        setSelectedPropertyId(property.id)
         setIsVideoModalOpen(true)
+
+        // Carrega estatísticas e voto do usuário
+        await loadVideoStats(property.id)
       } catch {
         setSelectedVideo(property.video)
+        setSelectedPropertyId(property.id)
         setIsVideoModalOpen(true)
+
+        // Carrega estatísticas e voto do usuário
+        await loadVideoStats(property.id)
       }
+    }
+  }
+
+  const loadVideoStats = async (propertyId: string) => {
+    try {
+      const response = await fetch(`/api/video-likes?propertyId=${propertyId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setLikeStats(data.stats)
+        setUserVote(data.userVote)
+      }
+    } catch (error) {
+      console.error('Erro ao carregar stats:', error)
+    }
+  }
+
+  const handleVote = async (liked: boolean) => {
+    if (!selectedPropertyId || isLoadingVote) return
+
+    setIsLoadingVote(true)
+    try {
+      const response = await fetch('/api/video-likes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propertyId: selectedPropertyId, liked })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setLikeStats(data.stats)
+        setUserVote({ liked })
+      }
+    } catch (error) {
+      console.error('Erro ao votar:', error)
+    } finally {
+      setIsLoadingVote(false)
     }
   }
 
   const handleVideoModalClose = () => {
     setIsVideoModalOpen(false)
     setSelectedVideo(null)
+    setSelectedPropertyId(null)
+    setLikeStats(null)
+    setUserVote(null)
   }
 
   return (
@@ -180,22 +231,32 @@ export default function PropertyStoriesSection({ properties, loading }: Property
             <div className="flex flex-col gap-4" style={{ position: 'absolute', right: '-70px', bottom: '100px' }}>
               {/* Like */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <button
+                  onClick={() => handleVote(true)}
+                  disabled={isLoadingVote}
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill={userVote?.liked === true ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
                   </svg>
                 </button>
-                <span className="text-white text-xs mt-1">Like</span>
+                <span className="text-white text-xs mt-1">{likeStats?.likes || 0}</span>
               </div>
 
               {/* Dislike */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <button
+                  onClick={() => handleVote(false)}
+                  disabled={isLoadingVote}
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill={userVote?.liked === false ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
                   </svg>
                 </button>
-                <span className="text-white text-xs mt-1">Dislike</span>
+                <span className="text-white text-xs mt-1">{likeStats?.dislikes || 0}</span>
               </div>
 
               {/* Comentário */}

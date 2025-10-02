@@ -137,8 +137,25 @@ model Property {
   appointments Appointment[]
   whatsappMessages WhatsAppMessage[]
   priceAlerts PriceAlert[]
+  videoLikes VideoLike[]
 
   @@map("properties")
+}
+
+model VideoLike {
+  id         String   @id @default(cuid())
+  propertyId String
+  ipAddress  String   // IP do visitante
+  userAgent  String?  // User Agent para identificação
+  liked      Boolean  // true = like, false = dislike
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  // Evita duplicatas: mesmo IP só pode votar uma vez por imóvel
+  @@unique([propertyId, ipAddress])
+  @@map("video_likes")
 }
 
 model Lead {
