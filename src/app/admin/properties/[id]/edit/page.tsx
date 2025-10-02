@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
-import dynamic from 'next/dynamic'
+import dynamicImport from 'next/dynamic'
 import AdminLayout from '@/components/AdminLayout'
 import {
   formatCurrency,
@@ -21,11 +21,11 @@ import {
 import MapSelector from '@/components/MapSelector'
 import { toast } from 'react-toastify'
 
-// Importação dinâmica do editor para evitar problemas de SSR
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false })
-
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
+
+// Importação dinâmica do editor para evitar problemas de SSR
+const RichTextEditor = dynamicImport(() => import('@/components/RichTextEditor'), { ssr: false })
 
 interface Property {
   id: string
