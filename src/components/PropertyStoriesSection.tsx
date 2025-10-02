@@ -234,7 +234,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
                 <button
                   onClick={() => handleVote(true)}
                   disabled={isLoadingVote}
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 cursor-pointer"
                   style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill={userVote?.liked === true ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
@@ -249,7 +249,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
                 <button
                   onClick={() => handleVote(false)}
                   disabled={isLoadingVote}
-                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 cursor-pointer"
                   style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill={userVote?.liked === false ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
@@ -261,7 +261,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
               {/* Comentário */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
+                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all cursor-pointer hover:scale-110" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                   </svg>
@@ -271,7 +271,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
               {/* Compartilhar */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
+                <button className="w-12 h-12 rounded-full flex items-center justify-center text-white transition-all cursor-pointer hover:scale-110" style={{ backgroundColor: 'rgba(0, 0, 0, 0.85)' }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 2L11 13"></path>
                     <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
