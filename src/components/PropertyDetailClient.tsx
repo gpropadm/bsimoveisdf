@@ -180,7 +180,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h1 className="text-3xl lg:text-3xl font-bold text-gray-900 mb-1">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                       {property.title}
                     </h1>
                     <div className="flex items-center" style={{ color: '#5a5a5a' }}>
