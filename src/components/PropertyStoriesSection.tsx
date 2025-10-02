@@ -128,6 +128,10 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     <div className="pt-2 pb-8 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
 
+        {/* Título da Seção */}
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
+          Descubra seu novo Lar
+        </h2>
 
         {/* Properties by City Grid */}
         <div>
