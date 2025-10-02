@@ -129,7 +129,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
       <div className="max-w-6xl mx-auto">
 
         {/* Título da Seção */}
-        <h2 className="text-3xl md:text-4xl font-bold text-left mb-6 text-gray-800">
+        <h2 className="text-2xl md:text-3xl font-bold text-left mb-6 text-gray-800">
           Descubra seu novo Lar
         </h2>
 
