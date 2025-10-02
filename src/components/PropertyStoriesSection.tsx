@@ -691,20 +691,15 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                   top: '10px',
                   right: '10px',
                   zIndex: 20,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
                 }}
               >
-                <svg
-                  width="48"
-                  height="48"
-                  viewBox="0 0 48 48"
-                  fill="none"
-                >
-                  {/* Ícone oficial YouTube Shorts */}
-                  <rect width="48" height="48" rx="8" fill="#FF0000"/>
-                  <path d="M20 16.5L28 16.5C29.3807 16.5 30.5 17.6193 30.5 19L30.5 29C30.5 30.3807 29.3807 31.5 28 31.5L20 31.5C18.6193 31.5 17.5 30.3807 17.5 29L17.5 19C17.5 17.6193 18.6193 16.5 20 16.5Z" fill="white"/>
-                  <path d="M24 13L24 35" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                  <path d="M21 20L27 24L21 28V20Z" fill="#FF0000"/>
+                {/* Ícone oficial YouTube Shorts */}
+                <svg width="40" height="40" viewBox="0 0 512 636" fill="none">
+                  <path d="M118 32C118 14.3 103.7 0 86 0S54 14.3 54 32v574.9c0 17.7 14.3 31.1 32 31.1s32-13.4 32-31.1V32z" fill="#FF0000"/>
+                  <path d="M512 256c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64c-8.6 5.7-13.7 15.3-13.7 25.5v256c0 10.2 5.1 19.8 13.7 25.5l96 64c9.8 6.6 22.4 7.2 32.8 1.6s16.9-16.4 16.9-28.2V256z" fill="#FF0000"/>
+                  <path d="M192 384c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v256z" fill="#FF0000"/>
                 </svg>
               </div>
             )}
