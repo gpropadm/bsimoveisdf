@@ -167,7 +167,7 @@ export default function CardImovel({ imovel, isSelected, onClick }: CardImovelPr
         {/* Localização */}
         <div className="flex items-center text-gray-600 mb-3">
           <MapPin className="w-4 h-4 mr-1" />
-          <span style={{ fontSize: '13px' }}>
+          <span style={{ fontSize: '14px' }}>
             {imovel.address}, {imovel.city} - {imovel.state}
           </span>
         </div>
