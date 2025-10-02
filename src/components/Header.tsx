@@ -27,7 +27,7 @@ export default function Header() {
       // Ativar animação sempre que rolar
       if (scrolled) {
         setShowBorderAnimation(true)
-        setTimeout(() => setShowBorderAnimation(false), 800)
+        setTimeout(() => setShowBorderAnimation(false), 1500)
       }
     }
 
@@ -228,7 +228,8 @@ export default function Header() {
           className="fixed left-0 right-0 h-1 bottom-border-slide"
           style={{
             top: isScrolled ? '72px' : '88px',
-            background: primaryColor,
+            background: `linear-gradient(90deg, transparent, ${primaryColor}, ${primaryColor}, transparent)`,
+            height: '3px',
             zIndex: 49
           }}
         />

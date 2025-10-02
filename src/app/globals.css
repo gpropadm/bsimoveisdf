@@ -414,7 +414,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Header bottom border animation */
 .bottom-border-slide {
-  animation: borderSlide 0.8s ease-out forwards;
+  animation: borderSlide 1.5s ease-in-out forwards;
 }
 
 @keyframes borderSlide {
@@ -422,12 +422,12 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateX(-100%);
     opacity: 1;
   }
-  50% {
+  70% {
     transform: translateX(0%);
     opacity: 1;
   }
   100% {
     transform: translateX(100%);
-    opacity: 0;
+    opacity: 1;
   }
 }
