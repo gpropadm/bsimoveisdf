@@ -470,21 +470,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     <div className="d-grid gap-2">
                       <button
                         onClick={() => setIsAppointmentModalOpen(true)}
-                        className="btn d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
+                        className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          backgroundColor: 'transparent',
-                          border: '1px solid #7162f0',
-                          color: '#7162f0',
-                          fontSize: '16px',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#7162f0'
-                          e.currentTarget.style.color = 'white'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent'
-                          e.currentTarget.style.color = '#7162f0'
+                          fontSize: '16px'
                         }}
                       >
                         <i className="fas fa-calendar" style={{ fontSize: '16px' }}></i>

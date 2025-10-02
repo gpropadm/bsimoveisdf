@@ -214,29 +214,12 @@ export default function LeadForm({ propertyId, propertyTitle, propertyPrice, pro
       {/* Botão Enviar */}
       <button
         type="submit"
-        className="btn btn-block w-100 my-3"
+        className="btn btn-outline-secondary btn-block w-100 my-3 font-sora fw-semibold"
         disabled={loading}
         style={{
           fontSize: '16px',
-          fontWeight: 600,
           padding: '0.75rem 1rem',
-          borderRadius: '4px',
-          backgroundColor: 'transparent',
-          border: '1px solid #7162f0',
-          color: '#7162f0',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          if (!loading) {
-            e.currentTarget.style.backgroundColor = '#7162f0'
-            e.currentTarget.style.color = 'white'
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!loading) {
-            e.currentTarget.style.backgroundColor = 'transparent'
-            e.currentTarget.style.color = '#7162f0'
-          }
+          borderRadius: '4px'
         }}
       >
         {loading ? 'Enviando...' : 'Enviar Interesse'}
