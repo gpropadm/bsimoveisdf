@@ -28,17 +28,9 @@ export default function Header() {
   }, [])
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-        (isScrolled || isOnPageWithoutHero)
-          ? 'bg-white shadow-md border-b-2 border-gray-200 translate-y-0'
-          : 'bg-transparent border-b-2 border-transparent -translate-y-1'
-      }`}
-      style={{
-        animation: (isScrolled || isOnPageWithoutHero) ? 'slideDown 0.4s ease-out' : 'none'
-      }}
-    >
-      <nav className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? 'py-4' : 'py-6'}`}>
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${(isScrolled || isOnPageWithoutHero) ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+        <nav className={`container mx-auto px-4 transition-all duration-300 ${isScrolled ? 'py-4' : 'py-6'}`}>
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
@@ -221,6 +213,19 @@ export default function Header() {
           </div>
         </div>
       </nav>
+
+      {/* Animated bottom border */}
+      <div
+        className={`fixed left-0 right-0 h-1 overflow-hidden ${
+          (isScrolled || isOnPageWithoutHero) ? 'bottom-border-visible' : 'bottom-border-hidden'
+        }`}
+        style={{
+          top: isScrolled ? '72px' : '88px',
+          background: primaryColor,
+          zIndex: 49
+        }}
+      />
     </header>
+    </>
   )
 }
