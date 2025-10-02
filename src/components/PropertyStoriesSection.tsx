@@ -871,17 +871,17 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                         </>
                       ) : (
                         <>
-                          {/* Para casas e outros imóveis */}
-                          {property.area && (
-                            <li>
-                              <span>{property.area} m²</span>
-                              <span></span>
-                            </li>
-                          )}
+                          {/* Para casas e outros imóveis - mostra área útil ao lado dos quartos */}
                           {property.bedrooms && (
                             <li>
                               <span>{property.bedrooms}</span>
                               <span>Quartos</span>
+                            </li>
+                          )}
+                          {property.area && (
+                            <li>
+                              <span>{property.area} m²</span>
+                              <span></span>
                             </li>
                           )}
                           {property.suites && (
