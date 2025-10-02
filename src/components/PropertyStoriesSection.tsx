@@ -209,7 +209,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
             <div className="flex flex-col gap-4" style={{ position: 'absolute', right: '-70px', bottom: '100px' }}>
               {/* Like */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full bg-gray-700 bg-opacity-80 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
+                <button className="w-12 h-12 rounded-full bg-gray-900 bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
                   </svg>
@@ -219,7 +219,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
               {/* Dislike */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full bg-gray-700 bg-opacity-80 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
+                <button className="w-12 h-12 rounded-full bg-gray-900 bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
                   </svg>
@@ -229,7 +229,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
               {/* Comentário */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full bg-gray-700 bg-opacity-80 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
+                <button className="w-12 h-12 rounded-full bg-gray-900 bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                   </svg>
@@ -239,11 +239,11 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
               {/* Compartilhar */}
               <div className="flex flex-col items-center">
-                <button className="w-12 h-12 rounded-full bg-gray-700 bg-opacity-80 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
+                <button className="w-12 h-12 rounded-full bg-gray-900 bg-opacity-90 hover:bg-opacity-100 flex items-center justify-center text-white transition-all">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <polyline points="16 6 12 2 8 6"></polyline>
-                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
                   </svg>
                 </button>
                 <span className="text-white text-xs mt-1">Compartilhar</span>
