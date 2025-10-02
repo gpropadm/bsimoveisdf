@@ -477,6 +477,18 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
 
   const images = getImages(property.images)
 
+  // Função para verificar se o imóvel tem vídeos
+  const hasVideos = () => {
+    if (!property.video) return false
+
+    try {
+      const videos = JSON.parse(property.video)
+      return Array.isArray(videos) && videos.length > 0
+    } catch {
+      return property.video.trim() !== ''
+    }
+  }
+
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -606,7 +618,7 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
             </div>
 
             {/* Ícone de Shorts - aparece se tiver vídeo */}
-            {property.video && (
+            {hasVideos() && (
               <div
                 className="position-absolute"
                 style={{
