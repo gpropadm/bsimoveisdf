@@ -11,6 +11,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [showMoreMenu, setShowMoreMenu] = useState(false)
+  const [showBorderAnimation, setShowBorderAnimation] = useState(false)
   const pathname = usePathname()
   const { favoritesCount } = useFavorites()
   const { primaryColor } = useTheme()
@@ -20,7 +21,14 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      const scrolled = window.scrollY > 50
+      setIsScrolled(scrolled)
+
+      // Ativar animação sempre que rolar
+      if (scrolled) {
+        setShowBorderAnimation(true)
+        setTimeout(() => setShowBorderAnimation(false), 800)
+      }
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -214,17 +222,17 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Animated bottom border */}
-      <div
-        className={`fixed left-0 right-0 h-1 overflow-hidden ${
-          (isScrolled || isOnPageWithoutHero) ? 'bottom-border-visible' : 'bottom-border-hidden'
-        }`}
-        style={{
-          top: isScrolled ? '72px' : '88px',
-          background: primaryColor,
-          zIndex: 49
-        }}
-      />
+      {/* Animated bottom border - só aparece quando rola */}
+      {showBorderAnimation && (
+        <div
+          className="fixed left-0 right-0 h-1 bottom-border-slide"
+          style={{
+            top: isScrolled ? '72px' : '88px',
+            background: primaryColor,
+            zIndex: 49
+          }}
+        />
+      )}
     </header>
     </>
   )

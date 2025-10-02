@@ -413,11 +413,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Header bottom border animation */
-.bottom-border-hidden {
-  opacity: 0;
-}
-
-.bottom-border-visible {
+.bottom-border-slide {
   animation: borderSlide 0.8s ease-out forwards;
 }
 
