@@ -185,7 +185,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                     </h1>
                     <div className="flex items-center" style={{ color: '#5a5a5a' }}>
                       <MapPinIcon className="w-5 h-5 mr-2" />
-                      <span className="text-lg">{property.address}, {property.city} - {property.state}</span>
+                      <span className="text-base">{property.address}, {property.city} - {property.state}</span>
                     </div>
                   </div>
 
