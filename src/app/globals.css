@@ -155,15 +155,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-outline-primary:hover {
-  color: #4f2de8;
-  background-color: #eeeeee;
-  border-color: #4f2de8;
+  color: #4f2de8 !important;
+  background-color: #eeeeee !important;
+  border-color: #4f2de8 !important;
 }
 
 .btn-success:hover {
-  color: #25d366;
-  background-color: #eeeeee;
-  border-color: #25d366;
+  color: #25d366 !important;
+  background-color: #eeeeee !important;
+  border-color: #25d366 !important;
 }
 
 .d-grid {
