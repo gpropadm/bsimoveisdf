@@ -691,27 +691,20 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                   top: '10px',
                   right: '10px',
                   zIndex: 20,
-                  background: '#FF0000',
-                  borderRadius: '6px',
-                  width: '45px',
-                  height: '45px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
+                  cursor: 'pointer'
                 }}
               >
                 <svg
-                  width="24"
-                  height="24"
+                  width="48"
+                  height="48"
                   viewBox="0 0 48 48"
-                  fill="white"
+                  fill="none"
                 >
-                  {/* Ícone Shorts do YouTube - S estilizado */}
-                  <path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-4 29V15l12 9-12 9z"/>
-                  <path d="M18 19.5v9l7.5-4.5z" fill="#FF0000"/>
-                  <text x="24" y="30" fontSize="22" fontWeight="900" fill="white" textAnchor="middle" fontFamily="Arial, sans-serif">S</text>
+                  {/* Ícone oficial YouTube Shorts */}
+                  <rect width="48" height="48" rx="8" fill="#FF0000"/>
+                  <path d="M20 16.5L28 16.5C29.3807 16.5 30.5 17.6193 30.5 19L30.5 29C30.5 30.3807 29.3807 31.5 28 31.5L20 31.5C18.6193 31.5 17.5 30.3807 17.5 29L17.5 19C17.5 17.6193 18.6193 16.5 20 16.5Z" fill="white"/>
+                  <path d="M24 13L24 35" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+                  <path d="M21 20L27 24L21 28V20Z" fill="#FF0000"/>
                 </svg>
               </div>
             )}
