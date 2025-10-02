@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import AdminLayout from '@/components/AdminLayout'
 import {
   formatCurrency,
@@ -19,6 +20,9 @@ import {
 } from '@/lib/maskUtils'
 import MapSelector from '@/components/MapSelector'
 import { toast } from 'react-toastify'
+
+// Importação dinâmica do editor para evitar problemas de SSR
+const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false })
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -816,22 +820,12 @@ export default function EditProperty() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Descrição *
-                    <span className="text-xs text-gray-500 font-normal ml-2">
-                      (Use HTML: &lt;p&gt;, &lt;br&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, etc.)
-                    </span>
                   </label>
-                  <textarea
-                    name="description"
+                  <RichTextEditor
                     value={formData.description}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    placeholder="<p>Exemplo de parágrafo.</p><br><p>Outro parágrafo com <strong>negrito</strong>.</p>"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee] font-mono text-sm"
+                    onChange={(content) => setFormData({ ...formData, description: content })}
+                    placeholder="Descreva as características do imóvel..."
                   />
-                  <p className="mt-1 text-xs text-gray-500">
-                    💡 Dica: Use &lt;p&gt;&lt;/p&gt; para parágrafos, &lt;br&gt; para quebras de linha, &lt;strong&gt; para negrito
-                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
