@@ -217,7 +217,7 @@ export default function LeadForm({ propertyId, propertyTitle, propertyPrice, pro
         className="btn btn-outline-secondary btn-block w-100 my-3 font-sora fw-semibold"
         disabled={loading}
         style={{
-          fontSize: '16px',
+          fontSize: '14px',
           padding: '0.75rem 1rem',
           borderRadius: '4px'
         }}

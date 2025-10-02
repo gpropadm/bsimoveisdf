@@ -472,10 +472,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         onClick={() => setIsAppointmentModalOpen(true)}
                         className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fas fa-calendar" style={{ fontSize: '16px' }}></i>
+                        <i className="fas fa-calendar" style={{ fontSize: '14px' }}></i>
                         Agendar Visita
                       </button>
 
@@ -485,10 +485,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         style={{
                           backgroundColor: '#25d366',
                           borderColor: '#25d366',
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fab fa-whatsapp" style={{ fontSize: '18px' }}></i>
+                        <i className="fab fa-whatsapp" style={{ fontSize: '16px' }}></i>
                         WhatsApp
                       </button>
 
@@ -497,20 +497,20 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         style={{
                           borderColor: '#4f2de8',
                           color: '#4f2de8',
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fas fa-phone" style={{ fontSize: '16px' }}></i>
+                        <i className="fas fa-phone" style={{ fontSize: '14px' }}></i>
                         Ligar Agora
                       </button>
 
                       <button
                         className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
                         style={{
-                          fontSize: '16px'
+                          fontSize: '14px'
                         }}
                       >
-                        <i className="fas fa-envelope" style={{ fontSize: '16px' }}></i>
+                        <i className="fas fa-envelope" style={{ fontSize: '14px' }}></i>
                         Enviar E-mail
                       </button>
 
