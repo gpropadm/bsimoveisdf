@@ -173,27 +173,62 @@ export default function CardImovel({ imovel, isSelected, onClick }: CardImovelPr
         </div>
 
         {/* Características */}
-        <div className="flex items-center gap-4 mb-4" style={{ fontSize: '12px', color: '#666' }}>
-          {imovel.bedrooms && (
-            <div className="flex items-center gap-1">
-              <Home className="w-4 h-4" style={{ color: '#666' }} />
-              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.bedrooms}</span>
-              <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>quartos</span>
-            </div>
-          )}
-          {imovel.bathrooms && (
-            <div className="flex items-center gap-1">
-              <Bath className="w-4 h-4" style={{ color: '#666' }} />
-              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.bathrooms}</span>
-              <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>banheiros</span>
-            </div>
-          )}
-          {imovel.area && (
-            <div className="flex items-center gap-1">
-              <Square className="w-4 h-4" style={{ color: '#666' }} />
-              <span style={{ fontSize: '13px', fontWeight: 'normal', color: '#333', lineHeight: 1 }}>{imovel.area}m²</span>
-            </div>
-          )}
+        <div className="mb-4" style={{ borderBottom: '1px solid #eee', paddingBottom: '12px' }}>
+          <ul style={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '20px',
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+            justifyContent: 'space-between'
+          }}>
+            {imovel.area && (
+              <li style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '12px',
+                color: '#666',
+                flex: 1,
+                textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 400, color: '#333', lineHeight: 1 }}>{imovel.area} m²</span>
+                <span style={{ fontSize: '12px', fontWeight: 400, color: '#666', lineHeight: 1 }}></span>
+              </li>
+            )}
+            {imovel.bedrooms && (
+              <li style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '12px',
+                color: '#666',
+                flex: 1,
+                textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 400, color: '#333', lineHeight: 1 }}>{imovel.bedrooms}</span>
+                <span style={{ fontSize: '12px', fontWeight: 400, color: '#666', lineHeight: 1 }}>Quartos</span>
+              </li>
+            )}
+            {imovel.bathrooms && (
+              <li style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '12px',
+                color: '#666',
+                flex: 1,
+                textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 400, color: '#333', lineHeight: 1 }}>{imovel.bathrooms}</span>
+                <span style={{ fontSize: '12px', fontWeight: 400, color: '#666', lineHeight: 1 }}>Banheiros</span>
+              </li>
+            )}
+          </ul>
         </div>
 
         {/* Botão Ver Detalhes */}
