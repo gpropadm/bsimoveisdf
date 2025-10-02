@@ -696,11 +696,13 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                 }}
               >
                 {/* Ícone oficial YouTube Shorts */}
-                <svg width="40" height="40" viewBox="0 0 512 636" fill="none">
-                  <path d="M118 32C118 14.3 103.7 0 86 0S54 14.3 54 32v574.9c0 17.7 14.3 31.1 32 31.1s32-13.4 32-31.1V32z" fill="#FF0000"/>
-                  <path d="M512 256c0-11.8-6.5-22.6-16.9-28.2s-23-5-32.8 1.6l-96 64c-8.6 5.7-13.7 15.3-13.7 25.5v256c0 10.2 5.1 19.8 13.7 25.5l96 64c9.8 6.6 22.4 7.2 32.8 1.6s16.9-16.4 16.9-28.2V256z" fill="#FF0000"/>
-                  <path d="M192 384c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32h-96c-17.7 0-32 14.3-32 32v256z" fill="#FF0000"/>
-                </svg>
+                <img
+                  src="/youtube-shorts-icon.svg"
+                  alt="Shorts"
+                  width="40"
+                  height="40"
+                  style={{ display: 'block' }}
+                />
               </div>
             )}
 
