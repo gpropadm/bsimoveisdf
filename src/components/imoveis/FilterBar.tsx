@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useMapContext } from '@/contexts/MapContext'
+import { useTheme } from '@/contexts/ThemeContext'
 
 interface FilterOption {
   key: string
@@ -13,6 +14,7 @@ export default function FilterBar() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { showMap, setShowMap } = useMapContext()
+  const { primaryColor } = useTheme()
 
   const [activeType, setActiveType] = useState(searchParams.get('type') || 'venda')
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || '')
@@ -97,8 +99,8 @@ export default function FilterBar() {
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
                   }`}
                   style={activeType === type.key ? {
-                    backgroundColor: '#4f2de8',
-                    borderColor: '#4f2de8'
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor
                   } : {}}
                 >
                   {type.label}
@@ -124,8 +126,8 @@ export default function FilterBar() {
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
                   }`}
                   style={activeCategory === category.key ? {
-                    backgroundColor: '#4f2de8',
-                    borderColor: '#4f2de8'
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor
                   } : {}}
                 >
                   {category.label}
@@ -145,7 +147,7 @@ export default function FilterBar() {
                   ? 'border-gray-300 shadow-lg'
                   : 'bg-gradient-to-r from-gray-200 to-gray-300 border-gray-300'
               }`}
-              style={showMap ? { backgroundColor: '#4f2de8' } : {}}
+              style={showMap ? { backgroundColor: primaryColor } : {}}
             >
               <span
                 className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform duration-300 ring-0 ${
