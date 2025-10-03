@@ -47,6 +47,32 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   const [allVideos, setAllVideos] = useState<string[]>([])
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
 
+  // Auto-play: troca de vídeo automaticamente quando termina
+  useEffect(() => {
+    if (isVideoModalOpen && allVideos.length > 1) {
+      const videoElement = document.querySelector('video')
+
+      const handleVideoEnd = () => {
+        if (currentVideoIndex < allVideos.length - 1) {
+          // Próximo vídeo
+          const nextIndex = currentVideoIndex + 1
+          setCurrentVideoIndex(nextIndex)
+          setSelectedVideo(allVideos[nextIndex])
+        } else {
+          // Volta para o primeiro vídeo (loop)
+          setCurrentVideoIndex(0)
+          setSelectedVideo(allVideos[0])
+        }
+      }
+
+      if (videoElement) {
+        videoElement.addEventListener('ended', handleVideoEnd)
+        return () => {
+          videoElement.removeEventListener('ended', handleVideoEnd)
+        }
+      }
+    }
+  }, [isVideoModalOpen, allVideos, currentVideoIndex])
 
 
   const SkeletonCards = () => (
