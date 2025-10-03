@@ -4,6 +4,11 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useMapContext } from '@/contexts/MapContext'
 
+interface FilterOption {
+  key: string
+  label: string
+}
+
 export default function FilterBar() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -11,22 +16,34 @@ export default function FilterBar() {
 
   const [activeType, setActiveType] = useState(searchParams.get('type') || 'venda')
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || '')
+  const [types, setTypes] = useState<FilterOption[]>([])
+  const [categories, setCategories] = useState<FilterOption[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const types = [
-    { key: 'venda', label: 'Venda' },
-    { key: 'aluguel', label: 'Locação' },
-    { key: 'lancamento', label: 'Lançamento' },
-    { key: 'empreendimento', label: 'Empreendimento' }
-  ]
+  // Busca filtros dinâmicos do banco de dados
+  useEffect(() => {
+    async function fetchFilters() {
+      try {
+        const response = await fetch('/api/properties/filters')
+        if (response.ok) {
+          const data = await response.json()
+          setTypes(data.types || [])
+          setCategories(data.categories || [])
 
-  const categories = [
-    { key: '', label: 'Todos' },
-    { key: 'casa', label: 'Casas' },
-    { key: 'apartamento', label: 'Apartamentos' },
-    { key: 'terreno', label: 'Terrenos' },
-    { key: 'comercial', label: 'Comercial' },
-    { key: 'rural', label: 'Rural' }
-  ]
+          // Se não houver tipo ativo e houver tipos disponíveis, seleciona o primeiro
+          if (!searchParams.get('type') && data.types.length > 0) {
+            setActiveType(data.types[0].key)
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao buscar filtros:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFilters()
+  }, [])
 
   const updateFilters = (type: string, category: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -49,6 +66,18 @@ export default function FilterBar() {
     updateFilters(activeType, category)
   }
 
+  if (loading) {
+    return (
+      <div className="bg-white border-t border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <div className="text-gray-500 text-sm">Carregando filtros...</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white border-t border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4">
@@ -56,8 +85,9 @@ export default function FilterBar() {
           {/* Filtros - Lado Esquerdo */}
           <div className="flex items-center space-x-8 overflow-x-auto">
             {/* Tipos */}
-            <div className="flex space-x-1 min-w-fit">
-              {types.map((type) => (
+            {types.length > 0 && (
+              <div className="flex space-x-1 min-w-fit">
+                {types.map((type) => (
                 <button
                   key={type.key}
                   onClick={() => handleTypeClick(type.key)}
@@ -74,13 +104,17 @@ export default function FilterBar() {
                   {type.label}
                 </button>
               ))}
-            </div>
+              </div>
+            )}
 
-            <div className="w-px h-6 bg-gray-300" />
+            {types.length > 0 && categories.length > 0 && (
+              <div className="w-px h-6 bg-gray-300" />
+            )}
 
             {/* Categorias */}
-            <div className="flex space-x-1 min-w-fit">
-              {categories.map((category) => (
+            {categories.length > 0 && (
+              <div className="flex space-x-1 min-w-fit">
+                {categories.map((category) => (
                 <button
                   key={category.key}
                   onClick={() => handleCategoryClick(category.key)}
@@ -96,8 +130,9 @@ export default function FilterBar() {
                 >
                   {category.label}
                 </button>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Botão Toggle do Mapa - Lado Direito */}
