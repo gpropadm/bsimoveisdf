@@ -44,6 +44,8 @@ export default function PropertyStoriesSection({ properties, loading }: Property
   const [likeStats, setLikeStats] = useState<{ likes: number; dislikes: number } | null>(null)
   const [userVote, setUserVote] = useState<{ liked: boolean } | null>(null)
   const [isLoadingVote, setIsLoadingVote] = useState(false)
+  const [allVideos, setAllVideos] = useState<string[]>([])
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
 
 
 
@@ -105,14 +107,18 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     if (property.video) {
       try {
         const videos = JSON.parse(property.video)
-        const videoUrl = Array.isArray(videos) ? videos[0] : property.video
-        setSelectedVideo(videoUrl)
+        const videoList = Array.isArray(videos) ? videos : [property.video]
+        setAllVideos(videoList)
+        setCurrentVideoIndex(0)
+        setSelectedVideo(videoList[0])
         setSelectedPropertyId(property.id)
         setIsVideoModalOpen(true)
 
         // Carrega estatísticas e voto do usuário
         await loadVideoStats(property.id)
       } catch {
+        setAllVideos([property.video])
+        setCurrentVideoIndex(0)
         setSelectedVideo(property.video)
         setSelectedPropertyId(property.id)
         setIsVideoModalOpen(true)
@@ -165,6 +171,24 @@ export default function PropertyStoriesSection({ properties, loading }: Property
     setSelectedPropertyId(null)
     setLikeStats(null)
     setUserVote(null)
+    setAllVideos([])
+    setCurrentVideoIndex(0)
+  }
+
+  const handleNextVideo = () => {
+    if (currentVideoIndex < allVideos.length - 1) {
+      const nextIndex = currentVideoIndex + 1
+      setCurrentVideoIndex(nextIndex)
+      setSelectedVideo(allVideos[nextIndex])
+    }
+  }
+
+  const handlePrevVideo = () => {
+    if (currentVideoIndex > 0) {
+      const prevIndex = currentVideoIndex - 1
+      setCurrentVideoIndex(prevIndex)
+      setSelectedVideo(allVideos[prevIndex])
+    }
   }
 
   const handleShare = async () => {
@@ -233,6 +257,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
           onClick={handleVideoModalClose}
         >
           <div className="relative flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+            {/* Botão Fechar */}
             <button
               onClick={handleVideoModalClose}
               className="absolute -top-12 right-0 text-white text-3xl hover:text-gray-300 w-10 h-10 flex items-center justify-center"
@@ -240,8 +265,27 @@ export default function PropertyStoriesSection({ properties, loading }: Property
               ✕
             </button>
 
+            {/* Contador de vídeos */}
+            {allVideos.length > 1 && (
+              <div className="absolute -top-12 left-0 text-white text-sm">
+                {currentVideoIndex + 1} / {allVideos.length}
+              </div>
+            )}
+
+            {/* Seta Anterior */}
+            {allVideos.length > 1 && currentVideoIndex > 0 && (
+              <button
+                onClick={handlePrevVideo}
+                className="absolute left-4 text-white text-4xl hover:text-gray-300 w-12 h-12 flex items-center justify-center bg-black bg-opacity-50 rounded-full"
+                style={{ zIndex: 10 }}
+              >
+                ‹
+              </button>
+            )}
+
             {/* Vídeo */}
             <video
+              key={selectedVideo}
               src={selectedVideo}
               controls
               autoPlay
@@ -253,6 +297,17 @@ export default function PropertyStoriesSection({ properties, loading }: Property
                 height: 'auto'
               }}
             />
+
+            {/* Seta Próxima */}
+            {allVideos.length > 1 && currentVideoIndex < allVideos.length - 1 && (
+              <button
+                onClick={handleNextVideo}
+                className="absolute right-4 text-white text-4xl hover:text-gray-300 w-12 h-12 flex items-center justify-center bg-black bg-opacity-50 rounded-full"
+                style={{ zIndex: 10 }}
+              >
+                ›
+              </button>
+            )}
 
             {/* Botões laterais estilo YouTube Shorts */}
             <div className="flex flex-col gap-4" style={{ position: 'absolute', right: '-70px', bottom: '100px' }}>
