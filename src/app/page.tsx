@@ -82,10 +82,10 @@ export default function Home() {
           {/* Conteúdo */}
           <div className="relative z-10 flex items-center justify-center h-full pt-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight drop-shadow-lg" style={{ color: primaryColor, textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+              <h1 className="hidden md:block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight drop-shadow-lg text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                 {headerSettings.headerTitle}
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4 text-white">
+              <p className="hidden md:block text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4 text-white">
                 {headerSettings.headerSubtitle}
               </p>
 
