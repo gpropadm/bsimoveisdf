@@ -4,18 +4,19 @@ import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import PropertyStoriesSection from '@/components/PropertyStoriesSection'
 import Footer from '@/components/Footer'
-import SearchForm from '@/components/SearchForm'
+import SearchForm from '@/components/SearchFormMinimalista'
 import AIRecommendations from '@/components/AIRecommendations'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export default function Home() {
+  const { primaryColor } = useTheme()
   const [properties, setProperties] = useState<any[]>([])
   const [filteredProperties, setFilteredProperties] = useState<any[]>([])
   const [propertiesLoading, setPropertiesLoading] = useState(true)
-  // Header otimizado - sem API calls
-  const headerSettings = {
-    headerTitle: 'Encontre o Imóvel Perfeito no DF',
-    headerSubtitle: 'Casas, apartamentos e coberturas no Distrito Federal'
-  }
+  const [headerSettings, setHeaderSettings] = useState({
+    headerTitle: '',
+    headerSubtitle: ''
+  })
 
   const handleFilterChange = (filtered: any[]) => {
     setFilteredProperties(filtered)
@@ -40,7 +41,25 @@ export default function Home() {
       }
     }
 
+    const loadSettings = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const data = await response.json()
+          if (data && data.settings) {
+            setHeaderSettings({
+              headerTitle: data.settings.headerTitle || 'Encontre o Imóvel Perfeito no DF',
+              headerSubtitle: data.settings.headerSubtitle || 'Casas, apartamentos e coberturas no Distrito Federal'
+            })
+          }
+        }
+      } catch (error) {
+        console.error('❌ Erro ao carregar configurações:', error)
+      }
+    }
+
     loadProperties()
+    loadSettings()
   }, [])
 
   return (
@@ -52,21 +71,21 @@ export default function Home() {
         <section
           className="relative py-12 md:py-20 text-white overflow-hidden"
           style={{
-            height: '80vh',
-            minHeight: '500px',
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/header-bg.jpg')`,
+            height: '60vh',
+            minHeight: '450px',
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/header-bg.jpg')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat'
           }}
         >
           {/* Conteúdo */}
-          <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="relative z-10 flex items-center justify-center h-full pt-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight drop-shadow-lg" style={{ color: primaryColor, textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                 {headerSettings.headerTitle}
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4 text-white">
                 {headerSettings.headerSubtitle}
               </p>
 
