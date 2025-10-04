@@ -85,7 +85,7 @@ export default function Home() {
               <h1 className="hidden md:block text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-4 leading-tight drop-shadow-lg text-white" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                 {headerSettings.headerTitle}
               </h1>
-              <p className="hidden md:block text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4 text-white">
+              <p className="hidden md:block text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12 px-4 text-white drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                 {headerSettings.headerSubtitle}
               </p>
 

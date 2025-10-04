@@ -7,6 +7,7 @@ import Image from 'next/image'
 import MapaImoveis from './MapaImoveis'
 import FavoriteButton from '@/components/FavoriteButton'
 import { useMapContext } from '@/contexts/MapContext'
+import LeadCaptureCard from '@/components/LeadCaptureCard'
 
 interface Property {
   id: string
@@ -185,19 +186,16 @@ export default function ImoveisContent() {
           </div>
 
           {filteredProperties.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-4">
-                <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-2" style={{ color: '#333333' }}>
-                Nenhum imóvel nesta área
-              </h3>
-              <p className="text-gray-600">
-                Mova ou aproxime o mapa para ver mais imóveis
-              </p>
-            </div>
+            <LeadCaptureCard
+              searchParams={{
+                type: searchParams.get('type') || undefined,
+                category: searchParams.get('category') || undefined,
+                city: searchParams.get('city') || undefined,
+                state: searchParams.get('state') || undefined,
+                priceMin: searchParams.get('minPrice') || undefined,
+                priceMax: searchParams.get('maxPrice') || undefined
+              }}
+            />
           ) : (
             <div className={`grid gap-6 pb-20 ${showMap ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
               {filteredProperties.map((property) => (

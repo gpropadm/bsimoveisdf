@@ -22,6 +22,15 @@ interface Lead {
   createdAt: string
   hasWhatsAppMessage?: boolean
   whatsAppMessageDate?: string | null
+  // Campos de preferências
+  preferredCategory?: string
+  preferredType?: string
+  preferredCity?: string
+  preferredState?: string
+  preferredPriceMin?: number
+  preferredPriceMax?: number
+  preferredBedrooms?: number
+  preferredBathrooms?: number
   property?: {
     id: string
     title: string
@@ -330,6 +339,11 @@ export default function AdminLeadsPage() {
                     <option value="perdido">Perdido</option>
                   </select>
                 </div>
+                {lead.source === 'busca_sem_resultado' && (
+                  <div className="mb-3 text-xs bg-blue-50 text-blue-700 px-3 py-2 rounded">
+                    🔍 Busca: {lead.preferredCategory || 'Imóvel'} {lead.preferredType && `(${lead.preferredType})`} {lead.preferredCity && `em ${lead.preferredCity}`}
+                  </div>
+                )}
                 {lead.message && (
                   <div className="mb-3 text-sm text-gray-600">
                     {lead.message.length > 100 ? `${lead.message.substring(0, 100)}...` : lead.message}
@@ -447,8 +461,13 @@ export default function AdminLeadsPage() {
                           <div className="text-sm font-medium text-gray-900">
                             {lead.name}
                           </div>
+                          {lead.source === 'busca_sem_resultado' && (
+                            <div className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded mt-1 inline-block">
+                              🔍 Busca: {lead.preferredCategory || 'Imóvel'} {lead.preferredType && `(${lead.preferredType})`} {lead.preferredCity && `em ${lead.preferredCity}`}
+                            </div>
+                          )}
                           {lead.message && (
-                            <div className="text-sm text-gray-500 truncate max-w-xs">
+                            <div className="text-sm text-gray-500 truncate max-w-xs mt-1">
                               {lead.message.length > 50
                                 ? `${lead.message.substring(0, 50)}...`
                                 : lead.message

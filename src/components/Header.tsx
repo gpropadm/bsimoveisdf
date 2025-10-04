@@ -6,12 +6,14 @@ import { usePathname } from 'next/navigation'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useTheme } from '@/contexts/ThemeContext'
 import ThemeSelector from './ThemeSelector'
+import AnunciarImovelModal from './AnunciarImovelModal'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [showMoreMenu, setShowMoreMenu] = useState(false)
   const [showBorderAnimation, setShowBorderAnimation] = useState(false)
+  const [showAnunciarModal, setShowAnunciarModal] = useState(false)
   const pathname = usePathname()
   const { favoritesCount } = useFavorites()
   const { primaryColor } = useTheme()
@@ -120,9 +122,9 @@ export default function Header() {
 
           {/* Botões do lado direito */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Link
-              href="/anunciar"
-              className="px-6 py-2.5 border rounded-full font-semibold text-sm transition-all duration-300 hover:bg-opacity-20"
+            <button
+              onClick={() => setShowAnunciarModal(true)}
+              className="px-6 py-2.5 border rounded-full font-semibold text-sm transition-all duration-300 hover:bg-opacity-20 cursor-pointer"
               style={{
                 color: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white',
                 borderColor: (isScrolled || isOnPageWithoutHero) ? primaryColor : 'white'
@@ -137,7 +139,7 @@ export default function Header() {
               }}
             >
               Anuncie seu Imóvel
-            </Link>
+            </button>
 
             {/* Botão de Favoritos */}
             <Link
@@ -211,12 +213,27 @@ export default function Header() {
               <button className="text-blue-600 font-medium py-2 text-left">
                 Mais
               </button>
-              <Link
-                href="/anunciar"
-                className="mt-4 px-6 py-3 border-2 border-[#7162f0] text-[#7162f0] rounded-full font-semibold text-lg text-center transition-all duration-300 hover:bg-[#7162f0] hover:text-white"
+              <button
+                onClick={() => {
+                  setShowAnunciarModal(true)
+                  setIsMenuOpen(false)
+                }}
+                className="mt-4 px-6 py-3 border-2 rounded-full font-semibold text-lg text-center transition-all duration-300 w-full cursor-pointer"
+                style={{
+                  borderColor: primaryColor,
+                  color: primaryColor
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = primaryColor
+                  e.currentTarget.style.color = 'white'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = primaryColor
+                }}
               >
                 Anuncie seu Imóvel
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -234,6 +251,12 @@ export default function Header() {
           }}
         />
       )}
+
+      {/* Modal de Anunciar Imóvel */}
+      <AnunciarImovelModal
+        isOpen={showAnunciarModal}
+        onClose={() => setShowAnunciarModal(false)}
+      />
     </header>
     </>
   )

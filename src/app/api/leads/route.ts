@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       hasMessage: !!body.message
     })
 
-    const { name, email, phone, message, propertyId, propertyTitle, propertyPrice, propertyType } = body
+    const { name, email, phone, message, propertyId, propertyTitle, propertyPrice, propertyType, source, preferredCategory, preferredType, preferredCity, preferredState, preferredPriceMin, preferredPriceMax, enableMatching } = body
 
     // Validação básica
     if (!name || name.trim() === '') {
@@ -66,9 +66,17 @@ export async function POST(request: NextRequest) {
         propertyTitle: propertyTitle || null,
         propertyPrice: propertyPrice || null,
         propertyType: propertyType || null,
-        source: 'site',
+        source: source || 'site',
         status: 'novo',
-        ...preferredData
+        ...preferredData,
+        // Se vier preferências diretas do body, sobrescrever
+        ...(preferredCategory && { preferredCategory }),
+        ...(preferredType && { preferredType }),
+        ...(preferredCity && { preferredCity }),
+        ...(preferredState && { preferredState }),
+        ...(preferredPriceMin && { preferredPriceMin }),
+        ...(preferredPriceMax && { preferredPriceMax }),
+        ...(enableMatching !== undefined && { enableMatching })
       }
     })
 
