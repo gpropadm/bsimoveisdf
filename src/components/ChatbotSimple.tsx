@@ -18,6 +18,7 @@ export default function ChatbotSimple() {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [shouldRender, setShouldRender] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -27,6 +28,13 @@ export default function ChatbotSimple() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  useEffect(() => {
+    // Check if we're on admin page
+    if (typeof window !== 'undefined') {
+      setShouldRender(!window.location.pathname.startsWith('/admin'))
+    }
+  }, [])
 
   const handleSend = async () => {
     if (!input.trim() || loading) return
@@ -85,8 +93,8 @@ export default function ChatbotSimple() {
     }
   }
 
-  // Não mostrar em páginas admin
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+  // Don't render on admin pages
+  if (!shouldRender) {
     return null
   }
 
