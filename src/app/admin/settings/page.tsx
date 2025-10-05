@@ -399,6 +399,25 @@ export default function AdminSettings() {
               </div>
 
               <div className="p-6 space-y-6">
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <p className="text-sm text-purple-900 mb-2">
+                    💳 <strong>Gerenciar Créditos e Faturamento:</strong>
+                  </p>
+                  <a
+                    href="https://console.anthropic.com/settings/billing"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-medium"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+                      <polyline points="15 3 21 3 21 9"/>
+                      <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Acessar Console Anthropic
+                  </a>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     🔑 Chave da API Anthropic
@@ -412,7 +431,7 @@ export default function AdminSettings() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
                   />
                   <p className="mt-2 text-xs text-gray-500">
-                    ℹ️ Obtenha sua chave em <a href="https://console.anthropic.com/settings/keys" target="_blank" className="text-purple-600 hover:underline">console.anthropic.com</a>
+                    ℹ️ Obtenha sua chave em <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline">console.anthropic.com</a>
                   </p>
                 </div>
 
