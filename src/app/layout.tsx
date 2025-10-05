@@ -3,7 +3,7 @@ import { Sora } from "next/font/google";
 import "./globals.css";
 import Providers from '@/components/Providers';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import Chatbot from '@/components/Chatbot';
+import ChatbotSimple from '@/components/ChatbotSimple';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'leaflet/dist/leaflet.css';
@@ -98,7 +98,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <WhatsAppButton />
-          <Chatbot />
+          <ChatbotSimple />
           <ToastContainer
             position="top-right"
             autoClose={3000}

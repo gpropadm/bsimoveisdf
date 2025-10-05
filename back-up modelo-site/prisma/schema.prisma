@@ -1,0 +1,420 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("admin")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique // SEO-friendly URL slug
+  description String?
+  price       Float
+  previousPrice Float? // preço anterior para mostrar redução
+  priceReduced Boolean @default(false) // se houve redução recente
+  priceReducedAt DateTime? // quando foi reduzido
+  type        String   // "venda" or "aluguel"
+  status      String   @default("disponivel") // "disponivel", "vendido", "alugado", "lancamento", "imovel_novo"
+  category    String   // "casa", "apartamento", "cobertura", etc.
+  cep         String?  // CEP do imóvel
+  address     String
+  city        String
+  state       String
+  bedrooms    Int?
+  bathrooms   Int?
+  parking     Int?     // vagas de garagem
+  area        Float?
+  images      String?  // JSON string of image URLs
+  video       String?  // URL do vídeo (YouTube, Vimeo, etc.)
+  featured    Boolean  @default(false)
+
+  // Coordenadas GPS para localização exata (DECIMAL para precisão total)
+  latitude    Decimal? @db.Decimal(18, 15)  // Latitude GPS: -90 a +90 com 15 casas decimais
+  longitude   Decimal? @db.Decimal(19, 15)  // Longitude GPS: -180 a +180 com 15 casas decimais
+  gpsAccuracy Float?   // Precisão do GPS em metros
+  
+  // Campos específicos para apartamentos/coberturas
+  floor       Int?     // andar do apartamento
+  condoFee    Float?   // valor do condomínio
+  amenities   String?  // JSON string com comodidades do condomínio
+  apartmentTotalArea Float?   // área total do apartamento (m²)
+  apartmentUsefulArea Float?  // área útil do apartamento (m²)
+  suites      Int?     // número de suítes
+  iptu        Float?   // valor do IPTU mensal
+  
+  // Campos específicos para terrenos
+  zoning      String?  // zoneamento (residencial, comercial, industrial)
+  slope       String?  // topografia (plano, aclive, declive)
+  frontage    Float?   // frente do terreno (metros)
+  
+  // Campos específicos para fazendas
+  totalArea   Float?   // área total da fazenda
+  cultivatedArea Float? // área cultivada
+  pastures    Float?   // área de pastagens
+  areaUnit    String?  // unidade de medida (hectares, alqueires, etc.)
+  buildings   String?  // JSON string com benfeitorias da fazenda
+  waterSources String? // fontes de água (rios, poços, açudes)
+  
+  // Campos específicos para casas
+  houseType   String?  // tipo de casa (térrea, sobrado, condomínio)
+  yard        Boolean? // quintal (sim/não)
+  garage      String?  // tipo de garagem (coberta, descoberta, fechada)
+  lotArea     Float?   // área do lote (m²)
+  builtArea   Float?   // área construída (m²)
+  
+  // Campos específicos para imóveis comerciais
+  commercialType String? // tipo comercial (loja, sala, galpão, etc.)
+  floor_commercial Int?  // andar (para salas comerciais)
+  businessCenter String? // centro empresarial/shopping/prédio
+  features      String?  // JSON com características comerciais
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leads Lead[]
+  appointments Appointment[]
+  whatsappMessages WhatsAppMessage[]
+  priceAlerts PriceAlert[]
+  videoLikes VideoLike[]
+
+  @@map("properties")
+}
+
+model VideoLike {
+  id         String   @id @default(cuid())
+  propertyId String
+  ipAddress  String   // IP do visitante
+  userAgent  String?  // User Agent para identificação
+  liked      Boolean  // true = like, false = dislike
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  // Evita duplicatas: mesmo IP só pode votar uma vez por imóvel
+  @@unique([propertyId, ipAddress])
+  @@map("video_likes")
+}
+
+model Lead {
+  id           String   @id @default(cuid())
+  name         String
+  email        String?
+  phone        String?
+  message      String?
+  propertyId   String?  // referência opcional ao imóvel
+  propertyTitle String? // título do imóvel para histórico
+  propertyPrice Float?  // preço do imóvel para histórico
+  propertyType String?  // tipo do imóvel (venda/aluguel)
+  source       String   @default("site") // "site", "whatsapp", "telefone", etc.
+  status       String   @default("novo") // "novo", "contatado", "interessado", "convertido", "perdido"
+  notes        String?  // observações do corretor
+
+  // Preferências do cliente para matching
+  preferredPriceMin    Float?   // preço mínimo de interesse
+  preferredPriceMax    Float?   // preço máximo de interesse
+  preferredCategory    String?  // casa, apartamento, etc.
+  preferredCity        String?  // cidade preferida
+  preferredState       String?  // estado preferido
+  preferredBedrooms    Int?     // quantidade de quartos
+  preferredBathrooms   Int?     // quantidade de banheiros
+  preferredType        String?  // venda ou aluguel
+  enableMatching       Boolean  @default(true) // se quer receber sugestões
+
+  // Campos para agentes IA
+  agentProcessed    Boolean?   @default(false)
+  agentStatus       String?    // 'sent', 'error', 'processed', 'whatsapp_sent', 'whatsapp_error'
+  agentProcessedAt  DateTime?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  appointments Appointment[]
+
+  @@map("leads")
+}
+
+model Appointment {
+  id          String   @id @default(cuid())
+  propertyId  String
+  leadId      String?  // Conecta com o sistema de leads existente
+  
+  // Participantes
+  clientName    String
+  clientEmail   String
+  clientPhone   String
+  realtorId     String?  // Futuro: sistema de corretores
+  
+  // Agendamento
+  scheduledDate DateTime
+  duration      Int      @default(60) // minutos
+  status        String   @default("agendado") // "agendado", "confirmado", "cancelado", "concluído"
+  
+  // Notificações
+  clientNotified    Boolean @default(false)
+  realtorNotified   Boolean @default(false)
+  ownerNotified     Boolean @default(false)
+  
+  // Feedback pós-visita
+  clientFeedback    String?
+  interestLevel     Int?     // 1-5
+  
+  // Localização para confirmação
+  checkInTime       DateTime?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  lead     Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@map("appointments")
+}
+
+model PropertySubmission {
+  id            String   @id @default(cuid())
+  
+  // Informações do proprietário
+  ownerName     String
+  ownerEmail    String
+  ownerPhone    String
+  
+  // Informações do imóvel
+  title         String
+  description   String?
+  propertyType  String   // "casa", "apartamento", "cobertura", etc.
+  saleType      String   // "venda", "aluguel"
+  price         Float?
+  address       String
+  city          String
+  state         String
+  neighborhood  String?
+  bedrooms      Int?
+  bathrooms     Int?
+  parking       Int?
+  area          Float?
+  
+  // Status da submissão
+  status        String   @default("pendente") // "pendente", "em_analise", "aprovado", "rejeitado", "publicado"
+  adminNotes    String?  // Observações do admin
+  
+  // Preferências
+  hasPhotos     Boolean  @default(false)
+  acceptsVisits Boolean  @default(true)
+  urgency       String   @default("normal") // "normal", "alta", "baixa"
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("property_submissions")
+}
+
+model PropertyRequest {
+  id              String   @id @default(cuid())
+  
+  // Informações do solicitante
+  clientName      String
+  clientEmail     String
+  clientPhone     String
+  
+  // Preferências do imóvel
+  propertyType    String?  // "casa", "apartamento", "cobertura", etc.
+  saleType        String   // "venda", "aluguel"
+  priceMin        Float?
+  priceMax        Float?
+  city            String
+  neighborhood    String?
+  bedrooms        Int?
+  bathrooms       Int?
+  parking         Int?
+  areaMin         Float?
+  areaMax         Float?
+  
+  // Detalhes da solicitação
+  description     String?  // Descrição detalhada do que procura
+  timeline        String?  // "urgente", "1_mes", "3_meses", "6_meses", "sem_pressa"
+  budget          String?  // "a_vista", "financiado", "fgts"
+  
+  // Status da solicitação
+  status          String   @default("ativo") // "ativo", "atendido", "cancelado", "pausado"
+  adminNotes      String?  // Observações do admin
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("property_requests")
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  
+  // Informações do contato
+  name        String
+  email       String
+  phone       String?
+  subject     String
+  message     String
+  
+  // Contexto
+  source      String   @default("site") // "site", "whatsapp", "telefone"
+  referrer    String?  // URL de onde veio
+  
+  // Status
+  status      String   @default("novo") // "novo", "lido", "respondido", "resolvido"
+  adminNotes  String?  // Observações do admin
+  respondedAt DateTime?
+  respondedBy String?  // ID do admin que respondeu
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("contact_messages")
+}
+
+model Settings {
+  id                   String  @id @default(cuid())
+  siteName             String  @default("ImobiNext")
+  siteDescription      String  @default("Encontre o imóvel dos seus sonhos")
+  contactEmail         String  @default("contato@imobinext.com")
+  contactPhone         String  @default("(48) 99864-5864")
+  contactWhatsapp      String  @default("5548998645864")
+  address              String  @default("Rua das Flores, 123")
+  city                 String  @default("Florianópolis")
+  state                String  @default("SC")
+  socialFacebook       String  @default("https://facebook.com")
+  socialInstagram      String  @default("https://instagram.com")
+  socialLinkedin       String  @default("https://linkedin.com")
+  featuredLimit        Int     @default(6)
+  enableRegistrations  Boolean @default(true)
+  enableComments       Boolean @default(false)
+
+  // Configurações do Header
+  headerTitle          String  @default("Encontre o Imóvel Perfeito")
+  headerSubtitle       String  @default("Casas, apartamentos e terrenos dos seus sonhos")
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model WhatsAppMessage {
+  id           String   @id @default(cuid())
+
+  // Identificadores da mensagem
+  messageId    String   @unique // ID da mensagem no UltraMsg
+  from         String   // Número de telefone de quem enviou
+  to           String   // Número de telefone de quem recebeu
+
+  // Conteúdo da mensagem
+  body         String   // Texto da mensagem
+  type         String   @default("text") // "text", "image", "video", "audio", "document"
+  caption      String?  // Legenda para mídias
+
+  // Metadata
+  timestamp    DateTime // Quando a mensagem foi enviada/recebida
+  fromMe       Boolean  // true se foi enviada por nós, false se recebida
+  status       String   @default("sent") // "sent", "delivered", "read", "failed"
+  source       String   // "ultramsg_api", "ultramsg_webhook", "baileys"
+
+  // Contexto do imóvel (opcional)
+  propertyId   String?  // Relaciona com algum imóvel específico
+  contactName  String?  // Nome do contato se conhecido
+
+  // Relacionamentos
+  property     Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("whatsapp_messages")
+}
+
+model PriceAlert {
+  id          String   @id @default(cuid())
+
+  // Informações do interessado
+  name        String
+  phone       String   // WhatsApp para envio
+
+  // Imóvel de interesse
+  propertyId  String
+
+  // Status do alerta
+  active      Boolean  @default(true) // se ainda quer receber avisos
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamento
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  // Índice único para evitar duplicatas
+  @@unique([propertyId, phone])
+  @@map("price_alerts")
+}
+
