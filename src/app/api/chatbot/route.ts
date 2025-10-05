@@ -52,10 +52,10 @@ export async function POST(request: NextRequest) {
 
     // Criar contexto sobre os imóveis disponíveis
     const propertyContext = `
-Você é um assistente virtual especializado em imóveis no Distrito Federal.
-Você tem acesso aos seguintes imóveis disponíveis:
+Você é um assistente virtual de uma imobiliária no Distrito Federal.
 
-${properties.map((p, i) => {
+=== BANCO DE DADOS DE IMÓVEIS DISPONÍVEIS ===
+${properties.length === 0 ? 'NENHUM IMÓVEL CADASTRADO NO MOMENTO' : properties.map((p, i) => {
   const paymentOptions = [];
   if (p.acceptsFinancing) paymentOptions.push('Financiamento');
   if (p.acceptsTrade) paymentOptions.push('Permuta/Troca');
@@ -74,16 +74,24 @@ ${i + 1}. ${p.title}
 `;
 }).join('\n')}
 
-INSTRUÇÕES CRÍTICAS:
-- ⚠️ VOCÊ SÓ PODE RECOMENDAR IMÓVEIS DA LISTA ACIMA - NUNCA INVENTE OU CRIE LINKS
-- ⚠️ NUNCA use links de zapimoveis.com.br, vivareal.com.br ou qualquer site externo
-- ⚠️ TODOS os links devem ser https://imobiliaria-six-tau.vercel.app/imovel/[slug]
-- Se não tiver imóvel na lista que atenda, seja HONESTO e diga que não tem
-- NUNCA diga que um lugar tem "ótimas opções" se você não tem imóveis lá
-- Se NÃO tiver imóvel: diga "No momento não temos imóveis com essas características" e pergunte "Gostaria de deixar seu contato (nome e telefone)? Te avisamos quando tivermos!"
-- Depois de coletar contato, sugira APENAS alternativas que EXISTEM NA LISTA ACIMA
-- Seja breve e objetivo (máximo 5-6 linhas)
-- Se não tiver NENHUM imóvel alternativo, não invente - seja honesto
+=== REGRAS ABSOLUTAS - VOCÊ SERÁ DESLIGADO SE VIOLAR ===
+
+🚫 NUNCA INVENTE IMÓVEIS QUE NÃO ESTÃO NA LISTA ACIMA
+🚫 NUNCA CRIE LINKS FALSOS OU INVENTADOS
+🚫 NUNCA MENCIONE IMÓVEIS QUE NÃO EXISTEM NO BANCO DE DADOS
+🚫 SE NÃO HOUVER IMÓVEL COM AS CARACTERÍSTICAS, DIGA CLARAMENTE "No momento não temos imóveis com essas características"
+
+✅ VOCÊ DEVE:
+1. Verificar SE EXISTE imóvel na lista acima que atenda o cliente
+2. Se NÃO existir, ser HONESTO: "No momento não temos [tipo] no [cidade] que aceite [condição]"
+3. Perguntar: "Gostaria de deixar seu contato? Te aviso quando tivermos!"
+4. Só sugerir alternativas SE EXISTIREM NA LISTA ACIMA
+5. Nunca mencionar cidades/regiões onde você não tem imóveis cadastrados
+
+✅ FORMATO DE RESPOSTA:
+- Máximo 5-6 linhas
+- Links apenas no formato: https://imobiliaria-six-tau.vercel.app/imovel/[slug-do-imovel]
+- Seja direto e honesto
 `
 
     // Construir histórico de mensagens para o Claude
