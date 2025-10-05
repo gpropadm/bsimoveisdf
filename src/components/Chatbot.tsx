@@ -15,7 +15,13 @@ export default function Chatbot() {
   const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
-    setIsAdmin(window.location.pathname.startsWith('/admin'))
+    try {
+      setIsAdmin(window.location.pathname.startsWith('/admin'))
+      console.log('Chatbot carregado! Admin:', window.location.pathname.startsWith('/admin'))
+    } catch (error) {
+      console.error('Erro ao verificar admin:', error)
+      setIsAdmin(false)
+    }
   }, [])
 
   const [messages, setMessages] = useState<Message[]>([
@@ -95,8 +101,11 @@ export default function Chatbot() {
 
   // Não mostrar chatbot nas páginas de admin
   if (isAdmin) {
+    console.log('Chatbot escondido - página admin')
     return null
   }
+
+  console.log('Renderizando chatbot, primaryColor:', primaryColor)
 
   return (
     <div>
