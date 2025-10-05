@@ -14,6 +14,7 @@ export default function SearchForm() {
   const { primaryColor } = useTheme()
   const [filters, setFilters] = useState<SearchFilters>({ types: [], categoriesByType: {} })
   const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [selectedType, setSelectedType] = useState<string>('')
   const [location, setLocation] = useState<string>('')
   const [loading, setLoading] = useState(true)
 
@@ -40,6 +41,7 @@ export default function SearchForm() {
 
     const searchParams = new URLSearchParams()
 
+    if (selectedType) searchParams.set('type', selectedType)
     if (selectedCategory) searchParams.set('category', selectedCategory)
     if (location.trim()) {
       const locationParts = location.trim().split(' - ')
@@ -84,6 +86,26 @@ export default function SearchForm() {
                 {filters.categoriesByType && Object.values(filters.categoriesByType).flat().filter((v, i, a) => a.indexOf(v) === i).map((category) => (
                   <option key={category} value={category}>
                     {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Divisor vertical - apenas desktop */}
+            <div className="hidden md:block h-10 w-px bg-gray-300"></div>
+
+            {/* Finalidade - Venda/Aluguel */}
+            <div className="w-full md:w-auto border-b md:border-b-0 border-gray-200">
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="w-full md:w-[180px] h-16 px-6 bg-transparent border-none focus:outline-none focus:ring-0 text-gray-700 font-medium text-base appearance-none cursor-pointer"
+                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23666\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1.5rem center' }}
+              >
+                <option value="">Finalidade</option>
+                {filters.types && filters.types.map((type) => (
+                  <option key={type} value={type}>
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
                   </option>
                 ))}
               </select>

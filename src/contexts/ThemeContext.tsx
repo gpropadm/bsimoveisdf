@@ -13,6 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const themeColors = {
   'Roxo (Padrão)': '#7162f0',
+  'Roxo Escuro': '#5c08b2',
   'Azul': '#3b82f6',
   'Verde': '#10b981',
   'Laranja': '#f97316',

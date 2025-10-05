@@ -139,7 +139,7 @@ export default function SearchFormMinimalista() {
           {/* Botão Buscar - Full Width */}
           <button
             type="submit"
-            className="w-full h-12 sm:h-14 rounded-lg font-semibold text-white text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] flex items-center justify-center gap-2 sm:gap-3"
+            className="w-full h-12 sm:h-14 rounded-lg font-semibold text-white text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] flex items-center justify-center gap-2 sm:gap-3 cursor-pointer"
             style={{ backgroundColor: primaryColor }}
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

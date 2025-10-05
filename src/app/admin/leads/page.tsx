@@ -59,6 +59,7 @@ export default function AdminLeadsPage() {
   })
   const [loading, setLoading] = useState(true)
   const [sendingSuggestions, setSendingSuggestions] = useState<string | null>(null)
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [filters, setFilters] = useState({
     status: 'all',
     search: ''
@@ -282,7 +283,7 @@ export default function AdminLeadsPage() {
         ) : (
           <div className="space-y-4">
             {leads.map((lead) => (
-              <div key={lead.id} className="bg-white border border-gray-200 rounded-lg p-4">
+              <div key={lead.id} className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedLead(lead)}>
                 <div className="flex items-start gap-4 mb-3">
                   {/* Foto do Imóvel */}
                   {lead.property ? (
@@ -435,7 +436,7 @@ export default function AdminLeadsPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {leads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-gray-50">
+                    <tr key={lead.id} className="hover:bg-gray-50 cursor-pointer" onClick={() => setSelectedLead(lead)}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {lead.property ? (
                           <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
@@ -631,6 +632,62 @@ export default function AdminLeadsPage() {
           </>
         )}
       </div>
+
+      {/* Modal de Detalhes do Lead */}
+      {selectedLead && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedLead(null)}>
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-bold text-gray-900">Detalhes do Lead</h3>
+                <button onClick={() => setSelectedLead(null)} className="text-gray-400 hover:text-gray-600">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500">Nome</p>
+                  <p className="font-medium">{selectedLead.name}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">Telefone</p>
+                  <p className="font-medium">{selectedLead.phone}</p>
+                </div>
+
+                {selectedLead.email && (
+                  <div>
+                    <p className="text-sm text-gray-500">E-mail</p>
+                    <p className="font-medium">{selectedLead.email}</p>
+                  </div>
+                )}
+
+                <div>
+                  <p className="text-sm text-gray-500">Status</p>
+                  <p className="font-medium">{getStatusBadge(selectedLead.status)}</p>
+                </div>
+
+                {selectedLead.message && (
+                  <div>
+                    <p className="text-sm text-gray-500 mb-2">Mensagem Completa</p>
+                    <div className="bg-gray-50 p-4 rounded border border-gray-200 whitespace-pre-wrap text-sm">
+                      {selectedLead.message}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <p className="text-sm text-gray-500">Data</p>
+                  <p className="font-medium">{formatDate(selectedLead.createdAt)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   )
 }

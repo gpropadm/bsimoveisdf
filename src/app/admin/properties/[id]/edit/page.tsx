@@ -110,6 +110,10 @@ export default function EditProperty() {
     floor_commercial: '',
     businessCenter: '',
     features: [] as string[],
+    // Formas de pagamento
+    acceptsFinancing: false,
+    acceptsTrade: false,
+    acceptsCar: false,
     // Coordenadas GPS
     latitude: '',
     longitude: '',

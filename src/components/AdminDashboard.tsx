@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Session } from 'next-auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import ChatbotDashboard from './ChatbotDashboard'
 
 interface AdminDashboardProps {
   session: Session
@@ -261,6 +262,11 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Dashboard do Chatbot IA */}
+            <div className="mb-8">
+              <ChatbotDashboard />
             </div>
 
             {/* Ações Rápidas */}

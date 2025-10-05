@@ -129,7 +129,12 @@ model Property {
   floor_commercial Int?  // andar (para salas comerciais)
   businessCenter String? // centro empresarial/shopping/prédio
   features      String?  // JSON com características comerciais
-  
+
+  // Formas de pagamento aceitas
+  acceptsFinancing Boolean @default(false) // Aceita financiamento bancário
+  acceptsTrade     Boolean @default(false) // Aceita permuta/troca
+  acceptsCar       Boolean @default(false) // Aceita carro como parte do pagamento
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -355,10 +360,28 @@ model Settings {
   headerTitle          String  @default("Encontre o Imóvel Perfeito")
   headerSubtitle       String  @default("Casas, apartamentos e terrenos dos seus sonhos")
 
+  // Configurações de IA (Anthropic Claude)
+  anthropicApiKey      String? // Chave da API Anthropic para o chatbot
+
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
   @@map("settings")
+}
+
+model ChatbotStats {
+  id              String   @id @default(cuid())
+  date            DateTime @default(now()) // Data da estatística
+  conversationId  String?  // ID da conversa (opcional)
+  messagesCount   Int      @default(1) // Quantidade de mensagens
+  tokensInput     Int      @default(0) // Tokens de entrada (prompt)
+  tokensOutput    Int      @default(0) // Tokens de saída (resposta)
+  costEstimated   Float    @default(0) // Custo estimado em USD
+  leadCaptured    Boolean  @default(false) // Se gerou lead
+
+  createdAt       DateTime @default(now())
+
+  @@map("chatbot_stats")
 }
 
 model WhatsAppMessage {
