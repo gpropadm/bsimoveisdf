@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { FiMessageCircle, FiX, FiSend } from 'react-icons/fi'
 import { useTheme } from '@/contexts/ThemeContext'
-import { usePathname } from 'next/navigation'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -12,8 +11,12 @@ interface Message {
 
 export default function Chatbot() {
   const { primaryColor } = useTheme()
-  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    setIsAdmin(window.location.pathname.startsWith('/admin'))
+  }, [])
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -91,7 +94,7 @@ export default function Chatbot() {
   }
 
   // Não mostrar chatbot nas páginas de admin
-  if (pathname?.startsWith('/admin')) {
+  if (isAdmin) {
     return null
   }
 
