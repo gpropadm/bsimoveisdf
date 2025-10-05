@@ -10,7 +10,15 @@ interface Message {
 }
 
 export default function Chatbot() {
-  const { primaryColor } = useTheme()
+  let primaryColor = '#7162f0' // Cor padrão
+
+  try {
+    const theme = useTheme()
+    primaryColor = theme?.primaryColor || '#7162f0'
+  } catch (error) {
+    console.error('Erro ao carregar tema:', error)
+  }
+
   const [isOpen, setIsOpen] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
 
