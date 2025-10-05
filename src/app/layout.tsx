@@ -99,8 +99,7 @@ export default function RootLayout({
           {children}
           <WhatsAppButton />
           <Chatbot />
-        </Providers>
-        <ToastContainer
+          <ToastContainer
             position="top-right"
             autoClose={3000}
             hideProgressBar={false}
