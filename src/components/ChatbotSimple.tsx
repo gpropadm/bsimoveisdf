@@ -18,7 +18,6 @@ export default function ChatbotSimple() {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [shouldRender, setShouldRender] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -28,13 +27,6 @@ export default function ChatbotSimple() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
-
-  useEffect(() => {
-    // Check if we're on admin page
-    if (typeof window !== 'undefined') {
-      setShouldRender(!window.location.pathname.startsWith('/admin'))
-    }
-  }, [])
 
   const handleSend = async () => {
     if (!input.trim() || loading) return
@@ -93,19 +85,29 @@ export default function ChatbotSimple() {
     }
   }
 
-  // Don't render on admin pages
-  if (!shouldRender) {
-    return null
-  }
-
   return (
-    <div>
+    <div style={{ position: 'fixed', zIndex: 9999 }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-24 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
         style={{
-          zIndex: 9999,
-          backgroundColor: '#7162f0'
+          position: 'fixed',
+          bottom: '24px',
+          right: '96px',
+          backgroundColor: '#7162f0',
+          color: 'white',
+          borderRadius: '9999px',
+          padding: '16px',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          border: 'none',
+          cursor: 'pointer',
+          transition: 'transform 0.3s',
+          zIndex: 9999
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.1)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)'
         }}
         aria-label="Abrir chat"
       >
@@ -114,63 +116,166 @@ export default function ChatbotSimple() {
 
       {isOpen && (
         <div
-          className="fixed bottom-24 right-4 md:right-24 w-[90vw] md:w-96 h-[500px] bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden border border-gray-200"
-          style={{ zIndex: 9999 }}
+          style={{
+            position: 'fixed',
+            bottom: '96px',
+            right: '16px',
+            width: '384px',
+            maxWidth: '90vw',
+            height: '500px',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            border: '1px solid #e5e7eb',
+            zIndex: 9999
+          }}
         >
-          <div className="p-4 flex items-center justify-between" style={{ backgroundColor: '#7162f0' }}>
-            <div className="flex items-center gap-3">
+          <div style={{
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#7162f0'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <img
                 src="/atendente-avatar.jpg"
                 alt="Atendente"
-                className="w-10 h-10 rounded-full border-2 border-white"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '9999px',
+                  border: '2px solid white'
+                }}
               />
-              <h3 className="font-semibold text-white">Atendimento</h3>
+              <h3 style={{ fontWeight: 600, color: 'white', margin: 0 }}>Atendimento</h3>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors text-white"
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }}
             >
               <FiX size={20} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '16px',
+            backgroundColor: '#f9fafb'
+          }}>
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}
+                style={{
+                  display: 'flex',
+                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                  alignItems: 'flex-end',
+                  gap: '8px',
+                  marginBottom: '16px'
+                }}
               >
                 {msg.role === 'assistant' && (
                   <img
                     src="/atendente-avatar.jpg"
                     alt="Atendente"
-                    className="w-8 h-8 rounded-full flex-shrink-0"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '9999px',
+                      flexShrink: 0
+                    }}
                   />
                 )}
                 <div
-                  className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                    msg.role === 'user'
-                      ? 'text-white rounded-br-sm'
-                      : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm'
-                  }`}
-                  style={msg.role === 'user' ? { backgroundColor: '#7162f0' } : {}}
+                  style={{
+                    maxWidth: '80%',
+                    padding: '12px 16px',
+                    borderRadius: '16px',
+                    backgroundColor: msg.role === 'user' ? '#7162f0' : 'white',
+                    color: msg.role === 'user' ? 'white' : '#1f2937',
+                    border: msg.role === 'assistant' ? '1px solid #e5e7eb' : 'none',
+                    boxShadow: msg.role === 'assistant' ? '0 1px 2px 0 rgba(0, 0, 0, 0.05)' : 'none',
+                    borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
+                    borderBottomLeftRadius: msg.role === 'assistant' ? '4px' : '16px'
+                  }}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                  <p style={{
+                    fontSize: '14px',
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: '1.6',
+                    margin: 0
+                  }}>
+                    {msg.content}
+                  </p>
                 </div>
               </div>
             ))}
             {loading && (
-              <div className="flex justify-start items-end gap-2">
+              <div style={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-end',
+                gap: '8px'
+              }}>
                 <img
                   src="/atendente-avatar.jpg"
                   alt="Atendente"
-                  className="w-8 h-8 rounded-full flex-shrink-0"
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '9999px',
+                    flexShrink: 0
+                  }}
                 />
-                <div className="bg-white border border-gray-200 px-4 py-2 rounded-lg rounded-bl-none">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                <div style={{
+                  backgroundColor: 'white',
+                  border: '1px solid #e5e7eb',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  borderBottomLeftRadius: '0'
+                }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '9999px',
+                      animation: 'bounce 1s infinite'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '9999px',
+                      animation: 'bounce 1s infinite 0.2s'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '9999px',
+                      animation: 'bounce 1s infinite 0.4s'
+                    }}></div>
                   </div>
                 </div>
               </div>
@@ -178,23 +283,41 @@ export default function ChatbotSimple() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="border-t border-gray-200 p-4 bg-white">
-            <div className="flex space-x-2">
+          <div style={{
+            borderTop: '1px solid #e5e7eb',
+            padding: '16px',
+            backgroundColor: 'white'
+          }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Digite sua mensagem..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 text-sm text-gray-900"
-                style={{ '--tw-ring-color': '#7162f0' } as React.CSSProperties}
                 disabled={loading}
+                style={{
+                  flex: 1,
+                  padding: '8px 16px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  color: '#111827',
+                  outline: 'none'
+                }}
               />
               <button
                 onClick={handleSend}
                 disabled={loading || !input.trim()}
-                className="disabled:bg-gray-300 text-white px-4 py-2 rounded-lg transition-colors"
-                style={{ backgroundColor: loading || !input.trim() ? '#d1d5db' : '#7162f0' }}
+                style={{
+                  backgroundColor: loading || !input.trim() ? '#d1d5db' : '#7162f0',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
+                  transition: 'background-color 0.2s'
+                }}
               >
                 <FiSend size={18} />
               </button>
