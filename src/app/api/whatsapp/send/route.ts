@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendWhatsAppMessage } from '@/lib/whatsapp-callmebot';
+import { sendWhatsAppMessage } from '@/lib/whatsapp-twilio';
 
 export async function POST(request: NextRequest) {
   try {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Falha ao enviar mensagem. Verifique CALLMEBOT_API_KEY.',
+          error: 'Falha ao enviar mensagem via Twilio',
           lead_id: lead_id || null
         },
         { status: 500 }

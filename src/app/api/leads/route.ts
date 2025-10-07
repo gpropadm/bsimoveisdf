@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { sendWhatsAppMessage } from '@/lib/whatsapp-callmebot'
+import { sendWhatsAppMessage } from '@/lib/whatsapp-twilio'
 
 export async function POST(request: NextRequest) {
   try {
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       preferenciasExtraidas: Object.keys(preferredData).length > 0
     })
 
-    // Enviar notificação via WhatsApp usando CallMeBot (GRATUITO)
+    // Enviar notificação via WhatsApp usando Twilio
     try {
       const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444'
 
@@ -115,13 +115,13 @@ export async function POST(request: NextRequest) {
       const sent = await sendWhatsAppMessage(phoneAdmin, whatsappMessage)
 
       if (sent) {
-        console.log('✅ WhatsApp enviado via CallMeBot')
+        console.log('✅ WhatsApp enviado via Twilio')
 
         // Salvar mensagem no banco
         await prisma.whatsAppMessage.create({
           data: {
             messageId: `lead-${Date.now()}`,
-            from: 'callmebot',
+            from: 'twilio',
             to: phoneAdmin,
             body: whatsappMessage,
             type: 'text',
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
           }
         })
       } else {
-        console.log('⚠️ Falha ao enviar WhatsApp via CallMeBot (verifique CALLMEBOT_API_KEY)')
+        console.log('⚠️ Falha ao enviar WhatsApp via Twilio')
       }
 
     } catch (whatsappError) {
