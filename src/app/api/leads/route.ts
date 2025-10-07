@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getWhatsAppInstance } from '@/lib/whatsapp-wppconnect'
+import { getWhatsAppInstance } from '@/lib/whatsapp-webjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -172,7 +172,7 @@ ${lead.propertyTitle || 'Não informado'}
           console.error('❌ Falha ao enviar WhatsApp via Baileys')
         }
       } else {
-        console.log('⚠️ WhatsApp WPPConnect não está conectado. Conecte via /api/whatsapp/baileys/connect')
+        console.log('⚠️ WhatsApp Web.js não está conectado. Conecte via /api/whatsapp/baileys/connect')
 
     } catch (whatsappError) {
       console.error('⚠️ Erro ao enviar notificação WhatsApp (interesse):', whatsappError)

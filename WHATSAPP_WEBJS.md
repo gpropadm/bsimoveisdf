@@ -1,8 +1,8 @@
-# WhatsApp com WPPConnect (Gratuito)
+# WhatsApp com Web.js (Gratuito)
 
 ## 📌 O que mudou?
 
-Substituímos o **UltraMsg** (pago US$39/mês) pelo **WPPConnect** (GRATUITO).
+Substituímos o **UltraMsg** (pago US$39/mês) pelo **WhatsApp Web.js** (GRATUITO).
 
 ## 🚀 Como configurar
 
