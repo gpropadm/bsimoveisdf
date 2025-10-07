@@ -1,8 +1,8 @@
-# WhatsApp com Baileys (Gratuito)
+# WhatsApp com WPPConnect (Gratuito)
 
 ## 📌 O que mudou?
 
-Substituímos o **UltraMsg** (pago US$39/mês) pelo **Baileys** (GRATUITO).
+Substituímos o **UltraMsg** (pago US$39/mês) pelo **WPPConnect** (GRATUITO).
 
 ## 🚀 Como configurar
 
@@ -81,11 +81,12 @@ Apartamento 3 quartos Asa Sul
 
 ## 🆚 Comparação
 
-| Característica | UltraMsg | Baileys |
+| Característica | UltraMsg | WPPConnect |
 |---|---|---|
 | Custo | US$39/mês | Gratuito |
 | Configuração | Simples | QR Code |
-| Estabilidade | Alta | Média |
+| Estabilidade | Alta | Alta |
+| Serverless | Sim | Limitado |
 | Risco de ban | Baixo | Médio (se usar demais) |
 
 ## 🔧 Troubleshooting

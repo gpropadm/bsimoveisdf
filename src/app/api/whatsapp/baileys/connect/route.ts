@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getWhatsAppInstance } from '@/lib/whatsapp-baileys'
+import { getWhatsAppInstance } from '@/lib/whatsapp-wppconnect'
 
 // Variável global para manter instância ativa
 let isInitialized = false
