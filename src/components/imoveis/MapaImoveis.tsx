@@ -271,7 +271,7 @@ export default function MapaImoveis({ imoveis, selectedImovel, onImovelSelect, o
         {imoveisComCoordenadas.map((imovel) => {
           const customIcon = createCustomIcons().createPropertyIcon(
             imovel.type || 'venda',
-            '#4f2de8', // Usar sempre a cor do tema
+            '#4f2de8',
             imovel.price || 0
           )
 

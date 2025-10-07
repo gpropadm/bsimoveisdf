@@ -38,7 +38,8 @@ interface Property {
 export default function ImoveisContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [properties, setProperties] = useState<Property[]>([])
+  const [properties, setProperties] = useState<Property[]>([]) // Imóveis filtrados para os cards
+  const [allProperties, setAllProperties] = useState<Property[]>([]) // TODOS os imóveis para o mapa
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedProperty, setSelectedProperty] = useState<string | null>(null)
@@ -80,8 +81,6 @@ export default function ImoveisContent() {
     try {
       setLoading(true)
 
-      const params = new URLSearchParams()
-
       // Pegar parâmetros da URL
       const type = searchParams.get('type')
       const category = searchParams.get('category')
@@ -90,24 +89,45 @@ export default function ImoveisContent() {
       const minPrice = searchParams.get('minPrice')
       const maxPrice = searchParams.get('maxPrice')
 
-      if (type) params.append('type', type)
-      if (category) params.append('category', category)
-      if (city) params.append('city', city)
-      if (state) params.append('state', state)
-      if (minPrice) params.append('minPrice', minPrice)
-      if (maxPrice) params.append('maxPrice', maxPrice)
+      const hasFilters = type || category || city || state || minPrice || maxPrice
 
-      params.append('limit', '50')
+      // Se TEM filtro: buscar filtrado + todos
+      if (hasFilters) {
+        const params = new URLSearchParams()
 
-      const response = await fetch(`/api/properties?${params.toString()}`)
-      const data = await response.json()
+        if (type) params.append('type', type)
+        if (category) params.append('category', category)
+        if (city) params.append('city', city)
+        if (state) params.append('state', state)
+        if (minPrice) params.append('minPrice', minPrice)
+        if (maxPrice) params.append('maxPrice', maxPrice)
+        params.append('limit', '50')
 
-      setProperties(data)
-      setFilteredProperties(data)
+        // Buscar imóveis filtrados (para os cards)
+        const responseFiltered = await fetch(`/api/properties?${params.toString()}`)
+        const dataFiltered = await responseFiltered.json()
+
+        // Buscar TODOS os imóveis (para o mapa)
+        const responseAll = await fetch(`/api/properties?limit=200`)
+        const dataAll = await responseAll.json()
+
+        setProperties(dataFiltered)
+        setFilteredProperties(dataFiltered)
+        setAllProperties(dataAll)
+      } else {
+        // Se NÃO tem filtro: buscar só uma vez (todos os imóveis)
+        const response = await fetch(`/api/properties?limit=200`)
+        const data = await response.json()
+
+        setProperties(data)
+        setFilteredProperties(data)
+        setAllProperties(data)
+      }
     } catch (error) {
       console.error('Erro ao buscar imóveis:', error)
       setProperties([])
       setFilteredProperties([])
+      setAllProperties([])
     } finally {
       setLoading(false)
     }
@@ -117,14 +137,14 @@ export default function ImoveisContent() {
     fetchProperties()
   }, [searchParams])
 
-  // Filtrar imóveis baseado nos bounds do mapa
+  // Filtrar cards baseado nos bounds do mapa quando der zoom
   useEffect(() => {
-    if (!mapBounds || properties.length === 0) {
+    if (!mapBounds || allProperties.length === 0) {
       setFilteredProperties(properties)
       return
     }
 
-    const filtered = properties.filter(property => {
+    const filtered = allProperties.filter(property => {
       if (!property.latitude || !property.longitude) return false
 
       const lat = property.latitude
@@ -139,7 +159,7 @@ export default function ImoveisContent() {
     })
 
     setFilteredProperties(filtered)
-  }, [mapBounds, properties])
+  }, [mapBounds, allProperties, properties])
 
   const handleMapBoundsChange = (bounds: any) => {
     setMapBounds(bounds)
@@ -214,9 +234,9 @@ export default function ImoveisContent() {
       {/* Mapa - Lado Direito - FULL WIDTH NO MOBILE */}
       {showMap && (
         <div className="w-full md:w-1/2 relative sticky top-0 h-[calc(100vh-120px)] bg-gray-200 transition-all duration-300">
-          {properties.length > 0 ? (
+          {allProperties.length > 0 ? (
             <MapaImoveis
-              imoveis={adaptPropertiesForMap(properties)}
+              imoveis={adaptPropertiesForMap(allProperties)}
               selectedImovel={selectedProperty ? parseInt(selectedProperty) || 0 : null}
               onImovelSelect={(id: number) => setSelectedProperty(id.toString())}
               onBoundsChange={handleMapBoundsChange}

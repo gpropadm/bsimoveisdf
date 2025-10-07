@@ -125,11 +125,47 @@ ${i + 1}. ${p.title}
     const phones = message.match(phoneRegex)
 
     if (phones && phones.length > 0 && conversationHistory.length > 2) {
-      // Extrair nome (geralmente vem antes ou junto do telefone)
-      const nameParts = message.split(/[,\s]+/).filter(p =>
-        p.length > 2 && !/^\d+$/.test(p) && !/^(sim|ok|oi|olá|quero)$/i.test(p)
-      )
-      const name = nameParts.slice(0, 2).join(' ') || 'Cliente Chatbot'
+      // Buscar nome no histórico da conversa (geralmente vem antes do telefone)
+      let name = 'Cliente Chatbot'
+
+      // Tentar extrair nome de mensagens anteriores do usuário
+      const userMessages = conversationHistory.filter((msg: any) => msg.role === 'user')
+
+      // Procurar por padrões de nome nas mensagens anteriores
+      for (let i = userMessages.length - 1; i >= 0; i--) {
+        const msg = userMessages[i].content
+
+        // Padrão: "meu nome é X" ou "me chamo X" ou "sou X"
+        const namePatterns = [
+          /(?:meu nome é|me chamo|sou|nome:?)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)*)/i,
+          // Padrão: apenas nome próprio (primeira letra maiúscula)
+          /^([A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+(?:\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-záéíóúâêôãõç]+)+)$/
+        ]
+
+        for (const pattern of namePatterns) {
+          const match = msg.match(pattern)
+          if (match && match[1]) {
+            name = match[1].trim()
+            break
+          }
+        }
+
+        if (name !== 'Cliente Chatbot') break
+      }
+
+      // Se não encontrou nos padrões, tentar extrair da mensagem atual
+      if (name === 'Cliente Chatbot') {
+        const nameParts = message.split(/[,\s]+/).filter(p =>
+          p.length > 2 &&
+          !/^\d+$/.test(p) &&
+          !/^(sim|ok|oi|olá|quero|é|meu|telefone|número|whatsapp|zap)$/i.test(p) &&
+          /^[A-ZÁÉÍÓÚÂÊÔÃÕÇ]/.test(p) // Começa com maiúscula
+        )
+        if (nameParts.length > 0) {
+          name = nameParts.slice(0, 2).join(' ')
+        }
+      }
+
       const phone = phones[0]
 
       try {
