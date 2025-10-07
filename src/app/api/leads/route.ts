@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getWhatsAppInstance } from '@/lib/whatsapp-baileys'
 
 export async function POST(request: NextRequest) {
   try {
@@ -88,13 +89,12 @@ export async function POST(request: NextRequest) {
       preferenciasExtraidas: Object.keys(preferredData).length > 0
     })
 
-    // Enviar notificação via WhatsApp usando UltraMsg
+    // Enviar notificação via WhatsApp usando Baileys
     try {
-      const phoneAdmin = process.env.ULTRAMSG_ADMIN_PHONE || '5561996900444'
-      const instanceId = process.env.ULTRAMSG_INSTANCE_ID
-      const token = process.env.ULTRAMSG_TOKEN
+      const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444'
+      const whatsapp = getWhatsAppInstance()
 
-      if (instanceId && token) {
+      if (whatsapp.isConnected()) {
         // Buscar dados completos do imóvel para pegar a imagem
         let propertyImage = null
         let fullProperty = null
@@ -146,55 +146,17 @@ ${lead.propertyTitle || 'Não informado'}
 
         const normalizedAdminPhone = normalizePhoneNumber(phoneAdmin)
 
-        let ultraMsgResponse
+        // Enviar mensagem via Baileys
+        const sent = await whatsapp.sendMessage(normalizedAdminPhone, whatsappMessage)
 
-        // Se tem imagem, enviar como mídia com caption
-        if (propertyImage) {
-          console.log('Enviando lead com imagem do imóvel:', propertyImage)
-
-          const mediaUrl = `https://api.ultramsg.com/${instanceId}/messages/image`
-          const mediaPayload = {
-            token: token,
-            to: normalizedAdminPhone,
-            image: propertyImage,
-            caption: whatsappMessage,
-            priority: 'high'
-          }
-
-          ultraMsgResponse = await fetch(mediaUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(mediaPayload)
-          })
-        } else {
-          // Sem imagem, enviar só texto
-          console.log('Enviando lead sem imagem (só texto)')
-
-          const textUrl = `https://api.ultramsg.com/${instanceId}/messages/chat`
-          const textPayload = {
-            token: token,
-            to: normalizedAdminPhone,
-            body: whatsappMessage,
-            priority: 'high'
-          }
-
-          ultraMsgResponse = await fetch(textUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(textPayload)
-          })
-        }
-
-        const responseData = await ultraMsgResponse.json()
-
-        if (ultraMsgResponse.ok && responseData.sent) {
-          console.log('✅ WhatsApp enviado para admin (interesse imóvel)')
+        if (sent) {
+          console.log('✅ WhatsApp enviado para admin via Baileys')
 
           // Salvar mensagem no banco
           await prisma.whatsAppMessage.create({
             data: {
-              messageId: String(responseData.id) || `lead-${Date.now()}`,
-              from: instanceId,
+              messageId: `lead-${Date.now()}`,
+              from: 'baileys',
               to: normalizedAdminPhone,
               body: whatsappMessage,
               type: 'text',
@@ -207,11 +169,10 @@ ${lead.propertyTitle || 'Não informado'}
             }
           })
         } else {
-          console.error('❌ Falha ao enviar WhatsApp (interesse imóvel):', responseData)
+          console.error('❌ Falha ao enviar WhatsApp via Baileys')
         }
       } else {
-        console.log('⚠️ UltraMsg não configurado para interesse em imóvel')
-      }
+        console.log('⚠️ WhatsApp Baileys não está conectado. Conecte via /api/whatsapp/baileys/connect')
 
     } catch (whatsappError) {
       console.error('⚠️ Erro ao enviar notificação WhatsApp (interesse):', whatsappError)
