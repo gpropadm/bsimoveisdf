@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { getWhatsAppInstance } from '@/lib/whatsapp-webjs'
+import { sendWhatsAppMessage } from '@/lib/whatsapp-callmebot'
 
 export async function POST(request: NextRequest) {
   try {
@@ -89,93 +89,56 @@ export async function POST(request: NextRequest) {
       preferenciasExtraidas: Object.keys(preferredData).length > 0
     })
 
-    // Enviar notificação via WhatsApp usando Baileys
+    // Enviar notificação via WhatsApp usando CallMeBot (GRATUITO)
     try {
       const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444'
-      const whatsapp = getWhatsAppInstance()
 
-      if (whatsapp.isConnected()) {
-        // Buscar dados completos do imóvel para pegar a imagem
-        let propertyImage = null
-        let fullProperty = null
+      // Mensagem mais natural
+      const clientMessage = lead.message || `Tenho interesse no imóvel "${lead.propertyTitle}". Gostaria de mais informações.`
 
-        if (propertyId) {
-          try {
-            fullProperty = await prisma.property.findUnique({
-              where: { id: propertyId }
-            })
+      const whatsappMessage = `🔔 NOVO LEAD INTERESSADO
 
-            if (fullProperty && fullProperty.images) {
-              const images = JSON.parse(fullProperty.images)
-              if (Array.isArray(images) && images.length > 0) {
-                propertyImage = images[0] // Primeira imagem (principal)
-              }
-            }
-          } catch (error) {
-            console.log('⚠️ Erro ao buscar imagem do imóvel:', error)
-          }
-        }
+👤 Cliente: ${lead.name}
+📱 WhatsApp: ${lead.phone || 'Não informado'}
+📧 Email: ${lead.email || 'Não informado'}
 
-        // Mensagem mais natural como se fosse o cliente falando
-        const clientMessage = lead.message || `Olá! Tenho interesse no imóvel "${lead.propertyTitle}". Gostaria de mais informações.`
+🏠 Imóvel: ${lead.propertyTitle || 'Não informado'}
+💰 Valor: ${lead.propertyPrice ? `R$ ${lead.propertyPrice.toLocaleString('pt-BR')}` : 'Não informado'}
 
-        const whatsappMessage = `*NOVO LEAD INTERESSADO*
-
-*Cliente:* ${lead.name}
-*WhatsApp:* ${lead.phone || 'Não informado'}
-*Email:* ${lead.email || 'Não informado'}
-
-*Imóvel de interesse:*
-${lead.propertyTitle || 'Não informado'}
-*Valor:* ${lead.propertyPrice ? `R$ ${lead.propertyPrice.toLocaleString('pt-BR')}` : 'Não informado'}
-
-*Mensagem do cliente:*
+💬 Mensagem:
 "${clientMessage}"
 
-*Recebido em:* ${new Date().toLocaleString('pt-BR')}
-*Lead ID:* ${lead.id}`
+📅 Recebido: ${new Date().toLocaleString('pt-BR')}
+🆔 Lead ID: ${lead.id}`
 
-        // Função para normalizar telefone
-        function normalizePhoneNumber(phone: string): string {
-          const cleanPhone = phone.replace(/\D/g, '')
-          if (cleanPhone.length === 13 && cleanPhone.startsWith('55')) return cleanPhone
-          if (cleanPhone.length === 11) return '55' + cleanPhone
-          if (cleanPhone.length === 10) return '55' + cleanPhone.substring(0, 2) + '9' + cleanPhone.substring(2)
-          return cleanPhone
-        }
+      // Enviar via CallMeBot
+      const sent = await sendWhatsAppMessage(phoneAdmin, whatsappMessage)
 
-        const normalizedAdminPhone = normalizePhoneNumber(phoneAdmin)
+      if (sent) {
+        console.log('✅ WhatsApp enviado via CallMeBot')
 
-        // Enviar mensagem via Baileys
-        const sent = await whatsapp.sendMessage(normalizedAdminPhone, whatsappMessage)
-
-        if (sent) {
-          console.log('✅ WhatsApp enviado para admin via Baileys')
-
-          // Salvar mensagem no banco
-          await prisma.whatsAppMessage.create({
-            data: {
-              messageId: `lead-${Date.now()}`,
-              from: 'baileys',
-              to: normalizedAdminPhone,
-              body: whatsappMessage,
-              type: 'text',
-              timestamp: new Date(),
-              fromMe: true,
-              status: 'sent',
-              source: 'lead_notification',
-              contactName: lead.name,
-              propertyId: lead.propertyId
-            }
-          })
-        } else {
-          console.error('❌ Falha ao enviar WhatsApp via Baileys')
-        }
+        // Salvar mensagem no banco
+        await prisma.whatsAppMessage.create({
+          data: {
+            messageId: `lead-${Date.now()}`,
+            from: 'callmebot',
+            to: phoneAdmin,
+            body: whatsappMessage,
+            type: 'text',
+            timestamp: new Date(),
+            fromMe: true,
+            status: 'sent',
+            source: 'lead_notification',
+            contactName: lead.name,
+            propertyId: lead.propertyId
+          }
+        })
       } else {
-        console.log('⚠️ WhatsApp Web.js não está conectado. Conecte via /api/whatsapp/baileys/connect')
+        console.log('⚠️ Falha ao enviar WhatsApp via CallMeBot (verifique CALLMEBOT_API_KEY)')
+      }
 
     } catch (whatsappError) {
-      console.error('⚠️ Erro ao enviar notificação WhatsApp (interesse):', whatsappError)
+      console.error('⚠️ Erro ao enviar notificação WhatsApp:', whatsappError)
       // Não falha o lead se o WhatsApp falhar
     }
 
