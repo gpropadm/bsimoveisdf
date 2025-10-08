@@ -74,9 +74,9 @@ export default function AdminLogin() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">
-                  {settings.siteName || 'ImobiNext'}
+                  All Gestor Site
                 </h1>
-                <p className="text-purple-200 text-sm font-medium">Plataforma Administrativa</p>
+                <p className="text-purple-200 text-sm font-medium">Área Administrativa</p>
               </div>
             </div>
 
@@ -102,9 +102,9 @@ export default function AdminLogin() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                {settings.siteName || 'ImobiNext'}
+                All Gestor Site
               </h1>
-              <p style={{color: '#7360ee'}} className="text-sm font-medium">Plataforma Administrativa</p>
+              <p style={{color: '#7360ee'}} className="text-sm font-medium">Área Administrativa</p>
             </div>
           </div>
 
