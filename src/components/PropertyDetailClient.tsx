@@ -503,26 +503,6 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                         WhatsApp
                       </button>
 
-                      <button
-                        className="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
-                        style={{
-                          fontSize: '14px'
-                        }}
-                      >
-                        <i className="fas fa-phone" style={{ fontSize: '14px' }}></i>
-                        Ligar Agora
-                      </button>
-
-                      <button
-                        className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold"
-                        style={{
-                          fontSize: '14px'
-                        }}
-                      >
-                        <i className="fas fa-envelope" style={{ fontSize: '14px' }}></i>
-                        Enviar E-mail
-                      </button>
-
                       {/* Botão de Alerta de Preço */}
                       <div className="mt-2">
                         <PriceAlertButton
