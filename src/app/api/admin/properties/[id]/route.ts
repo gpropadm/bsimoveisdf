@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { geocodeCEPWithCache } from '@/lib/geocoding'
+import { sendWhatsAppMessage } from '@/lib/whatsapp-twilio'
 
 // GET - Buscar imóvel específico
 export async function GET(
@@ -191,6 +192,10 @@ export async function PUT(
       }
     }
 
+    // 💰 Verificar se houve redução de preço para enviar alertas
+    const currentPrice = existingProperty.price
+    const isPriceReduction = price < currentPrice
+
     const updatedProperty = await prisma.property.update({
       where: { id },
       data: {
@@ -201,6 +206,9 @@ export async function PUT(
         city,
         state,
         price,
+        previousPrice: isPriceReduction ? currentPrice : existingProperty.previousPrice,
+        priceReduced: isPriceReduction,
+        priceReducedAt: isPriceReduction ? new Date() : existingProperty.priceReducedAt,
         type,
         category,
         bedrooms: bedrooms || null,
@@ -246,6 +254,74 @@ export async function PUT(
         features
       }
     })
+
+    // 📢 Se houve redução de preço, enviar alertas via WhatsApp
+    if (isPriceReduction) {
+      console.log(`💰 Preço reduzido! De R$ ${currentPrice} para R$ ${price}`)
+
+      try {
+        const priceAlerts = await prisma.priceAlert.findMany({
+          where: {
+            propertyId: id,
+            active: true
+          }
+        })
+
+        console.log(`📱 ${priceAlerts.length} alertas encontrados`)
+
+        // Enviar WhatsApp para cada pessoa que cadastrou alerta
+        for (const alert of priceAlerts) {
+          try {
+            const oldPriceFormatted = new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              minimumFractionDigits: 0
+            }).format(currentPrice)
+
+            const newPriceFormatted = new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              minimumFractionDigits: 0
+            }).format(price)
+
+            const savings = currentPrice - price
+            const savingsFormatted = new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+              minimumFractionDigits: 0
+            }).format(savings)
+
+            const message = `🏡 *PREÇO REDUZIDO!*
+
+Olá ${alert.name}!
+
+O imóvel que você tem interesse teve uma redução de preço:
+
+📍 *${title}*
+
+💸 Preço anterior: ~${oldPriceFormatted}~
+✅ *Novo preço: ${newPriceFormatted}*
+💰 *Economia: ${savingsFormatted}*
+
+Não perca essa oportunidade! Entre em contato conosco para mais informações.
+
+Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${updatedProperty.slug}`
+
+            const sent = await sendWhatsAppMessage(alert.phone, message)
+
+            if (sent) {
+              console.log(`✅ Alerta enviado para ${alert.phone}`)
+            } else {
+              console.log(`❌ Falha ao enviar alerta para ${alert.phone}`)
+            }
+          } catch (err) {
+            console.error(`Erro ao enviar alerta para ${alert.phone}:`, err)
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao processar alertas de preço:', err)
+      }
+    }
 
     return NextResponse.json(updatedProperty)
   } catch (error) {
