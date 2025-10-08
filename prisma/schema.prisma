@@ -135,6 +135,9 @@ model Property {
   acceptsTrade     Boolean @default(false) // Aceita permuta/troca
   acceptsCar       Boolean @default(false) // Aceita carro como parte do pagamento
 
+  // Estatísticas
+  views       Int      @default(0) // Contador de visualizações da página do imóvel
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

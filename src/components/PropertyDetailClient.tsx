@@ -89,6 +89,20 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
 
   const images = parseImages(property.images)
 
+  // Registrar visualização
+  useEffect(() => {
+    const registerView = async () => {
+      try {
+        await fetch(`/api/properties/${property.slug}/view`, {
+          method: 'POST',
+        })
+      } catch (error) {
+        console.error('Erro ao registrar visualização:', error)
+      }
+    }
+    registerView()
+  }, [property.slug])
+
   // Buscar imóveis relacionados
   useEffect(() => {
     const fetchRelatedProperties = async () => {
