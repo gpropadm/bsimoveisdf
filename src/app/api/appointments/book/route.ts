@@ -67,6 +67,27 @@ export async function POST(request: NextRequest) {
     try {
       const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444';
 
+      // Buscar imagem do imóvel
+      let propertyImage = null;
+      if (propertyId) {
+        try {
+          const property = await prisma.property.findUnique({
+            where: { id: propertyId },
+            select: { images: true }
+          });
+
+          if (property && property.images) {
+            const images = JSON.parse(property.images);
+            if (Array.isArray(images) && images.length > 0) {
+              propertyImage = images[0]; // Primeira imagem
+              console.log('📷 Imagem do imóvel encontrada:', propertyImage);
+            }
+          }
+        } catch (error) {
+          console.log('⚠️ Erro ao buscar imagem:', error);
+        }
+      }
+
       const whatsappMessage = `🏠 *NOVA VISITA AGENDADA*
 
 📋 Imóvel: ${propertyTitle}
@@ -81,8 +102,8 @@ export async function POST(request: NextRequest) {
 
 🆔 Agendamento ID: ${appointment.id}`;
 
-      // Enviar via Twilio
-      const sent = await sendWhatsAppMessage(phoneAdmin, whatsappMessage);
+      // Enviar via Twilio (com imagem se tiver)
+      const sent = await sendWhatsAppMessage(phoneAdmin, whatsappMessage, propertyImage || undefined);
 
       if (sent) {
         console.log('✅ WhatsApp de agendamento enviado via Twilio');
