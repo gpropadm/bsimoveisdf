@@ -262,10 +262,18 @@ export async function PUT(
     })
 
     // 📢 Se houve redução de preço, enviar alertas via WhatsApp
+    console.log('🔔 ========== VERIFICANDO ALERTAS DE PREÇO ==========')
+    console.log(`  Property ID: ${id}`)
+    console.log(`  isPriceReduction: ${isPriceReduction}`)
+    console.log(`  currentPrice: ${currentPrice}`)
+    console.log(`  newPrice: ${newPrice}`)
+
     if (isPriceReduction) {
-      console.log(`💰 Preço reduzido! De R$ ${currentPrice} para R$ ${price}`)
+      console.log(`💰 ✅ PREÇO REDUZIDO DETECTADO! De R$ ${currentPrice} para R$ ${newPrice}`)
 
       try {
+        console.log(`🔍 Buscando alertas ativos para propertyId: ${id}`)
+
         const priceAlerts = await prisma.priceAlert.findMany({
           where: {
             propertyId: id,
@@ -273,7 +281,14 @@ export async function PUT(
           }
         })
 
-        console.log(`📱 ${priceAlerts.length} alertas encontrados`)
+        console.log(`📱 RESULTADO: ${priceAlerts.length} alertas encontrados`)
+        if (priceAlerts.length > 0) {
+          console.log('📋 Alertas:', JSON.stringify(priceAlerts.map(a => ({
+            name: a.name,
+            phone: a.phone,
+            active: a.active
+          })), null, 2))
+        }
 
         // Buscar imagem do imóvel
         let propertyImage = null
@@ -328,21 +343,29 @@ Não perca essa oportunidade! Entre em contato conosco para mais informações.
 Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${updatedProperty.slug}`
 
             // Enviar com imagem se disponível
+            console.log(`📞 Tentando enviar WhatsApp para ${alert.phone}`)
+            console.log(`   Mensagem: ${message.substring(0, 100)}...`)
+            console.log(`   Tem imagem: ${!!propertyImage}`)
+
             const sent = await sendWhatsAppMessage(alert.phone, message, propertyImage || undefined)
 
             if (sent) {
-              console.log(`✅ Alerta enviado para ${alert.phone}`)
+              console.log(`✅✅✅ SUCESSO! Alerta enviado para ${alert.phone}`)
             } else {
-              console.log(`❌ Falha ao enviar alerta para ${alert.phone}`)
+              console.log(`❌❌❌ FALHA! Não enviou para ${alert.phone}`)
             }
           } catch (err) {
             console.error(`Erro ao enviar alerta para ${alert.phone}:`, err)
           }
         }
       } catch (err) {
-        console.error('Erro ao processar alertas de preço:', err)
+        console.error('❌ Erro ao processar alertas de preço:', err)
       }
+    } else {
+      console.log(`⚠️ NÃO É REDUÇÃO DE PREÇO - Não enviará alertas`)
+      console.log(`   Motivo: newPrice (${newPrice}) >= currentPrice (${currentPrice})`)
     }
+    console.log('🔔 ========== FIM VERIFICAÇÃO ALERTAS ==========')
 
     return NextResponse.json(updatedProperty)
   } catch (error) {
