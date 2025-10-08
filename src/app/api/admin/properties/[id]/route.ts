@@ -194,7 +194,13 @@ export async function PUT(
 
     // 💰 Verificar se houve redução de preço para enviar alertas
     const currentPrice = existingProperty.price
-    const isPriceReduction = price < currentPrice
+    const newPrice = typeof price === 'string' ? parseFloat(price) : price
+    const isPriceReduction = newPrice < currentPrice
+
+    console.log('💰 Verificação de preço:')
+    console.log('  - Preço atual:', currentPrice)
+    console.log('  - Novo preço:', newPrice)
+    console.log('  - É redução?:', isPriceReduction)
 
     const updatedProperty = await prisma.property.update({
       where: { id },
@@ -205,7 +211,7 @@ export async function PUT(
         address,
         city,
         state,
-        price,
+        price: newPrice,
         previousPrice: isPriceReduction ? currentPrice : existingProperty.previousPrice,
         priceReduced: isPriceReduction,
         priceReducedAt: isPriceReduction ? new Date() : existingProperty.priceReducedAt,
@@ -296,9 +302,9 @@ export async function PUT(
               style: 'currency',
               currency: 'BRL',
               minimumFractionDigits: 0
-            }).format(price)
+            }).format(newPrice)
 
-            const savings = currentPrice - price
+            const savings = currentPrice - newPrice
             const savingsFormatted = new Intl.NumberFormat('pt-BR', {
               style: 'currency',
               currency: 'BRL',
