@@ -53,7 +53,7 @@ export default function PriceAlertButton({ propertyId, propertyTitle }: PriceAle
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold w-100"
+        className="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold w-100"
         style={{
           fontSize: '14px'
         }}
