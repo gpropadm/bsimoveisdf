@@ -1,11 +1,9 @@
 /**
- * Twilio WhatsApp Integration
+ * Twilio WhatsApp Integration (via REST API - sem SDK)
  *
  * Custo: ~USD 0.005 por mensagem (~R$ 0.025)
  * Funciona 100% na Vercel
  */
-
-import twilio from 'twilio';
 
 export async function sendWhatsAppMessage(
   phoneNumber: string,
@@ -21,8 +19,6 @@ export async function sendWhatsAppMessage(
       return false;
     }
 
-    const client = twilio(accountSid, authToken);
-
     // Normalizar número
     const cleanPhone = phoneNumber.replace(/\D/g, '');
     const formattedPhone = cleanPhone.startsWith('55') ? cleanPhone : '55' + cleanPhone;
@@ -30,18 +26,32 @@ export async function sendWhatsAppMessage(
 
     console.log(`📱 Enviando WhatsApp via Twilio para ${whatsappNumber}...`);
 
-    const messageResponse = await client.messages.create({
-      from: twilioWhatsAppNumber,
-      to: whatsappNumber,
-      body: message
+    // Twilio REST API (sem SDK)
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+    const auth = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        From: twilioWhatsAppNumber,
+        To: whatsappNumber,
+        Body: message
+      })
     });
 
-    if (messageResponse.sid) {
-      console.log(`✅ Mensagem enviada via Twilio (SID: ${messageResponse.sid})`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`✅ Mensagem enviada via Twilio (SID: ${data.sid})`);
       return true;
+    } else {
+      const error = await response.text();
+      console.error('❌ Erro Twilio:', error);
+      return false;
     }
-
-    return false;
 
   } catch (error) {
     console.error('❌ Erro ao enviar via Twilio:', error);
