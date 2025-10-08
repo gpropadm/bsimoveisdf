@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
   
   if (!property) {
     return {
-      title: 'Imóvel não encontrado - Faimoveis',
+      title: 'Imóvel não encontrado - All',
     }
   }
 
@@ -97,7 +97,7 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
       ],
       type: 'website',
       locale: 'pt_BR',
-      siteName: 'Faimoveis',
+      siteName: 'All',
     },
     twitter: {
       card: 'summary_large_image',

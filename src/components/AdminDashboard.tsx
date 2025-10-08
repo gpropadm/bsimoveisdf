@@ -117,7 +117,7 @@ export default function AdminDashboard({ session }: AdminDashboardProps) {
                 </svg>
               </div>
               <span className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                Faimoveis
+                All
               </span>
             </div>
           </div>
