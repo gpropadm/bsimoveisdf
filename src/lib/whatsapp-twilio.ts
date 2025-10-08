@@ -7,7 +7,8 @@
 
 export async function sendWhatsAppMessage(
   phoneNumber: string,
-  message: string
+  message: string,
+  mediaUrl?: string
 ): Promise<boolean> {
   try {
     const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -30,17 +31,25 @@ export async function sendWhatsAppMessage(
     const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
     const auth = Buffer.from(`${accountSid}:${authToken}`).toString('base64');
 
+    const params: Record<string, string> = {
+      From: twilioWhatsAppNumber,
+      To: whatsappNumber,
+      Body: message
+    };
+
+    // Se tiver imagem, adiciona MediaUrl
+    if (mediaUrl) {
+      params.MediaUrl = mediaUrl;
+      console.log(`📷 Enviando com imagem: ${mediaUrl}`);
+    }
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Basic ${auth}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: new URLSearchParams({
-        From: twilioWhatsAppNumber,
-        To: whatsappNumber,
-        Body: message
-      })
+      body: new URLSearchParams(params)
     });
 
     if (response.ok) {
