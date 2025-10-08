@@ -269,6 +269,20 @@ export async function PUT(
 
         console.log(`📱 ${priceAlerts.length} alertas encontrados`)
 
+        // Buscar imagem do imóvel
+        let propertyImage = null
+        if (images) {
+          try {
+            const parsedImages = JSON.parse(images)
+            if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+              propertyImage = parsedImages[0]
+              console.log('📷 Imagem do imóvel encontrada:', propertyImage)
+            }
+          } catch (err) {
+            console.log('⚠️ Erro ao parsear imagens:', err)
+          }
+        }
+
         // Enviar WhatsApp para cada pessoa que cadastrou alerta
         for (const alert of priceAlerts) {
           try {
@@ -307,7 +321,8 @@ Não perca essa oportunidade! Entre em contato conosco para mais informações.
 
 Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${updatedProperty.slug}`
 
-            const sent = await sendWhatsAppMessage(alert.phone, message)
+            // Enviar com imagem se disponível
+            const sent = await sendWhatsAppMessage(alert.phone, message, propertyImage || undefined)
 
             if (sent) {
               console.log(`✅ Alerta enviado para ${alert.phone}`)
