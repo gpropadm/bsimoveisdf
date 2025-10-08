@@ -80,7 +80,7 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
                 </svg>
               </div>
               <span className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                All
+                All Gestor
               </span>
             </div>
           </div>
