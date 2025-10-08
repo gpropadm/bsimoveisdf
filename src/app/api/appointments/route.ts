@@ -175,6 +175,52 @@ export async function POST(request: NextRequest) {
       }
     });
 
+    // Enviar notificação via WhatsApp
+    try {
+      const settings = await prisma.settings.findFirst();
+      const whatsappNumber = settings?.contactWhatsapp;
+
+      if (whatsappNumber) {
+        const formattedDate = new Intl.DateTimeFormat('pt-BR', {
+          dateStyle: 'full',
+          timeStyle: 'short'
+        }).format(appointmentDate);
+
+        const message = `🏠 *NOVA VISITA AGENDADA*
+
+📋 Imóvel: ${property.title}
+📍 Endereço: ${property.address}
+
+👤 Cliente: ${clientName}
+📞 Telefone: ${clientPhone}
+📧 Email: ${clientEmail}
+
+📅 Data/Hora: ${formattedDate}
+⏱️ Duração: ${duration} minutos
+
+🔗 Ver imóvel: ${process.env.NEXT_PUBLIC_BASE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${property.slug}`;
+
+        // Enviar mensagem via WhatsApp
+        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://imobiliaria-six-tau.vercel.app'}/api/whatsapp/send`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.AGENT_AUTH_TOKEN}`
+          },
+          body: JSON.stringify({
+            to: whatsappNumber,
+            message,
+            source: 'agendamento_visita'
+          })
+        });
+
+        console.log('✅ Notificação de agendamento enviada via WhatsApp');
+      }
+    } catch (whatsappError) {
+      console.error('❌ Erro ao enviar notificação WhatsApp:', whatsappError);
+      // Não falhar a requisição se o WhatsApp falhar
+    }
+
     return NextResponse.json(appointment, { status: 201 });
   } catch (error) {
     console.error('Erro ao criar agendamento:', error);
