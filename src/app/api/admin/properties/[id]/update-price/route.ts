@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { sendWhatsAppMessage } from '@/lib/whatsapp-twilio'
 
 export async function PUT(
   request: NextRequest,
@@ -103,28 +104,18 @@ O imóvel que você tem interesse teve uma redução de preço:
 
 Não perca essa oportunidade! Entre em contato conosco para mais informações.
 
-Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://faimoveis.com.br'}/imovel/${updatedProperty.slug}`
+Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${updatedProperty.slug}`
 
-          // Aqui você pode integrar com sua API de WhatsApp (UltraMsg, Baileys, etc.)
-          // Por enquanto, vamos apenas registrar no console
-          console.log(`📱 WhatsApp para ${alert.phone}:`, message)
+          // Enviar via Twilio
+          const sent = await sendWhatsAppMessage(alert.phone, message)
 
-          // Exemplo de envio com UltraMsg (descomente e configure se necessário):
-          /*
-          const whatsappResponse = await fetch('https://api.ultramsg.com/instance_id/messages/chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              token: process.env.ULTRAMSG_TOKEN,
-              to: alert.phone,
-              body: message
-            })
-          })
-          */
+          if (sent) {
+            console.log(`✅ WhatsApp de alerta de preço enviado para ${alert.phone}`)
+          } else {
+            console.log(`❌ Falha ao enviar WhatsApp para ${alert.phone}`)
+          }
 
-          return { success: true, phone: alert.phone }
+          return { success: sent, phone: alert.phone }
         } catch (error) {
           console.error(`Erro ao enviar WhatsApp para ${alert.phone}:`, error)
           return { success: false, phone: alert.phone, error }
