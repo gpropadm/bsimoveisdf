@@ -326,33 +326,36 @@ export async function PUT(
               minimumFractionDigits: 0
             }).format(savings)
 
-            const message = `🏡 *PREÇO REDUZIDO!*
+            // Enviar para o ADMIN (não para o cliente)
+            const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444'
 
-Olá ${alert.name}!
+            const message = `🏡 *ALERTA: PREÇO REDUZIDO!*
 
-O imóvel que você tem interesse teve uma redução de preço:
+🔔 Cliente interessado: ${alert.name}
+📱 Telefone: ${alert.phone}
 
-📍 *${title}*
+📍 Imóvel: *${title}*
 
 💸 Preço anterior: ~${oldPriceFormatted}~
 ✅ *Novo preço: ${newPriceFormatted}*
 💰 *Economia: ${savingsFormatted}*
 
-Não perca essa oportunidade! Entre em contato conosco para mais informações.
+⚠️ Entre em contato com ${alert.name} no ${alert.phone} para avisar sobre a redução!
 
 Ver detalhes: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://imobiliaria-six-tau.vercel.app'}/imovel/${updatedProperty.slug}`
 
             // Enviar com imagem se disponível
-            console.log(`📞 Tentando enviar WhatsApp para ${alert.phone}`)
+            console.log(`📞 Tentando enviar WhatsApp ADMIN para ${phoneAdmin}`)
+            console.log(`   Cliente interessado: ${alert.name} (${alert.phone})`)
             console.log(`   Mensagem: ${message.substring(0, 100)}...`)
             console.log(`   Tem imagem: ${!!propertyImage}`)
 
-            const sent = await sendWhatsAppMessage(alert.phone, message, propertyImage || undefined)
+            const sent = await sendWhatsAppMessage(phoneAdmin, message, propertyImage || undefined)
 
             if (sent) {
-              console.log(`✅✅✅ SUCESSO! Alerta enviado para ${alert.phone}`)
+              console.log(`✅✅✅ SUCESSO! Alerta enviado para ADMIN ${phoneAdmin}`)
             } else {
-              console.log(`❌❌❌ FALHA! Não enviou para ${alert.phone}`)
+              console.log(`❌❌❌ FALHA! Não enviou para ADMIN ${phoneAdmin}`)
             }
           } catch (err) {
             console.error(`Erro ao enviar alerta para ${alert.phone}:`, err)
