@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendWhatsAppMessage } from '@/lib/whatsapp-twilio';
 
 export async function POST(request: NextRequest) {
   try {
@@ -62,48 +63,52 @@ export async function POST(request: NextRequest) {
     const formattedDate = new Date(`${date}T${time}:00`).toLocaleDateString('pt-BR');
     const formattedDateTime = new Date(`${date}T${time}:00`).toLocaleString('pt-BR');
 
-    // Mensagem para WhatsApp
-    const message = `*🏠 AGENDAMENTO DE VISITA*
-
-*Imóvel:* ${propertyTitle}
-*Endereço:* ${propertyAddress || 'Não informado'}
-
-*📅 Data e Hora:* ${formattedDateTime}
-
-*👤 Dados do Cliente:*
-*Nome:* ${clientName}
-*Telefone:* ${clientPhone}
-${clientEmail ? `*Email:* ${clientEmail}` : ''}
-
-*🔗 ID do Agendamento:* ${appointment.id}
-
-*📅 Data do agendamento:* ${new Date().toLocaleString('pt-BR')}`;
-
-    // Buscar configurações para pegar o WhatsApp diretamente do Prisma
-    let whatsappNumber = '5548998645864'; // fallback
-
+    // Enviar notificação via WhatsApp usando Twilio
     try {
-      const settings = await prisma.settings.findFirst();
-      if (settings?.contactWhatsapp) {
-        whatsappNumber = settings.contactWhatsapp || whatsappNumber;
+      const phoneAdmin = process.env.WHATSAPP_ADMIN_PHONE || '5561996900444';
+
+      const whatsappMessage = `🏠 *NOVA VISITA AGENDADA*
+
+📋 Imóvel: ${propertyTitle}
+📍 Endereço: ${propertyAddress || 'Não informado'}
+
+👤 Cliente: ${clientName}
+📞 Telefone: ${clientPhone}
+📧 Email: ${clientEmail || 'Não informado'}
+
+📅 Data/Hora: ${formattedDateTime}
+⏱️ Duração: 60 minutos
+
+🆔 Agendamento ID: ${appointment.id}`;
+
+      // Enviar via Twilio
+      const sent = await sendWhatsAppMessage(phoneAdmin, whatsappMessage);
+
+      if (sent) {
+        console.log('✅ WhatsApp de agendamento enviado via Twilio');
+
+        // Salvar mensagem no banco
+        await prisma.whatsAppMessage.create({
+          data: {
+            messageId: `appointment-${Date.now()}`,
+            from: 'twilio',
+            to: phoneAdmin,
+            body: whatsappMessage,
+            type: 'text',
+            timestamp: new Date(),
+            fromMe: true,
+            status: 'sent',
+            source: 'twilio_api',
+            propertyId: propertyId,
+            contactName: clientName
+          }
+        });
+      } else {
+        console.log('❌ Falha ao enviar WhatsApp de agendamento via Twilio');
       }
-    } catch (error) {
-      console.log('Erro ao buscar configurações, usando número padrão');
-    }
-
-    // Enviar WhatsApp automático via API
-    try {
-      const WhatsAppService = (await import('@/lib/whatsapp')).default;
-
-      const whatsappResult = await WhatsAppService.sendMessage({
-        to: whatsappNumber,
-        text: message,
-        provider: 'auto'
-      });
-
-      console.log('WhatsApp agendamento enviado:', whatsappResult);
     } catch (whatsappError) {
-      console.error('Erro ao enviar WhatsApp de agendamento:', whatsappError);
+      console.error('❌ Erro ao enviar notificação WhatsApp:', whatsappError);
+      // Não falhar a requisição se o WhatsApp falhar
     }
 
     return NextResponse.json({
