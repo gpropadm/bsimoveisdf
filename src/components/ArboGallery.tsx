@@ -244,7 +244,7 @@ export default function ArboGallery({ images, propertyTitle }: ArboGalleryProps)
           {/* Botão de Ver Todas as Fotos - Apenas Desktop */}
           <button
             onClick={() => openGridModal()}
-            className="absolute bottom-4 left-4 bg-white border-0 rounded-full px-3 py-2 flex items-center gap-2 shadow-sm hover:shadow-md transition-all text-sm font-medium text-gray-700"
+            className="absolute bottom-4 left-4 bg-black/60 hover:bg-black/80 border-0 rounded-full px-3 py-2 flex items-center gap-2 shadow-sm hover:shadow-md transition-all text-sm font-medium text-white"
           >
             <i className="far fa-images text-base"></i>
             Ver todas as {images.length} fotos
