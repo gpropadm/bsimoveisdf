@@ -53,11 +53,12 @@ export default function PriceAlertButton({ propertyId, propertyTitle }: PriceAle
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+        className="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2 py-3 font-sora fw-semibold w-100"
+        style={{
+          fontSize: '14px'
+        }}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM5 12V7a5 5 0 1110 0v5l-5 5-5-5z" />
-        </svg>
+        <i className="fas fa-bell" style={{ fontSize: '14px' }}></i>
         Avisar se Baixar Preço
       </button>
 

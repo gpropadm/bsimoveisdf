@@ -504,12 +504,10 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                       </button>
 
                       {/* Botão de Alerta de Preço */}
-                      <div className="mt-2">
-                        <PriceAlertButton
-                          propertyId={property.id}
-                          propertyTitle={property.title}
-                        />
-                      </div>
+                      <PriceAlertButton
+                        propertyId={property.id}
+                        propertyTitle={property.title}
+                      />
                     </div>
                   </div>
 
