@@ -150,14 +150,6 @@ export default function AdminLayout({ children, title, subtitle, currentPage, ac
                   )}
                 </button>
 
-                {/* Ver Site */}
-                <Link
-                  href="/"
-                  className={`px-3 py-2 text-sm font-medium rounded-lg border ${isDarkMode ? 'text-white bg-gray-800 border-gray-600 hover:bg-gray-700' : 'text-gray-900 bg-white border-gray-200 hover:bg-gray-100'}`}
-                >
-                  Ver Site
-                </Link>
-
                 {/* User Menu */}
                 <button
                   onClick={() => signOut({ callbackUrl: '/admin/login' })}
