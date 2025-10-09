@@ -21,7 +21,7 @@ interface DashboardStats {
 const navigationItems = [
   { name: 'Dashboard', href: '/admin', icon: 'dashboard', current: true },
   { name: 'Imóveis', href: '/admin/properties', icon: 'home', current: false },
-  { name: 'Analytics', href: '/admin/analytics', icon: 'chart', current: false },
+  { name: 'Páginas Vistas', href: '/admin/analytics', icon: 'chart', current: false },
   { name: 'Leads', href: '/admin/leads', icon: 'users', current: false },
   { name: 'Agendamentos', href: '/admin/appointments', icon: 'calendar', current: false },
   { name: 'Usuários', href: '/admin/users', icon: 'users', current: false },
