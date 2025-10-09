@@ -268,6 +268,9 @@ export default function EditProperty() {
 
     const updateData: any = {
       ...formData,
+      acceptsFinancing: formData.acceptsFinancing,
+      acceptsTrade: formData.acceptsTrade,
+      acceptsCar: formData.acceptsCar,
       cep: formData.zipcode ? parseCEP(formData.zipcode) : null,
       price: parseCurrency(formData.price),
       bedrooms: parseNumber(formData.bedrooms),
@@ -405,10 +408,15 @@ export default function EditProperty() {
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked
       console.log(`✅ Checkbox ${name} alterado para:`, checked)
-      setFormData(prev => ({
-        ...prev,
-        [name]: checked
-      }))
+      console.log('📋 FormData antes:', formData[name as keyof typeof formData])
+      setFormData(prev => {
+        const newData = {
+          ...prev,
+          [name]: checked
+        }
+        console.log('📋 FormData depois:', newData[name as keyof typeof newData])
+        return newData
+      })
     } else if (name === 'price' || name === 'condoFee' || name === 'iptu') {
       // Aplicar máscara de dinheiro no campo preço, condomínio e IPTU
       const formattedValue = formatCurrency(value)
