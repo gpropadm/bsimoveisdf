@@ -918,50 +918,54 @@ export default function EditProperty() {
                     </label>
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-sm font-medium text-gray-700 mb-4">Formas de Pagamento Aceitas:</p>
+                </div>
 
-                    <div className="flex flex-wrap gap-6">
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          name="acceptsFinancing"
-                          checked={formData.acceptsFinancing}
-                          onChange={handleChange}
-                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Aceita Financiamento Bancário
-                        </span>
-                      </label>
+                <div className="col-span-3 mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-sm font-medium text-gray-700 mb-4">Formas de Pagamento Aceitas:</p>
 
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          name="acceptsTrade"
-                          checked={formData.acceptsTrade}
-                          onChange={handleChange}
-                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Aceita Permuta/Troca
-                        </span>
-                      </label>
+                  <div className="space-y-3">
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="acceptsFinancing"
+                        checked={formData.acceptsFinancing}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Aceita Financiamento Bancário
+                      </span>
+                    </label>
 
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          name="acceptsCar"
-                          checked={formData.acceptsCar}
-                          onChange={handleChange}
-                          className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">
-                          Aceita Carro como Parte do Pagamento
-                        </span>
-                      </label>
-                    </div>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="acceptsTrade"
+                        checked={formData.acceptsTrade}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Aceita Permuta/Troca
+                      </span>
+                    </label>
+
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="acceptsCar"
+                        checked={formData.acceptsCar}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-[#7360ee] focus:ring-[#7360ee] border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Aceita Carro como Parte do Pagamento
+                      </span>
+                    </label>
                   </div>
+                </div>
+
+                <div className="hidden">
                 </div>
               </div>
             </div>
