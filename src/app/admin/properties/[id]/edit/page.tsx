@@ -260,6 +260,12 @@ export default function EditProperty() {
     console.log('📸 Imagens mudaram:', imagesChanged)
     console.log('🎬 Vídeos mudaram:', videosChanged)
 
+    console.log('📦 Formas de pagamento antes de salvar:', {
+      acceptsFinancing: formData.acceptsFinancing,
+      acceptsTrade: formData.acceptsTrade,
+      acceptsCar: formData.acceptsCar
+    })
+
     const updateData: any = {
       ...formData,
       cep: formData.zipcode ? parseCEP(formData.zipcode) : null,
@@ -397,9 +403,11 @@ export default function EditProperty() {
     const { name, value, type } = e.target
 
     if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked
+      console.log(`✅ Checkbox ${name} alterado para:`, checked)
       setFormData(prev => ({
         ...prev,
-        [name]: (e.target as HTMLInputElement).checked
+        [name]: checked
       }))
     } else if (name === 'price' || name === 'condoFee' || name === 'iptu') {
       // Aplicar máscara de dinheiro no campo preço, condomínio e IPTU
