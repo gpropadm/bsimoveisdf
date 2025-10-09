@@ -102,7 +102,11 @@ export async function PUT(
       commercialType,
       floor_commercial,
       businessCenter,
-      features
+      features,
+      // Formas de pagamento
+      acceptsFinancing,
+      acceptsTrade,
+      acceptsCar
     } = body
 
 
@@ -257,7 +261,11 @@ export async function PUT(
         commercialType,
         floor_commercial: floor_commercial || null,
         businessCenter,
-        features
+        features,
+        // Formas de pagamento
+        acceptsFinancing: acceptsFinancing || false,
+        acceptsTrade: acceptsTrade || false,
+        acceptsCar: acceptsCar || false
       }
     })
 

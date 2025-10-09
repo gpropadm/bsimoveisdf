@@ -310,6 +310,11 @@ export default function EditProperty() {
     }
 
     console.log('📦 Tamanho do payload:', JSON.stringify(updateData).length, 'bytes')
+    console.log('📤 DADOS COMPLETOS SENDO ENVIADOS:', JSON.stringify({
+      acceptsFinancing: updateData.acceptsFinancing,
+      acceptsTrade: updateData.acceptsTrade,
+      acceptsCar: updateData.acceptsCar
+    }))
 
     try {
       const response = await fetch(`/api/admin/properties/${propertyId}`, {
