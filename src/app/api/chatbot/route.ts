@@ -29,11 +29,12 @@ export async function POST(request: NextRequest) {
 
     // Buscar propriedades do banco para contexto
     const properties = await prisma.property.findMany({
-      where: { status: 'active' },
+      where: { status: 'disponivel' },
       select: {
         id: true,
         title: true,
         type: true,
+        category: true,
         price: true,
         bedrooms: true,
         bathrooms: true,
@@ -63,13 +64,14 @@ ${properties.length === 0 ? 'NENHUM IMÓVEL CADASTRADO NO MOMENTO' : properties.
 
   return `
 ${i + 1}. ${p.title}
-   - Tipo: ${p.type}
+   - Tipo: ${p.type === 'venda' ? 'Venda' : 'Aluguel'}
+   - Categoria: ${p.category || 'N/A'}
    - Preço: R$ ${p.price?.toLocaleString('pt-BR') || 'Sob consulta'}
    - Quartos: ${p.bedrooms || 'N/A'}
    - Banheiros: ${p.bathrooms || 'N/A'}
    - Área: ${p.area || 'N/A'} m²
    - Localização: ${p.address}, ${p.city} - ${p.state}
-   ${paymentOptions.length > 0 ? `- Formas de pagamento: ${paymentOptions.join(', ')}` : ''}
+   ${paymentOptions.length > 0 ? `- Formas de pagamento aceitas: ${paymentOptions.join(', ')}` : '- Formas de pagamento: À vista'}
    - Link: https://imobiliaria-six-tau.vercel.app/imovel/${p.slug}
 `;
 }).join('\n')}
@@ -82,16 +84,20 @@ ${i + 1}. ${p.title}
 🚫 SE NÃO HOUVER IMÓVEL COM AS CARACTERÍSTICAS, DIGA CLARAMENTE "No momento não temos imóveis com essas características"
 
 ✅ VOCÊ DEVE:
-1. Verificar SE EXISTE imóvel na lista acima que atenda o cliente
-2. Se NÃO existir, ser HONESTO: "No momento não temos [tipo] no [cidade] que aceite [condição]"
-3. Perguntar: "Gostaria de deixar seu contato? Te aviso quando tivermos!"
-4. Só sugerir alternativas SE EXISTIREM NA LISTA ACIMA
-5. Nunca mencionar cidades/regiões onde você não tem imóveis cadastrados
+1. **SEMPRE verificar TODOS os campos** do imóvel: tipo (venda/aluguel), categoria, cidade, formas de pagamento
+2. Quando cliente perguntar sobre FINANCIAMENTO: verificar se campo "Formas de pagamento aceitas" contém "Financiamento"
+3. Quando cliente perguntar sobre PERMUTA/TROCA: verificar se contém "Permuta/Troca"
+4. Quando cliente perguntar sobre CARRO: verificar se contém "Aceita carro"
+5. Se NÃO existir, ser HONESTO: "No momento não temos [categoria] em [cidade] que aceite [condição]"
+6. Perguntar: "Gostaria de deixar seu contato? Te aviso quando tivermos!"
+7. Só sugerir alternativas SE EXISTIREM NA LISTA ACIMA
+8. Nunca mencionar cidades/regiões onde você não tem imóveis cadastrados
 
 ✅ FORMATO DE RESPOSTA:
 - Máximo 5-6 linhas
 - Links apenas no formato: https://imobiliaria-six-tau.vercel.app/imovel/[slug-do-imovel]
-- Seja direto e honesto
+- Seja direto, honesto e preciso
+- SEMPRE mencione o VALOR do imóvel quando mostrar
 `
 
     // Construir histórico de mensagens para o Claude
