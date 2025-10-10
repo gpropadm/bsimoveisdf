@@ -17,14 +17,14 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: "All - Plataforma Imobiliária",
-    template: "%s - All"
+    default: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
+    template: "%s | BS Imóveis DF"
   },
-  description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
-  keywords: ["imóveis", "casas", "apartamentos", "venda", "aluguel", "imobiliária", "all", "plataforma imobiliária"],
-  authors: [{ name: "All Imóveis" }],
-  creator: "All Imóveis",
-  publisher: "All Imóveis",
+  description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
+  keywords: ["imóveis brasília", "casas brasília df", "apartamentos brasília", "venda imóveis df", "aluguel brasília", "imobiliária brasília", "bs imóveis", "imóveis distrito federal"],
+  authors: [{ name: "BS Imóveis DF" }],
+  creator: "BS Imóveis DF",
+  publisher: "BS Imóveis DF",
   robots: {
     index: true,
     follow: true,
@@ -32,15 +32,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://www.allimobiliaria.com.br",
-    siteName: "All Imóveis",
-    title: "All - Plataforma Imobiliária",
-    description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+    url: "https://www.bsimoveisdf.com.br",
+    siteName: "BS Imóveis DF",
+    title: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
+    description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "All - Plataforma Imobiliária",
-    description: "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
+    title: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
+    description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
   },
 };
 
@@ -52,29 +52,23 @@ export default function RootLayout({
   // LocalBusiness structured data
   const localBusinessSchema = {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "All Imóveis",
-    "description": "Encontre seu novo lar através das imobiliárias que anunciam no site All. Utilize filtros e encontre os melhores imóveis, preços e regiões. Soluções Imobiliárias.",
-    "url": "https://www.allimobiliaria.com.br",
-    "logo": "https://www.allimobiliaria.com.br/static/logo_all.svg",
-    "image": "https://static.allimobiliaria.com.br/white-label-assets/all/metadata-all-imoveis.png",
-    "telephone": "+55-11-4040-3939",
-    "email": "contato@allimobiliaria.com",
+    "@type": "RealEstateAgent",
+    "name": "BS Imóveis DF",
+    "description": "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
+    "url": "https://www.bsimoveisdf.com.br",
+    "logo": "https://www.bsimoveisdf.com.br/logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "BR",
       "addressRegion": "DF",
       "addressLocality": "Brasília",
-      "postalCode": "70000-000",
-      "streetAddress": "Setor Comercial Sul"
+      "postalCode": "70000-000"
     },
-    "sameAs": [
-      "https://www.facebook.com/allimobiliaria",
-      "https://www.instagram.com/allimobiliaria",
-      "https://br.linkedin.com/company/allimobiliaria",
-      "https://blog.allimobiliaria.com.br/"
-    ],
-    "serviceType": ["Venda de Imóveis", "Aluguel de Imóveis", "Plataforma Imobiliária", "Financiamento Imobiliário"]
+    "areaServed": {
+      "@type": "City",
+      "name": "Brasília"
+    },
+    "serviceType": ["Venda de Imóveis", "Aluguel de Imóveis", "Consultoria Imobiliária"]
   }
 
   return (

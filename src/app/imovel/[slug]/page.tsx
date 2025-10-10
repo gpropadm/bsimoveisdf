@@ -99,10 +99,10 @@ async function getProperty(slug: string): Promise<Property | null> {
 export async function generateMetadata({ params }: PropertyDetailProps): Promise<Metadata> {
   const resolvedParams = await params
   const property = await getProperty(resolvedParams.slug)
-  
+
   if (!property) {
     return {
-      title: 'Imóvel não encontrado - All',
+      title: 'Imóvel não encontrado',
     }
   }
 
@@ -115,12 +115,11 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
     }).format(price)
   }
 
-  const images = parseImages(property.images)
   const firstImage = getFirstImage(property.images)
-  
-  const title = `${property.title} - ${formatPrice(property.price)} - ${property.city}`
-  const description = property.description || 
-    `${property.category} para ${property.type} em ${property.city}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area}m²` : ''}.`
+
+  const title = `${property.category} ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.type === 'venda' ? 'à venda' : 'para alugar'} ${property.city} - ${formatPrice(property.price)}`
+  const description = property.description ||
+    `${property.category} para ${property.type} em ${property.city}, ${property.state}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area}m²` : ''}. Confira na BS Imóveis DF.`
 
   return {
     title,
@@ -130,17 +129,17 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
       property.type,
       property.city,
       property.state,
-      'imóvel',
-      'casa',
-      'apartamento',
-      'faimoveis'
+      'imóvel brasília',
+      'imóveis df',
+      property.type === 'venda' ? 'venda brasília' : 'aluguel brasília',
+      'bs imóveis'
     ],
     openGraph: {
       title,
       description,
       images: [
         {
-          url: firstImage.startsWith('http') ? firstImage : `https://faimoveis.com.br${firstImage}`,
+          url: firstImage.startsWith('http') ? firstImage : `https://www.bsimoveisdf.com.br${firstImage}`,
           width: 1200,
           height: 630,
           alt: property.title,
@@ -148,16 +147,16 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
       ],
       type: 'website',
       locale: 'pt_BR',
-      siteName: 'All',
+      siteName: 'BS Imóveis DF',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [firstImage.startsWith('http') ? firstImage : `https://faimoveis.com.br${firstImage}`],
+      images: [firstImage.startsWith('http') ? firstImage : `https://www.bsimoveisdf.com.br${firstImage}`],
     },
     alternates: {
-      canonical: `https://faimoveis.com.br/imovel/${property.slug}`,
+      canonical: `https://www.bsimoveisdf.com.br/imovel/${property.slug}`,
     },
   }
 }
