@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs')
 const prisma = new PrismaClient()
 
 async function main() {
-  const email = 'ad@gmail.com'
-  const password = '123'
+  const email = 'bsimoveisdf@gmail.com'
+  const password = '1010'
   const hashedPassword = await bcrypt.hash(password, 10)
 
   // Verificar se já existe
@@ -23,14 +23,14 @@ async function main() {
     data: {
       email,
       password: hashedPassword,
-      name: 'Administrador',
+      name: 'BS Imóveis DF',
       role: 'admin'
     }
   })
 
   console.log('✅ Usuário admin criado com sucesso!')
   console.log(`Email: ${user.email}`)
-  console.log(`Senha: 123`)
+  console.log(`Senha: 1010`)
 }
 
 main()
