@@ -1,7 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-
 export default function Footer() {
   return (
     <footer className="text-gray-800 border-t border-gray-200" style={{ backgroundColor: '#f8f9fa' }}>
@@ -44,9 +42,6 @@ export default function Footer() {
               </li>
               <li>
                 <span className="text-gray-500 cursor-default">Portal do Cliente</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Financiamento</span>
               </li>
             </ul>
           </div>

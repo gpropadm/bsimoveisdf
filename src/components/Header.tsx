@@ -52,73 +52,6 @@ export default function Header() {
             </span>
           </Link>
 
-          {/* Desktop Navigation - Horizontal Menu - Centralizado */}
-          <div
-            className="hidden lg:flex items-center space-x-6 absolute left-1/2 transform -translate-x-1/2 px-6 py-2 rounded-full transition-all duration-300"
-            style={{
-              backgroundColor: 'transparent'
-            }}
-          >
-            <Link
-              href="/financiamento-imobiliario"
-              className={`transition-colors font-medium ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
-              style={{
-                color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
-              }}
-              onMouseEnter={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-              }}
-              onMouseLeave={(e) => {
-                if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-              }}
-            >
-              Financiamento imobiliário
-            </Link>
-            <div className="relative group">
-              <button
-                className={`transition-colors font-medium flex items-center ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
-                style={{
-                  color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
-                }}
-                onMouseEnter={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-                }}
-                onMouseLeave={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-                }}
-              >
-                Ajuda
-                <i className="fas fa-chevron-down ml-1 text-xs"></i>
-              </button>
-            </div>
-            <div className="relative">
-              <button
-                onClick={() => setShowMoreMenu(!showMoreMenu)}
-                className={`transition-colors font-medium flex items-center ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white hover:text-gray-200'}`}
-                style={{
-                  color: (isScrolled || isOnPageWithoutHero) ? primaryColor : ''
-                }}
-                onMouseEnter={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-                }}
-                onMouseLeave={(e) => {
-                  if (isScrolled || isOnPageWithoutHero) e.currentTarget.style.color = primaryColor
-                }}
-              >
-                Escolha Cor
-                <i className={`fas fa-chevron-down ml-1 text-xs transition-transform ${showMoreMenu ? 'rotate-180' : ''}`}></i>
-              </button>
-
-              {showMoreMenu && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
-                  <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-2 z-50 min-w-[200px]">
-                    <ThemeSelector />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
 
           {/* Botões do lado direito */}
           <div className="hidden lg:flex items-center space-x-4">
@@ -198,21 +131,12 @@ export default function Header() {
           {/* Mobile Navigation */}
           <div className={`fixed top-0 left-0 w-full h-full bg-white lg:hidden transition-transform duration-300 z-40 ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
             <div className="flex flex-col pt-16 px-6 space-y-4">
-              <Link href="https://imobiliaria-six-tau.vercel.app/" className="text-blue-600 font-medium py-2">
+              <Link href="/" className="text-blue-600 font-medium py-2">
                 Início
               </Link>
               <Link href="/meus-favoritos" className="text-blue-600 font-medium py-2">
                 Meus Favoritos
               </Link>
-              <Link href="/financiamento-imobiliario" className="text-blue-600 font-medium py-2">
-                Financiamento imobiliário
-              </Link>
-              <button className="text-blue-600 font-medium py-2 text-left">
-                Ajuda
-              </button>
-              <button className="text-blue-600 font-medium py-2 text-left">
-                Mais
-              </button>
               <button
                 onClick={() => {
                   setShowAnunciarModal(true)
