@@ -77,21 +77,14 @@ export default function SearchFormV3() {
   }
 
   if (loading) {
-    return (
-      <div className="max-w-4xl mx-auto">
-        <div className="animate-pulse">
-          <div className="h-10 bg-white rounded mb-6"></div>
-          <div className="h-14 bg-white rounded-full"></div>
-        </div>
-      </div>
-    )
+    return null
   }
 
   const categories = filters.categoriesByType ? Object.values(filters.categoriesByType).flat().filter((v, i, a) => a.indexOf(v) === i) : []
 
   return (
     <div className="max-w-5xl mx-auto px-4">
-      <div className="bg-white/95 backdrop-blur-sm rounded-full shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm max-md:rounded-3xl md:rounded-full shadow-2xl">
         <form onSubmit={handleSearch}>
           <div className="flex flex-col md:flex-row items-stretch md:items-center">
 
@@ -103,7 +96,7 @@ export default function SearchFormV3() {
                   setShowCategoryDropdown(!showCategoryDropdown)
                   setShowTypeDropdown(false)
                 }}
-                className="w-full h-16 px-6 bg-transparent border-b md:border-b-0 border-gray-200 focus:outline-none text-left flex items-center justify-between rounded-t-full md:rounded-l-full md:rounded-t-none hover:bg-gray-50 transition-colors"
+                className="w-full h-14 md:h-16 px-6 bg-transparent border-b md:border-b-0 border-gray-200 focus:outline-none text-left flex items-center justify-between max-md:rounded-t-3xl md:rounded-l-full md:rounded-t-none hover:bg-gray-50 transition-colors"
               >
                 <span className={`font-medium ${selectedCategory ? 'text-gray-900' : 'text-gray-500'}`}>
                   {selectedCategory ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1) : 'Tipo de Imóvel'}
@@ -158,7 +151,7 @@ export default function SearchFormV3() {
                   setShowTypeDropdown(!showTypeDropdown)
                   setShowCategoryDropdown(false)
                 }}
-                className="w-full h-16 px-6 bg-transparent border-b md:border-b-0 border-gray-200 focus:outline-none text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                className="w-full h-14 md:h-16 px-6 bg-transparent border-b md:border-b-0 border-gray-200 focus:outline-none text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
                 <span className={`font-medium ${selectedType ? 'text-gray-900' : 'text-gray-500'}`}>
                   {selectedType ? selectedType.charAt(0).toUpperCase() + selectedType.slice(1) : 'Finalidade'}
@@ -211,16 +204,16 @@ export default function SearchFormV3() {
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Onde você quer morar?"
-                className="w-full h-16 px-6 bg-transparent border-none focus:outline-none text-gray-700 text-base placeholder:text-gray-400"
+                placeholder="Digite um bairro ou cidade"
+                className="w-full h-14 md:h-16 px-6 bg-transparent border-none focus:outline-none text-gray-700 text-base placeholder:text-gray-400"
               />
             </div>
 
             {/* Botão Buscar */}
-            <div className="w-full md:w-auto flex justify-center md:pr-2">
+            <div className="w-full md:w-auto flex justify-end">
               <button
                 type="submit"
-                className="w-full md:w-auto h-16 px-8 rounded-b-full md:rounded-full md:rounded-b-full transition-all duration-200 flex items-center justify-center cursor-pointer font-semibold text-white shadow-lg hover:shadow-xl"
+                className="w-full md:w-auto h-14 md:h-16 px-8 md:rounded-full transition-all duration-200 flex items-center justify-center cursor-pointer font-semibold text-white shadow-lg hover:shadow-xl"
                 style={{ backgroundColor: primaryColor }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>

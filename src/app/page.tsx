@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import PropertyStoriesSection from '@/components/PropertyStoriesSection'
 import Footer from '@/components/Footer'
-import SearchForm from '@/components/SearchFormMinimalista'
+import SearchForm from '@/components/SearchFormV3'
 import AIRecommendations from '@/components/AIRecommendations'
 import { useTheme } from '@/contexts/ThemeContext'
 
@@ -95,11 +95,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Propriedades principais - OTIMIZADO (máximo 6) */}
+        {/* Propriedades para venda */}
         <PropertyStoriesSection
-          properties={filteredProperties}
+          properties={filteredProperties.filter(p => p.type === 'venda')}
           loading={propertiesLoading}
+          title="Imóveis recentes à venda"
         />
+
+        {/* Propriedades para alugar - só mostra se tiver */}
+        {filteredProperties.filter(p => p.type === 'aluguel').length > 0 && (
+          <PropertyStoriesSection
+            properties={filteredProperties.filter(p => p.type === 'aluguel')}
+            loading={false}
+            title="Imóveis recentes para alugar"
+          />
+        )}
 
         {/* IA Recommendations - DESABILITADO temporariamente para performance */}
         {/* {!propertiesLoading && <AIRecommendations />} */}

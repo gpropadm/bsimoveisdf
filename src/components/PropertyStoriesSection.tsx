@@ -32,9 +32,10 @@ interface Property {
 interface PropertyStoriesSectionProps {
   properties: Property[]
   loading: boolean
+  title?: string
 }
 
-export default function PropertyStoriesSection({ properties, loading }: PropertyStoriesSectionProps) {
+export default function PropertyStoriesSection({ properties, loading, title = 'Descubra seu novo Lar' }: PropertyStoriesSectionProps) {
   const router = useRouter()
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -250,7 +251,7 @@ export default function PropertyStoriesSection({ properties, loading }: Property
 
         {/* Título da Seção */}
         <h2 className="text-2xl md:text-3xl font-bold text-left mb-6 text-gray-800">
-          Descubra seu novo Lar
+          {title}
         </h2>
 
         {/* Properties by City Grid */}

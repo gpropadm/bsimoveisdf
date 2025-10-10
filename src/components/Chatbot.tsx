@@ -9,6 +9,29 @@ interface Message {
   content: string
 }
 
+// Função para converter URLs em links clicáveis
+const renderMessageWithLinks = (content: string) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g
+  const parts = content.split(urlRegex)
+
+  return parts.map((part, index) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={index}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline font-medium"
+        >
+          Ver imóvel →
+        </a>
+      )
+    }
+    return <span key={index}>{part}</span>
+  })
+}
+
 export default function Chatbot() {
   let primaryColor = '#7162f0' // Cor padrão
 
@@ -178,7 +201,9 @@ export default function Chatbot() {
                   }`}
                   style={msg.role === 'user' ? { backgroundColor: primaryColor } : {}}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">
+                    {renderMessageWithLinks(msg.content)}
+                  </p>
                 </div>
               </div>
             ))}

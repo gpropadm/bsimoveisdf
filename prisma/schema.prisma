@@ -135,6 +135,11 @@ model Property {
   acceptsTrade     Boolean @default(false) // Aceita permuta/troca
   acceptsCar       Boolean @default(false) // Aceita carro como parte do pagamento
 
+  // Marketplace
+  compartilharMarketplace Boolean @default(false) // Compartilhar no marketplace regional
+  marketplaceId           String?  // ID do imóvel no marketplace (se publicado)
+  marketplaceSyncAt       DateTime? // Última sincronização com marketplace
+
   // Estatísticas
   views       Int      @default(0) // Contador de visualizações da página do imóvel
 
