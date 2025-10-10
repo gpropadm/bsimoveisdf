@@ -19,9 +19,7 @@ import {
 } from '@/lib/maskUtils'
 import { toast } from 'react-toastify'
 import MapSelector from '@/components/MapSelector'
-
-// Importação dinâmica do editor para evitar problemas de SSR
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false })
+import SimpleTextEditor from '@/components/SimpleTextEditor'
 
 export default function NewProperty() {
   const router = useRouter()
@@ -632,7 +630,7 @@ export default function NewProperty() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Descrição
                 </label>
-                <RichTextEditor
+                <SimpleTextEditor
                   value={formData.description}
                   onChange={(content) => setFormData({ ...formData, description: content })}
                   placeholder="Descreva as características do imóvel..."
