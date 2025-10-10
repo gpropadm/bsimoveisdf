@@ -17,8 +17,8 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
-    template: "%s | BS Imóveis DF"
+    default: "Imóveis em Brasília - Casas e Apartamentos | BS Imóveis",
+    template: "%s | BS Imóveis"
   },
   description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
   keywords: ["imóveis brasília", "casas brasília df", "apartamentos brasília", "venda imóveis df", "aluguel brasília", "imobiliária brasília", "bs imóveis", "imóveis distrito federal"],
@@ -33,13 +33,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: "https://www.bsimoveisdf.com.br",
-    siteName: "BS Imóveis DF",
-    title: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
+    siteName: "BS Imóveis",
+    title: "Imóveis em Brasília - Casas e Apartamentos | BS Imóveis",
     description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Imóveis em Brasília DF - Casas e Apartamentos | BS Imóveis",
+    title: "Imóveis em Brasília - Casas e Apartamentos | BS Imóveis",
     description: "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
   },
 };
