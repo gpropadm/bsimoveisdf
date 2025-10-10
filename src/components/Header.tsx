@@ -5,13 +5,11 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useTheme } from '@/contexts/ThemeContext'
-import ThemeSelector from './ThemeSelector'
 import AnunciarImovelModal from './AnunciarImovelModal'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [showMoreMenu, setShowMoreMenu] = useState(false)
   const [showBorderAnimation, setShowBorderAnimation] = useState(false)
   const [showAnunciarModal, setShowAnunciarModal] = useState(false)
   const pathname = usePathname()
@@ -48,7 +46,7 @@ export default function Header() {
               className={`text-3xl font-bold transition-colors ${(isScrolled || isOnPageWithoutHero) ? '' : 'text-white'}`}
               style={{ color: (isScrolled || isOnPageWithoutHero) ? primaryColor : '' }}
             >
-              All
+              BS Imóveis
             </span>
           </Link>
 

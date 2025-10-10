@@ -8,7 +8,7 @@ export default function Footer() {
 
           {/* Logo */}
           <div>
-            <h3 className="text-2xl font-bold text-gray-800">All</h3>
+            <h3 className="text-2xl font-bold text-gray-800">BS Imóveis</h3>
           </div>
 
           {/* Conheça */}
@@ -84,7 +84,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-8 pt-6">
           <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center">
             <div className="text-sm mb-4 xl:mb-0">
-              <span className="font-bold">© All Imóveis.</span>
+              <span className="font-bold">© BS Imóveis.</span>
               <span className="ml-2">Todos os direitos reservados.</span>
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-400">
