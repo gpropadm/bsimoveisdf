@@ -90,7 +90,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
 
           {/* Título do imóvel - estilo Arbo */}
           <h3 className="text-base font-medium text-gray-800 mb-1 line-clamp-1">
-            {property.title}
+            {property.title.length > 40 ? `${property.title.substring(0, 40)}...` : property.title}
           </h3>
 
           {/* Endereço - estilo Arbo */}
