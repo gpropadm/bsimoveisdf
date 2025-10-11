@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="text-gray-800 border-t border-gray-200" style={{ backgroundColor: '#f8f9fa' }}>
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
 
           {/* Logo */}
           <div>
@@ -16,41 +16,6 @@ export default function Footer() {
                 Brasília - DF
               </span>
             </p>
-          </div>
-
-          {/* Conheça */}
-          <div>
-            <h5 className="text-lg font-semibold mb-4">Conheça</h5>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <span className="text-gray-500 cursor-default">Sobre Nós</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Blog</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Trabalhe Conosco</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Produtos */}
-          <div>
-            <h5 className="text-lg font-semibold mb-4">Produtos</h5>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <span className="text-gray-500 cursor-default">CRM Imobiliário</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Site Imobiliário</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Gestão de Imóveis</span>
-              </li>
-              <li>
-                <span className="text-gray-500 cursor-default">Portal do Cliente</span>
-              </li>
-            </ul>
           </div>
 
           {/* Contato */}
@@ -89,20 +54,9 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-700 mt-8 pt-6">
-          <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center">
-            <div className="text-sm mb-4 xl:mb-0">
-              <span className="font-bold">© BS Imóveis.</span>
-              <span className="ml-2">Todos os direitos reservados.</span>
-            </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-400">
-              <span className="cursor-default">Termos de Uso</span>
-              <span>·</span>
-              <span className="cursor-default">Política de Privacidade</span>
-              <span>·</span>
-              <span className="cursor-default">Código de Conduta</span>
-              <span>·</span>
-              <span className="cursor-default">Canal de Denúncia</span>
-            </div>
+          <div className="text-sm text-center">
+            <span className="font-bold">© BS Imóveis.</span>
+            <span className="ml-2">Todos os direitos reservados.</span>
           </div>
         </div>
       </div>
