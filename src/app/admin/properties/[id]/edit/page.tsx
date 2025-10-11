@@ -20,6 +20,7 @@ import {
 } from '@/lib/maskUtils'
 import MapSelector from '@/components/MapSelector'
 import { toast } from 'react-toastify'
+import { getAddressFromCEP } from '@/lib/geocoding'
 
 // Force dynamic rendering for admin pages
 export const dynamic = 'force-dynamic'
@@ -383,23 +384,23 @@ export default function EditProperty() {
     if (cleanCep.length !== 8) return
 
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
-      if (!response.ok) throw new Error('CEP not found')
+      // Usar a função que já corrige automaticamente as regiões do DF
+      const addressData = await getAddressFromCEP(cep)
 
-      const data = await response.json()
-
-      if (data.erro) {
+      if (!addressData) {
         toast.error('CEP não encontrado!')
         return
       }
 
-      // Preenche os campos automaticamente
+      // Preenche os campos automaticamente com a cidade corrigida
       setFormData(prev => ({
         ...prev,
-        address: data.logradouro || '',
-        city: data.localidade || '',
-        state: data.uf || ''
+        address: addressData.logradouro || '',
+        city: addressData.localidade || '', // Já vem com a região administrativa correta (Santa Maria, Gama, etc)
+        state: addressData.uf || ''
       }))
+
+      console.log(`✅ CEP ${cep} → Cidade: ${addressData.localidade}`)
 
     } catch (error) {
       console.error('Erro ao buscar CEP:', error)

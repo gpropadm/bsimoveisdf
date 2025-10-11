@@ -20,6 +20,7 @@ import {
 import { toast } from 'react-toastify'
 import MapSelector from '@/components/MapSelector'
 import SimpleTextEditor from '@/components/SimpleTextEditor'
+import { getAddressFromCEP } from '@/lib/geocoding'
 
 export default function NewProperty() {
   const router = useRouter()
@@ -145,28 +146,28 @@ export default function NewProperty() {
   const fetchAddressByCep = async (cep: string) => {
     // Remove formatação do CEP
     const cleanCep = parseCEP(cep)
-    
+
     if (cleanCep.length !== 8) return
-    
+
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
-      if (!response.ok) throw new Error('CEP not found')
-      
-      const data = await response.json()
-      
-      if (data.erro) {
+      // Usar a função que já corrige automaticamente as regiões do DF
+      const addressData = await getAddressFromCEP(cep)
+
+      if (!addressData) {
         toast.error('CEP não encontrado!')
         return
       }
-      
-      // Preenche os campos automaticamente
+
+      // Preenche os campos automaticamente com a cidade corrigida
       setFormData(prev => ({
         ...prev,
-        address: data.logradouro || '',
-        city: data.localidade || '',
-        state: data.uf || ''
+        address: addressData.logradouro || '',
+        city: addressData.localidade || '', // Já vem com a região administrativa correta (Santa Maria, Gama, etc)
+        state: addressData.uf || ''
       }))
-      
+
+      console.log(`✅ CEP ${cep} → Cidade: ${addressData.localidade}`)
+
     } catch (error) {
       console.error('Erro ao buscar CEP:', error)
       toast.error('Erro ao buscar CEP. Verifique se o CEP está correto.')
