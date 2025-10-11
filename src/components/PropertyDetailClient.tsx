@@ -539,7 +539,7 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                             color: '#212529'
                           }}
                         >
-                          All Imóveis
+                          BS Imóveis
                         </div>
                         <div
                           className="font-sora"
@@ -548,20 +548,9 @@ export default function PropertyDetailClient({ property }: PropertyDetailClientP
                             color: '#6c757d'
                           }}
                         >
-                          Plataforma Imobiliária
+                          61 98579-6033
                         </div>
                       </div>
-                    </div>
-
-                    <div
-                      className="font-sora"
-                      style={{
-                        fontSize: '12px',
-                        color: '#6c757d'
-                      }}
-                    >
-                      <i className="fas fa-map-marker-alt me-1"></i>
-                      {property.address}, {property.city} - {property.state}
                     </div>
                   </div>
                 </div>

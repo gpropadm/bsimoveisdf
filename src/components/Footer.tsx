@@ -9,9 +9,12 @@ export default function Footer() {
           {/* Logo */}
           <div>
             <h3 className="text-2xl font-bold text-gray-800 mb-3">BS Imóveis</h3>
-            <p className="text-sm text-gray-600">
-              QR 218 Conj. O Lote 30<br />
-              Brasília - DF
+            <p className="text-sm text-gray-600 flex items-start">
+              <i className="fas fa-map-marker-alt mr-2 mt-1" style={{ fontSize: '14px' }}></i>
+              <span>
+                QR 218 Conj. O Lote 30<br />
+                Brasília - DF
+              </span>
             </p>
           </div>
 
