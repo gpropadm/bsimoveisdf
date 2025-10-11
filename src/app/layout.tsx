@@ -53,8 +53,8 @@ export default function RootLayout({
   const localBusinessSchema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
-    "name": "BS Imóveis DF",
-    "description": "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis DF.",
+    "name": "BS Imóveis",
+    "description": "Encontre seu imóvel ideal em Brasília e Distrito Federal. Casas, apartamentos e terrenos para venda e aluguel. Atendimento especializado na BS Imóveis.",
     "url": "https://www.bsimoveisdf.com.br",
     "logo": "https://www.bsimoveisdf.com.br/logo.png",
     "address": {
@@ -62,7 +62,7 @@ export default function RootLayout({
       "addressCountry": "BR",
       "addressRegion": "DF",
       "addressLocality": "Brasília",
-      "postalCode": "70000-000"
+      "streetAddress": "QR 218 Conj. O Lote 30"
     },
     "areaServed": {
       "@type": "City",

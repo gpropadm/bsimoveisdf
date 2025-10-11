@@ -8,7 +8,11 @@ export default function Footer() {
 
           {/* Logo */}
           <div>
-            <h3 className="text-2xl font-bold text-gray-800">BS Imóveis</h3>
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">BS Imóveis</h3>
+            <p className="text-sm text-gray-600">
+              QR 218 Conj. O Lote 30<br />
+              Brasília - DF
+            </p>
           </div>
 
           {/* Conheça */}
