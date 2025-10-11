@@ -47,14 +47,9 @@ export default function Footer() {
           {/* Contato */}
           <div>
             <h5 className="text-lg font-semibold mb-4 text-gray-800">Contato</h5>
-            <div className="space-y-3">
-              <div className="flex items-center text-sm">
-                <i className="fab fa-whatsapp mr-2 text-gray-600" style={{ fontSize: '16px' }}></i>
-                <span className="text-gray-600">{contactPhone}</span>
-              </div>
-              <div className="text-sm">
-                <span className="text-gray-600 cursor-default">Fale Conosco</span>
-              </div>
+            <div className="flex items-center text-sm">
+              <i className="fab fa-whatsapp mr-2 text-gray-600" style={{ fontSize: '16px' }}></i>
+              <span className="text-gray-600">{contactPhone}</span>
             </div>
           </div>
 
@@ -62,28 +57,26 @@ export default function Footer() {
           <div>
             <h5 className="text-lg font-semibold mb-4 text-gray-800">Redes Sociais</h5>
             <div className="flex space-x-4">
-              {socialLinks.facebook && (
-                <a
-                  href={socialLinks.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
-                  aria-label="Facebook"
-                >
-                  <i className="fa-brands fa-facebook-f" style={{ fontSize: '24px' }}></i>
-                </a>
-              )}
-              {socialLinks.instagram && (
-                <a
-                  href={socialLinks.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
-                  aria-label="Instagram"
-                >
-                  <i className="fa-brands fa-instagram" style={{ fontSize: '24px' }}></i>
-                </a>
-              )}
+              <a
+                href={socialLinks.facebook || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Facebook"
+                onClick={(e) => !socialLinks.facebook && e.preventDefault()}
+              >
+                <i className="fa-brands fa-facebook-f" style={{ fontSize: '24px' }}></i>
+              </a>
+              <a
+                href={socialLinks.instagram || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Instagram"
+                onClick={(e) => !socialLinks.instagram && e.preventDefault()}
+              >
+                <i className="fa-brands fa-instagram" style={{ fontSize: '24px' }}></i>
+              </a>
             </div>
           </div>
         </div>
