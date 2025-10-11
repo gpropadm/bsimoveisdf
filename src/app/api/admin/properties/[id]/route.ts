@@ -120,21 +120,26 @@ export async function PUT(
       return NextResponse.json({ error: 'Imóvel não encontrado' }, { status: 404 })
     }
 
+    // Função para normalizar texto para URL (remove acentos, caracteres especiais, etc)
+    const normalizeForUrl = (text: string) => {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
+        .replace(/\s+/g, '-') // Substitui espaços por hífens
+        .replace(/-+/g, '-') // Remove hífens duplos
+        .trim()
+    }
+
     // Gerar novo slug se o título mudou
     let slug = existingProperty.slug
     if (title !== existingProperty.title) {
-      slug = title
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim()
+      slug = normalizeForUrl(title)
 
       // Verificar se o slug já existe
       const existingSlug = await prisma.property.findFirst({
-        where: { 
+        where: {
           slug,
           id: { not: id }
         }

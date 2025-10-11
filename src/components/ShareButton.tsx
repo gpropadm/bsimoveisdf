@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useToast } from '@/contexts/ToastContext'
+import { getPropertyUrl } from '@/lib/propertyUrl'
 
 interface ShareButtonProps {
   property: {
@@ -10,6 +11,7 @@ interface ShareButtonProps {
     slug: string
     price: number
     type: string
+    category?: string
     address: string
     city: string
     state: string
@@ -21,7 +23,14 @@ export default function ShareButton({ property }: ShareButtonProps) {
   const { showSuccess } = useToast()
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const propertyUrl = `${window.location.origin}/imovel/${property.slug}`
+  const propertyPath = getPropertyUrl({
+    category: property.category || 'imovel',
+    type: property.type,
+    state: property.state,
+    city: property.city,
+    slug: property.slug
+  })
+  const propertyUrl = `${window.location.origin}${propertyPath}`
   const shareText = `${property.title} - R$ ${property.price.toLocaleString('pt-BR')}${property.type === 'aluguel' ? '/mês' : ''}`
 
   useEffect(() => {

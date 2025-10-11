@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import FavoriteButton from '@/components/FavoriteButton'
 import { formatAreaDisplay } from '@/lib/maskUtils'
+import { getPropertyUrl } from '@/lib/propertyUrl'
 
 interface Property {
   id: string
@@ -36,6 +37,15 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
     imageUrl = property.images[0]
     hasImages = true
   }
+
+  // Gerar URL no formato SEO-friendly
+  const propertyUrl = getPropertyUrl({
+    category: property.category || 'imovel',
+    type: property.type,
+    state: property.state,
+    city: property.city,
+    slug: property.slug
+  })
 
   return (
     <div className="bg-white rounded-lg overflow-hidden hover:shadow-md transition-shadow group">
@@ -134,7 +144,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
                 {property.type === 'venda' ? 'Venda' : 'Aluguel'}
               </span>
               <Link
-                href={`/imovel/${property.slug}`}
+                href={propertyUrl}
                 className="text-lg font-bold text-blue-600 hover:text-blue-800 underline"
               >
                 R$ {property.price.toLocaleString('pt-BR')}
@@ -143,7 +153,7 @@ export default function PropertyCard({ property, onOpenVideo }: PropertyCardProp
 
             {/* Botão Ver Detalhes */}
             <Link
-              href={`/imovel/${property.slug}`}
+              href={propertyUrl}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-blue-700 transition-colors"
             >
               Ver Detalhes

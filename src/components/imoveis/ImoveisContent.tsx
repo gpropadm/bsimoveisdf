@@ -8,6 +8,7 @@ import MapaImoveis from './MapaImoveis'
 import FavoriteButton from '@/components/FavoriteButton'
 import { useMapContext } from '@/contexts/MapContext'
 import LeadCaptureCard from '@/components/LeadCaptureCard'
+import { getPropertyUrl } from '@/lib/propertyUrl'
 
 interface Property {
   id: string
@@ -297,11 +298,19 @@ function ArboPropertyCard({ property, onViewDetails, formatPrice }: {
   }
 
 
+  const propertyUrl = getPropertyUrl({
+    category: property.category || 'imovel',
+    type: property.type,
+    state: property.state,
+    city: property.city,
+    slug: property.slug
+  })
+
   return (
     <li className="CarouselDefault_card__I_nK6">
       <div className="ImovelCard_card__2FVbS">
         <a
-          href={`/imovel/${property.slug}`}
+          href={propertyUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="cursor-pointer"

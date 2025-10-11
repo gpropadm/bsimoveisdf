@@ -137,15 +137,20 @@ export async function POST(request: NextRequest) {
       acceptsCar
     } = body
 
+    // Função para normalizar texto para URL (remove acentos, caracteres especiais, etc)
+    const normalizeForUrl = (text: string) => {
+      return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+        .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
+        .replace(/\s+/g, '-') // Substitui espaços por hífens
+        .replace(/-+/g, '-') // Remove hífens duplos
+        .trim()
+    }
+
     // Criar slug a partir do título
-    const slug = title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
-      .replace(/\s+/g, '-') // Substitui espaços por hífens
-      .replace(/-+/g, '-') // Remove hífens duplos
-      .trim()
+    const slug = normalizeForUrl(title)
 
     // Verificar se o slug já existe e adicionar número se necessário
     let finalSlug = slug

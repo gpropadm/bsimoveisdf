@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { getPropertyUrl } from '@/lib/propertyUrl'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || 'https://faimoveis.com.br'
@@ -55,12 +56,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })
       if (response.ok) {
         const properties = await response.json()
-        propertyRoutes = properties.map((property: any) => ({
-          url: `${baseUrl}/imovel/${property.slug}`,
-          lastModified: new Date(property.updatedAt || property.createdAt || new Date()),
-          changeFrequency: 'weekly' as const,
-          priority: 0.8,
-        }))
+        propertyRoutes = properties.map((property: any) => {
+          const propertyPath = getPropertyUrl({
+            category: property.category || 'imovel',
+            type: property.type,
+            state: property.state,
+            city: property.city,
+            slug: property.slug
+          })
+          return {
+            url: `${baseUrl}${propertyPath}`,
+            lastModified: new Date(property.updatedAt || property.createdAt || new Date()),
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+          }
+        })
       }
     } catch (error) {
       console.error('Error fetching properties for sitemap:', error)

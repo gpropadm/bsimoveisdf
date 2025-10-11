@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import PropertyVideoModal from './PropertyVideoModal'
 import FavoriteButton from './FavoriteButton'
+import { getPropertyUrl } from '@/lib/propertyUrl'
 
 interface Property {
   id: string
@@ -750,11 +751,19 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
   }
 
 
+  const propertyUrl = getPropertyUrl({
+    category: property.category || 'imovel',
+    type: property.type,
+    state: property.state,
+    city: property.city,
+    slug: property.slug
+  })
+
   return (
     <li className="CarouselDefault_card__I_nK6">
       <div className="ImovelCard_card__2FVbS">
         <a
-          href={`/imovel/${property.slug}`}
+          href={propertyUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="cursor-pointer"
