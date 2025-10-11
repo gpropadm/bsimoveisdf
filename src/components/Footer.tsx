@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react'
 
 export default function Footer() {
   const [contactPhone, setContactPhone] = useState('(61) 9999-9999')
+  const [socialLinks, setSocialLinks] = useState({
+    facebook: '',
+    instagram: ''
+  })
 
   useEffect(() => {
     // Buscar configurações do site
@@ -12,6 +16,12 @@ export default function Footer() {
       .then(data => {
         if (data?.settings?.contactPhone) {
           setContactPhone(data.settings.contactPhone)
+        }
+        if (data?.settings?.facebookUrl) {
+          setSocialLinks(prev => ({ ...prev, facebook: data.settings.facebookUrl }))
+        }
+        if (data?.settings?.instagramUrl) {
+          setSocialLinks(prev => ({ ...prev, instagram: data.settings.instagramUrl }))
         }
       })
       .catch(err => console.error('Erro ao carregar configurações:', err))
@@ -51,16 +61,29 @@ export default function Footer() {
           {/* Redes Sociais */}
           <div>
             <h5 className="text-lg font-semibold mb-4 text-gray-800">Redes Sociais</h5>
-            <div className="flex space-x-3">
-              <span className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: '#e0e0e0' }}>
-                <i className="fa-brands fa-facebook-f text-white" style={{ fontSize: '18px' }}></i>
-              </span>
-              <span className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: '#e0e0e0' }}>
-                <i className="fa-brands fa-instagram text-white" style={{ fontSize: '18px' }}></i>
-              </span>
-              <span className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" style={{ backgroundColor: '#e0e0e0' }}>
-                <i className="fa-brands fa-linkedin-in text-white" style={{ fontSize: '18px' }}></i>
-              </span>
+            <div className="flex space-x-4">
+              {socialLinks.facebook && (
+                <a
+                  href={socialLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <i className="fa-brands fa-facebook-f" style={{ fontSize: '24px' }}></i>
+                </a>
+              )}
+              {socialLinks.instagram && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label="Instagram"
+                >
+                  <i className="fa-brands fa-instagram" style={{ fontSize: '24px' }}></i>
+                </a>
+              )}
             </div>
           </div>
         </div>
