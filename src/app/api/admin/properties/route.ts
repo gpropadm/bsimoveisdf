@@ -130,7 +130,11 @@ export async function POST(request: NextRequest) {
       commercialType,
       floor_commercial,
       businessCenter,
-      features
+      features,
+      // Formas de pagamento
+      acceptsFinancing,
+      acceptsTrade,
+      acceptsCar
     } = body
 
     // Criar slug a partir do título
@@ -239,6 +243,10 @@ export async function POST(request: NextRequest) {
         floor_commercial: floor_commercial || null,
         businessCenter: businessCenter || null,
         features: features || null,
+        // Formas de pagamento
+        acceptsFinancing: acceptsFinancing || false,
+        acceptsTrade: acceptsTrade || false,
+        acceptsCar: acceptsCar || false,
       }
     })
 
