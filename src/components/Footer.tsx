@@ -28,7 +28,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="text-gray-800 border-t" style={{ backgroundColor: '#fafafa', borderColor: '#dee2e6' }}>
+    <footer className="text-gray-800 border-t" style={{ backgroundColor: '#ffffff', borderColor: '#e5e7eb' }}>
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 
