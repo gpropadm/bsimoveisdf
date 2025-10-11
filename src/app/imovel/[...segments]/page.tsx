@@ -1,11 +1,13 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PropertyDetailClient from '@/components/PropertyDetailClient'
-import { parseImages, getFirstImage } from '@/lib/imageUtils'
+import { getFirstImage } from '@/lib/imageUtils'
 import prisma from '@/lib/prisma'
 
 interface PropertyDetailProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{
+    segments: string[]
+  }>
 }
 
 interface Property {
@@ -28,7 +30,6 @@ interface Property {
   images: string | null
   video: string | null
   slug: string
-  // Campos específicos para apartamentos
   amenities: string | null
   condoFee: number | null
   floor: number | null
@@ -40,9 +41,23 @@ interface Property {
   updatedAt: string
 }
 
-async function getProperty(slug: string): Promise<Property | null> {
+async function getProperty(segments: string[]): Promise<Property | null> {
   try {
-    console.log(`🔍 [PAGE] Buscando propriedade com slug: ${slug}`)
+    let slug: string
+
+    // Formato antigo: /imovel/[slug]
+    if (segments.length === 1) {
+      slug = segments[0]
+      console.log(`🔍 [PAGE] Buscando por slug simples: ${slug}`)
+    }
+    // Formato novo: /imovel/[category]/[type]/[state]/[city]/[slug]
+    else if (segments.length === 5) {
+      slug = segments[4]
+      console.log(`🔍 [PAGE] Buscando por slug SEO: ${slug}`)
+    } else {
+      console.log(`❌ [PAGE] Formato de URL inválido - segmentos: ${segments.length}`)
+      return null
+    }
 
     const property = await prisma.property.findUnique({
       where: { slug },
@@ -79,7 +94,7 @@ async function getProperty(slug: string): Promise<Property | null> {
     })
 
     if (!property) {
-      console.log(`❌ [PAGE] Propriedade não encontrada: ${slug}`)
+      console.log(`❌ [PAGE] Propriedade não encontrada`)
       return null
     }
 
@@ -98,7 +113,7 @@ async function getProperty(slug: string): Promise<Property | null> {
 
 export async function generateMetadata({ params }: PropertyDetailProps): Promise<Metadata> {
   const resolvedParams = await params
-  const property = await getProperty(resolvedParams.slug)
+  const property = await getProperty(resolvedParams.segments)
 
   if (!property) {
     return {
@@ -120,6 +135,12 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
   const title = `${property.category} ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.type === 'venda' ? 'à venda' : 'para alugar'} ${property.city} - ${formatPrice(property.price)}`
   const description = property.description ||
     `${property.category} para ${property.type} em ${property.city}, ${property.state}. ${property.bedrooms ? `${property.bedrooms} quartos` : ''} ${property.bathrooms ? `${property.bathrooms} banheiros` : ''} ${property.area ? `${property.area}m²` : ''}. Confira na BS Imóveis DF.`
+
+  // Gerar URL canônica no formato SEO-friendly
+  const categorySlug = property.category.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+  const stateSlug = property.state.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+  const citySlug = property.city.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
+  const canonicalUrl = `https://www.bsimoveisdf.com.br/imovel/${categorySlug}/${property.type}/${stateSlug}/${citySlug}/${property.slug}`
 
   return {
     title,
@@ -156,64 +177,18 @@ export async function generateMetadata({ params }: PropertyDetailProps): Promise
       images: [firstImage.startsWith('http') ? firstImage : `https://www.bsimoveisdf.com.br${firstImage}`],
     },
     alternates: {
-      canonical: `https://www.bsimoveisdf.com.br/imovel/${property.slug}`,
+      canonical: canonicalUrl,
     },
   }
 }
 
 export default async function PropertyDetail({ params }: PropertyDetailProps) {
   const resolvedParams = await params
-  const property = await getProperty(resolvedParams.slug)
+  const property = await getProperty(resolvedParams.segments)
 
   if (!property) {
     notFound()
   }
 
-  // Parse images safely
-  const propertyImages = parseImages(property.images)
-
-  // If no images, use placeholder
-  const finalImages = propertyImages.length > 0 ? propertyImages : ['/placeholder-house.jpg']
-
-  // Structured Data (JSON-LD)
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'RealEstateListing',
-    name: property.title,
-    description: property.description || `${property.category} para ${property.type} em ${property.city}`,
-    url: `https://faimoveis.com.br/imovel/${property.slug}`,
-    image: finalImages,
-    offers: {
-      '@type': 'Offer',
-      price: property.price,
-      priceCurrency: 'BRL',
-      availability: 'https://schema.org/InStock',
-    },
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: property.address,
-      addressLocality: property.city,
-      addressRegion: property.state,
-      addressCountry: 'BR',
-    },
-    floorSize: property.area ? {
-      '@type': 'QuantitativeValue',
-      value: property.area,
-      unitCode: 'MTK'
-    } : undefined,
-    numberOfRooms: property.bedrooms || undefined,
-    numberOfBathroomsTotal: property.bathrooms || undefined,
-  }
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
-      <PropertyDetailClient property={property} />
-    </>
-  )
+  return <PropertyDetailClient property={property} />
 }
