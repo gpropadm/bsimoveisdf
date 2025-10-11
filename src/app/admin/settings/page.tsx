@@ -277,14 +277,14 @@ export default function AdminSettings() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      📞 Telefone (Header)
+                      📞 Telefone Rodapé
                     </label>
                     <input
                       type="text"
                       name="contactPhone"
                       value={siteSettings.contactPhone}
                       onChange={handleSiteSettingsChange}
-                      placeholder="(48) 99864-5864"
+                      placeholder="(61) 98579-6033"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7360ee] focus:border-[#7360ee]"
                     />
                   </div>

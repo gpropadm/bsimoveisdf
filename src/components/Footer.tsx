@@ -1,6 +1,22 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+
 export default function Footer() {
+  const [contactPhone, setContactPhone] = useState('(61) 9999-9999')
+
+  useEffect(() => {
+    // Buscar configurações do site
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.settings?.contactPhone) {
+          setContactPhone(data.settings.contactPhone)
+        }
+      })
+      .catch(err => console.error('Erro ao carregar configurações:', err))
+  }, [])
+
   return (
     <footer className="text-gray-800 border-t border-gray-200" style={{ backgroundColor: '#f8f9fa' }}>
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
@@ -24,7 +40,7 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div className="flex items-center">
                 <i className="fab fa-whatsapp mr-2 text-gray-500" style={{ fontSize: '14px' }}></i>
-                <span className="text-gray-500 cursor-default">(61) 9999-9999</span>
+                <span className="text-gray-500 cursor-default">{contactPhone}</span>
               </div>
               <div>
                 <span className="text-gray-500 cursor-default">Fale Conosco</span>
