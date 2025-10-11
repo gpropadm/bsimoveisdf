@@ -341,6 +341,15 @@ const DF_REGIONS: RegionMapping = {
   '72530': 'Santa Maria',
   '72535': 'Santa Maria',
   '72540': 'Santa Maria',
+  '72541': 'Santa Maria',
+  '72542': 'Santa Maria',
+  '72543': 'Santa Maria',
+  '72544': 'Santa Maria',
+  '72545': 'Santa Maria',
+  '72546': 'Santa Maria',
+  '72547': 'Santa Maria',
+  '72548': 'Santa Maria',
+  '72549': 'Santa Maria',
 
   // Recanto das Emas
   '72600': 'Recanto das Emas',
@@ -480,16 +489,17 @@ const DF_REGIONS: RegionMapping = {
   '71577': 'Paranoá',
   '71578': 'Paranoá',
   '71579': 'Paranoá',
-  '71580': 'Paranoá',
-  '71590': 'Paranoá',
-
-  // São Sebastião
-  '71900': 'São Sebastião', // Alguns CEPs podem conflitar com Águas Claras
-  '71905': 'São Sebastião',
 
   // Itapoã
   '71580': 'Itapoã',
   '71590': 'Itapoã',
+
+  // São Sebastião
+  '71691': 'São Sebastião',
+  '71692': 'São Sebastião',
+  '71693': 'São Sebastião',
+  '71694': 'São Sebastião',
+  '71695': 'São Sebastião',
 
   // Jardim Botânico
   '71680': 'Jardim Botânico',
