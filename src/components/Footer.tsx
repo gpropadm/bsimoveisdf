@@ -65,7 +65,7 @@ export default function Footer() {
                 aria-label="Facebook"
                 onClick={(e) => !socialLinks.facebook && e.preventDefault()}
               >
-                <i className="fa-brands fa-facebook-f" style={{ fontSize: '24px' }}></i>
+                <i className="fa-brands fa-facebook" style={{ fontSize: '24px' }}></i>
               </a>
               <a
                 href={socialLinks.instagram || '#'}
