@@ -903,7 +903,7 @@ function ArboPropertyCard({ property, onViewDetails, onVideoClick, formatPrice }
                       />
                     </div>
                     <span className="ImovelCardInfo_colorOfTitleCondominium__IfTu_ ImovelCardInfo_ellipsisOneLine__ryU_Q d-flex flex-row justify-content-start">
-                      {property.title}
+                      {property.title.length > 40 ? `${property.title.substring(0, 40)}...` : property.title}
                     </span>
                   </h2>
                   <p className="ImovelCardInfo_colorOfLocalization__frnmZ mb-0">
