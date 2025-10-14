@@ -433,9 +433,9 @@ export default function ArboGallery({ images, propertyTitle }: ArboGalleryProps)
                     }
                   }
                 }}
-                className="fixed left-0 right-0 flex gap-2 overflow-x-auto py-4"
+                className="fixed left-0 right-0 flex gap-2 overflow-x-auto justify-center py-4"
                 style={{
-                  bottom: '20px',
+                  bottom: '60px',
                   width: '100vw',
                   paddingLeft: '16px',
                   paddingRight: '16px',
