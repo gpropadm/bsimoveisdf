@@ -433,9 +433,10 @@ export default function ArboGallery({ images, propertyTitle }: ArboGalleryProps)
                     }
                   }
                 }}
-                className="absolute left-0 right-0 flex gap-1 overflow-x-auto justify-center px-0 py-6"
+                className="fixed left-0 right-0 flex gap-1 overflow-x-auto px-0 py-6"
                 style={{
                   bottom: '0px',
+                  width: '100vw',
                   background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)',
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none'
