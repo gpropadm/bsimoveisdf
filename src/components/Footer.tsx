@@ -17,11 +17,11 @@ export default function Footer() {
         if (data?.settings?.contactPhone) {
           setContactPhone(data.settings.contactPhone)
         }
-        if (data?.settings?.facebookUrl) {
-          setSocialLinks(prev => ({ ...prev, facebook: data.settings.facebookUrl }))
+        if (data?.settings?.socialFacebook) {
+          setSocialLinks(prev => ({ ...prev, facebook: data.settings.socialFacebook }))
         }
-        if (data?.settings?.instagramUrl) {
-          setSocialLinks(prev => ({ ...prev, instagram: data.settings.instagramUrl }))
+        if (data?.settings?.socialInstagram) {
+          setSocialLinks(prev => ({ ...prev, instagram: data.settings.socialInstagram }))
         }
       })
       .catch(err => console.error('Erro ao carregar configurações:', err))
