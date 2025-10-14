@@ -6,6 +6,12 @@ let cachedSettings: any = null
 let cacheTimestamp = 0
 const CACHE_TTL = 5 * 60 * 1000 // 5 minutos
 
+// Função para limpar o cache (exportada para ser usada por outras rotas)
+export function clearSettingsCache() {
+  cachedSettings = null
+  cacheTimestamp = 0
+}
+
 // GET público - Buscar configurações (sem autenticação)
 export async function GET() {
   try {

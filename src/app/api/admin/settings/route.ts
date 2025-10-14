@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import prisma from '@/lib/prisma'
+import { clearSettingsCache } from '@/app/api/settings/route'
 
 // GET - Buscar configurações
 export async function GET() {
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
       let currentSettings = await prisma.settings.findFirst({
         orderBy: { createdAt: 'asc' }
       })
-      
+
       if (currentSettings) {
         // Atualizar configuração existente
         currentSettings = await prisma.settings.update({
@@ -93,7 +94,11 @@ export async function POST(request: NextRequest) {
         })
       }
 
-      return NextResponse.json({ 
+      // Limpar o cache das configurações públicas
+      clearSettingsCache()
+      console.log('✅ Cache de configurações limpo')
+
+      return NextResponse.json({
         message: 'Configurações salvas com sucesso',
         settings: { site: currentSettings }
       })

@@ -121,8 +121,11 @@ export default function AdminSettings() {
         [name]: parseInt(value) || 0
       }))
     } else {
-      // Se for o campo de URL da imagem, converter automaticamente
-      const finalValue = value
+      // Se for o campo WhatsApp, remover caracteres especiais
+      let finalValue = value
+      if (name === 'contactWhatsapp') {
+        finalValue = value.replace(/[\s\-()]/g, '')
+      }
 
       setSiteSettings(prev => ({
         ...prev,
