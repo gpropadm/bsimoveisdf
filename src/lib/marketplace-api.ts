@@ -40,6 +40,12 @@ class MarketplaceAPI {
   private async request(endpoint: string, options: RequestInit = {}) {
     const url = `${this.baseUrl}/api/v1${endpoint}`
 
+    console.log('🌐 Marketplace API Request:', {
+      url,
+      apiKey: this.apiKey ? `${this.apiKey.substring(0, 10)}...` : 'MISSING',
+      baseUrl: this.baseUrl
+    })
+
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -51,6 +57,10 @@ class MarketplaceAPI {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Erro desconhecido' }))
+      console.error('❌ Marketplace API Error:', {
+        status: response.status,
+        error
+      })
       throw new Error(error.error || `HTTP ${response.status}`)
     }
 
