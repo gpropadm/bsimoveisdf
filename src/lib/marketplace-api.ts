@@ -38,7 +38,7 @@ class MarketplaceAPI {
   }
 
   private async request(endpoint: string, options: RequestInit = {}) {
-    const url = `${this.baseUrl}/v1${endpoint}`
+    const url = `${this.baseUrl}/api/v1${endpoint}`
 
     const response = await fetch(url, {
       ...options,
