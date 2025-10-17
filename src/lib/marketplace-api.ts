@@ -1,6 +1,6 @@
 // Cliente para API do Marketplace
 const MARKETPLACE_API_URL = process.env.NEXT_PUBLIC_MARKETPLACE_API_URL || 'http://localhost:3001'
-const API_KEY = process.env.MARKETPLACE_API_KEY || ''
+const API_KEY = process.env.NEXT_PUBLIC_MARKETPLACE_API_KEY || ''
 
 interface MarketplaceImovel {
   imovelIdOriginal: string
