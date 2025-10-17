@@ -81,12 +81,15 @@ export default function MarketplaceParceirosPage() {
   const router = useRouter()
   const [properties, setProperties] = useState<MarketplaceProperty[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string>('')
   const [filters, setFilters] = useState({
     type: '',
     city: '',
     minPrice: '',
     maxPrice: ''
   })
+
+  console.log('📱 Marketplace Parceiros - Renderizando página', { status, hasSession: !!session })
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -103,7 +106,12 @@ export default function MarketplaceParceirosPage() {
   const loadProperties = async () => {
     try {
       setLoading(true)
+      setError('')
       console.log('🔍 Buscando imóveis de parceiros...')
+      console.log('🔧 Variáveis de ambiente:', {
+        apiUrl: process.env.NEXT_PUBLIC_MARKETPLACE_API_URL,
+        hasApiKey: !!process.env.NEXT_PUBLIC_MARKETPLACE_API_KEY
+      })
 
       const filterParams: any = {}
       if (filters.type) filterParams.type = filters.type
@@ -121,9 +129,11 @@ export default function MarketplaceParceirosPage() {
       } else {
         toast.info('Nenhum imóvel de parceiros encontrado')
       }
-    } catch (error) {
-      console.error('❌ Erro ao buscar imóveis:', error)
-      toast.error('Erro ao buscar imóveis de parceiros')
+    } catch (err: any) {
+      const errorMsg = err?.message || 'Erro desconhecido'
+      console.error('❌ Erro ao buscar imóveis:', err)
+      setError(`Erro: ${errorMsg}`)
+      toast.error(`Erro ao buscar imóveis de parceiros: ${errorMsg}`)
       setProperties([])
     } finally {
       setLoading(false)
@@ -281,6 +291,24 @@ export default function MarketplaceParceirosPage() {
           </div>
         </div>
 
+        {/* Mensagem de Erro */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Erro ao carregar imóveis</h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{error}</p>
+                  <p className="mt-2">Verifique o console do navegador (F12) para mais detalhes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Lista de Imóveis */}
         {loading ? (
           <div className="text-center py-12">
@@ -306,6 +334,11 @@ export default function MarketplaceParceirosPage() {
             <p className="mt-1 text-sm text-gray-500">
               Não há imóveis de parceiros disponíveis no momento.
             </p>
+            {!error && (
+              <p className="mt-2 text-xs text-gray-400">
+                Abra o console (F12) para ver os logs de debug
+              </p>
+            )}
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
