@@ -185,6 +185,10 @@ model Lead {
   status       String   @default("novo") // "novo", "contatado", "interessado", "convertido", "perdido"
   notes        String?  // observações do corretor
 
+  // CRM Kanban - Stage atual
+  currentStage String   @default("captado") // ID do LeadStage atual
+  stageUpdatedAt DateTime @default(now())
+
   // Preferências do cliente para matching
   preferredPriceMin    Float?   // preço mínimo de interesse
   preferredPriceMax    Float?   // preço máximo de interesse
@@ -447,5 +451,401 @@ model PriceAlert {
   // Índice único para evitar duplicatas
   @@unique([propertyId, phone])
   @@map("price_alerts")
+}
+
+// ============================================
+// SISTEMA DE BOTS COM IA
+// ============================================
+
+model Bot {
+  id          String   @id @default(cuid())
+  name        String   // Nome do bot (ex: "Bot de Captação", "Bot de Visitas")
+  description String?  // Descrição do que o bot faz
+
+  // Configuração
+  type        String   @default("assistido") // "assistido" (template) ou "avancado" (fluxo custom)
+  template    String?  // Template usado se tipo = assistido
+  active      Boolean  @default(true) // Bot está ativo?
+
+  // Canais onde funciona
+  channels    String   @default("whatsapp") // JSON: ["whatsapp", "site", "email"]
+
+  // IA Configuration
+  aiProvider  String   @default("anthropic") // "anthropic", "openai"
+  aiModel     String   @default("claude-sonnet-4-5") // Modelo específico
+  systemPrompt String? // Prompt customizado do sistema
+
+  // Comportamento
+  autoCreateLead Boolean @default(true) // Criar lead automaticamente?
+  autoAssignBroker Boolean @default(false) // Atribuir corretor automaticamente?
+
+  // Estatísticas
+  conversationsCount Int @default(0)
+  leadsCreatedCount Int @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  flows       BotFlow[]
+  sessions    BotSession[]
+
+  @@map("bots")
+}
+
+model BotFlow {
+  id          String   @id @default(cuid())
+  botId       String
+  name        String   // Nome do fluxo
+  description String?
+
+  // Estrutura do fluxo (JSON)
+  flowData    String   // JSON com nodes e edges do fluxo
+
+  // Status
+  active      Boolean  @default(true)
+  version     Int      @default(1)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bot         Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  blocks      BotBlock[]
+
+  @@map("bot_flows")
+}
+
+model BotBlock {
+  id          String   @id @default(cuid())
+  flowId      String
+
+  // Identificação
+  blockType   String   // "message", "question", "condition", "action", "ai_analysis"
+  label       String   // Label do bloco
+
+  // Posição no editor visual
+  position    String   // JSON: {x: 100, y: 200}
+
+  // Configuração do bloco (varia por tipo)
+  config      String   // JSON com configurações específicas
+
+  // Ordem de execução
+  order       Int      @default(0)
+
+  // Condições para este bloco ser executado
+  conditions  String?  // JSON com condições
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  flow        BotFlow  @relation(fields: [flowId], references: [id], onDelete: Cascade)
+
+  @@map("bot_blocks")
+}
+
+model BotSession {
+  id          String   @id @default(cuid())
+  botId       String
+
+  // Identificação do usuário
+  userId      String?  // ID do lead se já existe
+  channel     String   // "whatsapp", "site", "email"
+  channelId   String   // Número do WhatsApp, sessionId do site, etc.
+
+  // Estado da conversa
+  status      String   @default("active") // "active", "completed", "abandoned"
+  currentStep String?  // Qual passo do fluxo está
+  context     String?  // JSON com contexto da conversa
+
+  // Histórico de mensagens
+  messages    String   // JSON array com histórico
+
+  // Resultado da sessão
+  leadCreated Boolean  @default(false)
+  leadId      String?  // Lead criado nesta sessão
+
+  // Metadata
+  startedAt   DateTime @default(now())
+  lastMessageAt DateTime @default(now())
+  completedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bot         Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+
+  @@map("bot_sessions")
+}
+
+// ============================================
+// CRM COM FUNIL VISUAL KANBAN
+// ============================================
+
+model LeadStage {
+  id          String   @id @default(cuid())
+  name        String   // "Captado", "Em Atendimento", "Visita Marcada", etc.
+  description String?
+  color       String   @default("#3B82F6") // Cor do card no Kanban
+  icon        String?  // Ícone para exibir
+
+  // Ordem no funil
+  order       Int      @default(0)
+
+  // Tipo de stage
+  type        String   @default("active") // "active", "won", "lost"
+
+  // Automações
+  autoActions String?  // JSON com ações automáticas ao entrar neste stage
+
+  // Estatísticas
+  leadsCount  Int      @default(0)
+
+  active      Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leadHistory LeadHistory[]
+
+  @@map("lead_stages")
+}
+
+model LeadHistory {
+  id          String   @id @default(cuid())
+  leadId      String
+
+  // Mudança de status
+  fromStage   String?  // Stage anterior
+  toStage     String   // Stage novo
+
+  // Quem fez a mudança
+  changedBy   String?  // ID do usuário que mudou
+  changedByName String? // Nome do usuário
+
+  // Motivo/observação
+  reason      String?
+  notes       String?
+
+  // Metadata
+  duration    Int?     // Tempo no stage anterior (minutos)
+
+  createdAt   DateTime @default(now())
+
+  stage       LeadStage? @relation(fields: [toStage], references: [id], onDelete: SetNull)
+
+  @@map("lead_history")
+}
+
+model LeadAssignment {
+  id          String   @id @default(cuid())
+  leadId      String   @unique
+
+  // Corretor atribuído
+  brokerId    String?  // ID do corretor (User)
+  brokerName  String?  // Nome do corretor
+  brokerEmail String?
+  brokerPhone String?
+
+  // Atribuição
+  assignedBy  String?  // Quem atribuiu (ID do User)
+  assignedAt  DateTime @default(now())
+
+  // Status
+  status      String   @default("assigned") // "assigned", "accepted", "rejected", "completed"
+
+  // Metadata
+  notes       String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("lead_assignments")
+}
+
+// ============================================
+// LEAD SCORING (PONTUAÇÃO AUTOMÁTICA)
+// ============================================
+
+model LeadScore {
+  id          String   @id @default(cuid())
+  leadId      String   @unique
+
+  // Pontuação
+  totalScore  Int      @default(0) // Pontuação total (0-100)
+
+  // Breakdown da pontuação
+  profileScore Int     @default(0) // Perfil do lead (dados completos, etc)
+  engagementScore Int  @default(0) // Engajamento (mensagens, cliques, etc)
+  intentScore  Int     @default(0) // Intenção de compra (urgência, orçamento)
+  matchScore   Int     @default(0) // Match com imóveis disponíveis
+
+  // Classificação
+  classification String @default("cold") // "cold", "warm", "hot", "very_hot"
+
+  // Última atualização
+  lastCalculatedAt DateTime @default(now())
+
+  // Histórico de scores (JSON)
+  scoreHistory String? // Array com histórico de mudanças
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("lead_scores")
+}
+
+model LeadScoreRule {
+  id          String   @id @default(cuid())
+  name        String   // Nome da regra
+  description String?
+
+  // Condição
+  condition   String   // "has_phone", "has_email", "price_range_match", etc.
+  operator    String   @default("equals") // "equals", "contains", "greater_than", etc.
+  value       String?  // Valor para comparar
+
+  // Pontos
+  points      Int      // Quantos pontos adiciona/remove
+
+  // Categoria
+  category    String   @default("profile") // "profile", "engagement", "intent", "match"
+
+  // Status
+  active      Boolean  @default(true)
+  priority    Int      @default(0) // Ordem de execução
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("lead_score_rules")
+}
+
+// ============================================
+// SISTEMA DE TAREFAS E FOLLOW-UPS
+// ============================================
+
+model Task {
+  id          String   @id @default(cuid())
+
+  // Relacionamentos
+  leadId      String?  // Tarefa relacionada a lead
+  propertyId  String?  // Tarefa relacionada a imóvel
+
+  // Informações da tarefa
+  title       String
+  description String?
+  type        String   @default("follow_up") // "follow_up", "call", "email", "visit", "document", "other"
+  priority    String   @default("medium") // "low", "medium", "high", "urgent"
+
+  // Atribuição
+  assignedTo  String?  // ID do corretor/usuário
+  assignedToName String?
+  createdBy   String?  // Quem criou
+
+  // Agendamento
+  dueDate     DateTime? // Data/hora limite
+  reminderAt  DateTime? // Quando enviar lembrete
+
+  // Status
+  status      String   @default("pending") // "pending", "in_progress", "completed", "cancelled"
+  completedAt DateTime?
+  completedBy String?
+
+  // Resultado
+  outcome     String?  // Resultado da tarefa
+  notes       String?  // Observações
+
+  // Automação
+  automated   Boolean  @default(false) // Criada automaticamente?
+  recurrence  String?  // JSON com regras de recorrência
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tasks")
+}
+
+model FollowUp {
+  id          String   @id @default(cuid())
+  leadId      String
+
+  // Tipo de follow-up
+  type        String   @default("automatic") // "automatic", "manual", "scheduled"
+  channel     String   @default("whatsapp") // "whatsapp", "email", "phone", "sms"
+
+  // Conteúdo
+  subject     String?
+  message     String
+
+  // Template usado
+  templateId  String?
+  templateName String?
+
+  // Agendamento
+  scheduledFor DateTime?
+  sentAt      DateTime?
+
+  // Status
+  status      String   @default("pending") // "pending", "sent", "delivered", "read", "failed"
+
+  // Resposta
+  responded   Boolean  @default(false)
+  respondedAt DateTime?
+  response    String?
+
+  // Metadata
+  metadata    String?  // JSON com dados adicionais
+
+  // Resultado
+  converted   Boolean  @default(false) // Gerou conversão?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("follow_ups")
+}
+
+// ============================================
+// PROCESSAMENTO MULTIMODAL COM IA
+// ============================================
+
+model MediaProcessing {
+  id          String   @id @default(cuid())
+
+  // Relacionamentos
+  leadId      String?
+  propertyId  String?
+  botSessionId String?
+
+  // Arquivo
+  fileUrl     String   // URL do arquivo
+  fileName    String?
+  fileType    String   // "audio", "image", "pdf", "video"
+  fileSize    Int?     // Tamanho em bytes
+
+  // Processamento
+  status      String   @default("pending") // "pending", "processing", "completed", "failed"
+  provider    String?  // "openai", "anthropic", "google"
+  model       String?  // Modelo usado (whisper, gpt-4-vision, etc)
+
+  // Resultado
+  processedData String? // JSON com dados extraídos
+  text        String?  // Texto transcrito/extraído
+  analysis    String?  // Análise da IA
+  entities    String?  // JSON com entidades extraídas (preços, endereços, etc)
+
+  // Custos
+  tokensUsed  Int?
+  costUsd     Float?
+
+  // Metadata
+  processingTime Int?  // Tempo de processamento (ms)
+  errorMessage String?
+
+  processedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("media_processing")
 }
 
