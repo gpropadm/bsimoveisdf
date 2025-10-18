@@ -7,7 +7,19 @@ const prisma = new PrismaClient()
 // POST - Receber mensagens do WhatsApp
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    // Twilio envia em formato URL-encoded, outros em JSON
+    const contentType = request.headers.get('content-type') || ''
+    let body: any = {}
+
+    if (contentType.includes('application/x-www-form-urlencoded')) {
+      // Twilio format
+      const formData = await request.formData()
+      body = Object.fromEntries(formData)
+    } else {
+      // JSON format (Evolution, UltraMsg)
+      body = await request.json()
+    }
+
     console.log('📱 Mensagem WhatsApp recebida:', JSON.stringify(body, null, 2))
 
     // Extrair dados da mensagem (formato pode variar por provedor)
