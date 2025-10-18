@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 export default function WhatsAppButton() {
-  const [whatsappNumber, setWhatsappNumber] = useState('5548998645864')
+  const [whatsappNumber, setWhatsappNumber] = useState('')
   const pathname = usePathname()
 
   // Don't show WhatsApp button on admin pages
@@ -15,10 +15,10 @@ export default function WhatsAppButton() {
   useEffect(() => {
     const fetchWhatsAppNumber = async () => {
       try {
-        const response = await fetch('/api/admin/settings')
+        const response = await fetch('/api/settings')
         const data = await response.json()
-        if (data.site?.contactWhatsapp) {
-          setWhatsappNumber(data.site.contactWhatsapp)
+        if (data.settings?.contactWhatsapp) {
+          setWhatsappNumber(data.settings.contactWhatsapp)
         }
       } catch (error) {
         console.error('Erro ao buscar configurações:', error)
@@ -32,6 +32,11 @@ export default function WhatsAppButton() {
     const message = 'Olá! Gostaria de mais informações sobre os imóveis disponíveis.'
     const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappURL, '_blank')
+  }
+
+  // Não mostrar o botão até carregar o número do banco
+  if (!whatsappNumber) {
+    return null
   }
 
   return (
