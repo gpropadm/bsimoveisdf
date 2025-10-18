@@ -165,14 +165,10 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Processamento concluído')
 
-    // 8. Retornar resposta para enviar ao WhatsApp
-    return NextResponse.json({
-      success: true,
-      message: response.message,
-      to: from,
-      leadCreated: !!leadId,
-      leadId: leadId || session.leadId
-    })
+    // 8. Retornar resposta
+    // Twilio requer TwiML (XML) ou resposta vazia, não aceita JSON
+    // Retornamos 204 No Content para evitar erro "Invalid Content-Type"
+    return new NextResponse(null, { status: 204 })
 
   } catch (error: any) {
     console.error('❌ Erro ao processar mensagem:', error)
