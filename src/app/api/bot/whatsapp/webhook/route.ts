@@ -11,9 +11,11 @@ export async function POST(request: NextRequest) {
     console.log('📱 Mensagem WhatsApp recebida:', JSON.stringify(body, null, 2))
 
     // Extrair dados da mensagem (formato pode variar por provedor)
-    const from = body.from || body.phone || body.sender
-    const messageText = body.text || body.body || body.message
-    const messageId = body.id || body.messageId || Date.now().toString()
+    // Twilio envia: From (whatsapp:+number), Body, MessageSid
+    // Evolution/UltraMsg envia: from, text, id
+    const from = body.from || body.From?.replace('whatsapp:', '') || body.phone || body.sender
+    const messageText = body.text || body.Body || body.body || body.message
+    const messageId = body.id || body.MessageSid || body.messageId || Date.now().toString()
 
     if (!from || !messageText) {
       return NextResponse.json(
