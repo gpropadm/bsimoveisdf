@@ -174,18 +174,21 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET - Webhook de verificação (para alguns provedores como Meta/WhatsApp Business)
+// GET - Webhook de verificação (para Meta WhatsApp e Twilio)
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
+
+  // Meta WhatsApp verification
   const mode = searchParams.get('hub.mode')
   const token = searchParams.get('hub.verify_token')
   const challenge = searchParams.get('hub.challenge')
 
-  // Verificação do webhook (Meta WhatsApp)
   if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
-    console.log('✅ Webhook verificado!')
+    console.log('✅ Webhook verificado (Meta)!')
     return new NextResponse(challenge, { status: 200 })
   }
 
-  return NextResponse.json({ error: 'Verificação falhou' }, { status: 403 })
+  // Twilio doesn't require verification, just respond with 200
+  console.log('✅ Webhook OK (Twilio)')
+  return NextResponse.json({ status: 'ok', message: 'Webhook ativo' }, { status: 200 })
 }
